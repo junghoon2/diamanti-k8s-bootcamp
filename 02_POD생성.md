@@ -34,3 +34,15 @@ centos-859c64885-s9l8d                1/1     Running   0          7s
 date-mirror-deploy-7b987cd5d7-d7sm8   1/1     Running   0          5m18s
 nginx01-6bdf767788-shs7g              1/1     Running   0          9m11s
 ```
+
+## POD 접속 (like SSH)
+
+exec 명령어 사용 
+```
+spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get pod -o wide
+NAME                       READY   STATUS    RESTARTS   AGE   IP             NODE    NOMINATED NODE   READINESS GATES
+nginx01-6bdf767788-shs7g   1/1     Running   0          52m   10.10.100.13   dia03   <none>           <none>
+spkr@erdia22:~/02.k8s_code/04.Deploy$ kc exec -it nginx01-6bdf767788-shs7g -- bash
+root@nginx01-6bdf767788-shs7g:/# hostname
+nginx01-6bdf767788-shs7g
+```
