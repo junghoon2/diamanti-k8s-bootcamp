@@ -3,7 +3,7 @@
 - ### POD는 항상 생성되고 사라질 수 있으므로 유동적으로 변할 수 있는 POD IP가 아닌 Domain Name 사용
 - ### POD IP는 Service의 Domain Name IP로 등록 
 
-## 실습을 위한 Deploy POD 생성
+## 실습을 위한 Deploy, POD 생성
 - [NGINX Deploy 생성](../02.Deploy/nginxhello-deploy.yml)
 - [CentOS7 POD 생성](../01.Pod/centos7-pod.yml)
 - [CentOS7 POD - Test Namespace 안에서 생성](../01.Pod/centos7-ns-pod.yml)
