@@ -6,7 +6,7 @@
 ## 실습을 위한 Deploy POD 생성
 - [NGINX Deploy 생성](../02.Deploy/nginxhello-deploy.yml)
 - [CentOS7 POD 생성](../01.Pod/centos7-pod.yml)
-- [CentOS7 POD - Test Namespace 생성](../01.Pod/centos7-ns-pod.yml)
+- [CentOS7 POD - Test Namespace 안에서 생성](../01.Pod/centos7-ns-pod.yml)
 
 ```
 kc apply -f [YAML]
