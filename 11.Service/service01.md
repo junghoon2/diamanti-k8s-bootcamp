@@ -4,6 +4,7 @@
 - ### POD IP는 Service의 Domain Name IP로 등록 
 
 ## 실습을 위한 Deploy, POD 생성
+소스 코드
 - [NGINX Deploy 생성](../02.Deploy/nginxhello-deploy.yml)
 - [CentOS7 POD 생성](../01.Pod/centos7-pod.yml)
 - [CentOS7 POD - Test Namespace 안에서 생성](../01.Pod/centos7-ns-pod.yml)
@@ -22,9 +23,10 @@ centos7          1/1     Running   0          157m
 ```
 
 ## Service 생성
+소스 코드
 - [NGINX POD 용 Service 생성](../11.Service/headless-svc.yml)
 
-DIAMANTI에서는 Service Type으로 ClusterIP, ClusterIP 옵션은 None으로 사용([Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)
+DIAMANTI에서는 Service Type으로 ClusterIP, ClusterIP 옵션은 None으로 사용([Headless Service])(https://kubernetes.io/docs/concepts/services-networking/service/#headless-services)
 
 SR-IOV를 사용하여 개별 POD 별 가상 NIC 직접 할당하므로 Headless 사용(NOT NodePort)
 
