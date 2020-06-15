@@ -28,7 +28,7 @@ centos7          1/1     Running   0          157m
 
 DIAMANTI에서는 Service Type으로 ClusterIP, ClusterIP 옵션은 None으로 사용([Headless Service 참조](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services))
 
-SR-IOV를 사용하여 개별 POD 별 가상 NIC 직접 할당하므로 Headless 사용(NOT NodePort)
+SR-IOV를 사용하여 개별 POD 별 가상 NIC 직접 할당하므로 Service Type Headless 사용(NodePort Bridge, NAT 불필요)
 
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get svc
