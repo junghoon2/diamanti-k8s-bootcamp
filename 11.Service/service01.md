@@ -1,7 +1,7 @@
 # Kubernetes Service
 - ### Kubernetes 환경에서 서로 다른 POD 간 통신은 Service 사용
-- ### POD는 항상 생성되고 사라질 수 있으므로 유동적으로 변할 수 있는 POD IP가 아닌 Domain Name 사용
-- ### POD IP는 Service의 Domain Name IP로 등록 
+- ### POD는 항상 생성되고 사라질 수 있으므로 유동적으로 변할 수 있는 POD IP가 아닌 Domain Name(서비스 이름) 기반
+- ### POD IP는 Service의 Domain Name IP로 등록
 
 ## 실습을 위한 Deploy, POD 생성
 소스 코드
