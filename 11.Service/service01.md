@@ -95,7 +95,7 @@ PING 10.10.100.37 (10.10.100.37) 56(84) bytes of data.
 ### 서로 다른 Namespace(default vs test)에서 Service를 이용한 통신 확인 
 서비스 이름 + Namespace 이름을 추가해야 Service 연결 가능
 
-Test Namespace에서 신규 POD 생성
+Test Namespace으로 POD 실행(exec)
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ kc exec -it -n test  centos7-test -- bash
 [root@centos7-test /]# ping web-svc
@@ -111,7 +111,7 @@ PING web-svc.default.svc.cluster.local (10.10.100.37) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.156/0.219/0.282/0.063 ms
 ```
 
-Full Name {서비스 이름}.{Namespace}.{svc}.{Cluster Domain} 사용
+Full Name은 {서비스 이름}.{Namespace}.{svc}.{Cluster Domain} 사용
 ```
 [root@centos7-test /]# ping web-svc.default.svc.cluster.local
 PING web-svc.default.svc.cluster.local (10.10.100.37) 56(84) bytes of data.
@@ -124,7 +124,8 @@ rtt min/avg/max/mdev = 0.163/0.164/0.166/0.012 ms
 ```
 
 ### 자동 Service Descovery 
-서비스가 연결하는 POD의 숫자를 기존 1개에서 3개로 증가하면 자동으로 증가된 POD만큼 Load Balancing 됨
+서비스가 연결하는 POD 숫자를 기존 1개에서 3개로 증가하면 Service에서 자동 인식
+(자동으로 증가된 POD만큼 Load Balancing)
 
 POD 증가
 ```
@@ -154,20 +155,19 @@ PING web-svc.default.svc.cluster.local (10.10.100.19) 56(84) bytes of data.
 64 bytes from 10-10-100-19.web-svc.default.svc.cluster.local (10.10.100.19): icmp_seq=1 ttl=64 time=0.343 ms
 (...)
 ```
-향후 Ingress 등 Proxy 설정 시 부하 증가에 따라 POD 개수 증가 시 자동으로 부하 분산 
+향후 Ingress 등 LoadBalancer 설정 시 부하 증가 등에 따라 POD 개수 증가 시 자동으로 부하 분산됨 
 
 ### POD DNS Server 구성 
-각 POD는 kubernetes 설정 시 사용하는 DNS Server(Core-DNS) 사용 
+kubelet 시스템 서비스 설정 시 DNS 서버(--cluster-dns=10.0.0.10) 설정 
+```
+[diamanti@dia01 ~]$ ps aux|grep kubelet|grep dns
+root      23952  5.4  0.0 5297876 128600 ?      Ssl  May22 1902:19 /usr/bin/kubelet --kubeconfig=/etc/kubernetes/kubeconfig --logtostderr=true --stderrthreshold=0 --v=2 --address=192.168.200.101 --authorization-mode=Webhook --read-only-port=0 --streaming-connection-idle-timeout=5m --make-iptables-util-chains=true --event-qps=0 --rotate-certificates=true --tls-cert-file=/etc/diamanti/certs/node/server.crt --tls-private-key-file=/etc/diamanti/certs/node/server.key --client-ca-file=/etc/diamanti/certs/node/ca.crt --address=192.168.200.101 --feature-gates=RotateKubeletServerCertificate=true,VolumeSnapshotDataSource=true --housekeeping-interval=10s --max-pods=110 --fail-swap-on=false --cluster-dns=10.0.0.10 --network-plugin=cni --cluster_domain=cluster.local --cgroup-driver=systemd --enable-controller-attach-detach=false
+```
+각 POD는 kubernetes 설정에 이용한 DNS Server(Core-DNS 등) DNS Server가 자동 할당됨 
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ kc exec -it centos7 -- bash
 [root@centos7 /]# cat /etc/resolv.conf
 nameserver 10.0.0.10
 search default.svc.cluster.local svc.cluster.local cluster.local
 options ndots:5
-```
-
-kubelet 시스템 서비스 설정 시 DNS 환경 설정 
-```
-[diamanti@dia01 ~]$ ps aux|grep kubelet|grep dns
-root      23952  5.4  0.0 5297876 128600 ?      Ssl  May22 1902:19 /usr/bin/kubelet --kubeconfig=/etc/kubernetes/kubeconfig --logtostderr=true --stderrthreshold=0 --v=2 --address=192.168.200.101 --authorization-mode=Webhook --read-only-port=0 --streaming-connection-idle-timeout=5m --make-iptables-util-chains=true --event-qps=0 --rotate-certificates=true --tls-cert-file=/etc/diamanti/certs/node/server.crt --tls-private-key-file=/etc/diamanti/certs/node/server.key --client-ca-file=/etc/diamanti/certs/node/ca.crt --address=192.168.200.101 --feature-gates=RotateKubeletServerCertificate=true,VolumeSnapshotDataSource=true --housekeeping-interval=10s --max-pods=110 --fail-swap-on=false --cluster-dns=10.0.0.10 --network-plugin=cni --cluster_domain=cluster.local --cgroup-driver=systemd --enable-controller-attach-detach=false
 ```
