@@ -1,5 +1,6 @@
 # Kubernetes 클러스터 설치
-### 복잡한 k8s 클러스터 설치 과정 없이 DIAMANTI는 S/W + H/W 사전 설치된 Appliance로 제공되어 NTP, 네트워크 IP 등의 기본 정보 입력 후 5분 이내 클러스터 구성 가능 합니다.
+### 복잡한 k8s 클러스터 설치 과정 없이 DIAMANTI는 S/W + H/W 사전 설치된 Appliance로 형태로 제공
+### NTP, Mgt/컨테이너 네트워크 IP 등의 기본 정보 입력 후 5분 이내 클러스터 구성 가능
 
 ## 클러스터 설치
 **명령어 예시에 따라 hostname, vip, storage vlan 등 정보 입력**
