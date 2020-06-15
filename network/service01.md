@@ -4,6 +4,6 @@
 ### POD의 IP는 Service의 Domain Name으로 등록됨 
 
 ## 실습을 위한 Deploy POD 생성
-- [NGINX POD 생성](https://github.com/junghoon2/diamanti-k8s-bootcamp/blob/master/02.Deploy/nginx.yml)
+- [NGINX POD 생성](../02.Deploy/nginxhello-deploy.yml)
 - [NGINX POD 생성](../../02.Deploy/nginxhello-deploy.yml)
 
