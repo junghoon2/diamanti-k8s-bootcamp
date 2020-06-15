@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   annotations:
     diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
-  name: centos7
+  name: centos7-test
   namespace: test
   labels:
     run: centos7
