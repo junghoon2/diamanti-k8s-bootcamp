@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: centos
+  labels:
+    app: centos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: centos  # POD label과 일치
+  template:    
+    metadata:
+      labels:
+        app: centos # Selector label과 일치
+    spec:
+      containers:
+      - name: centos
+        image: centos:7.5.1804
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
+        
