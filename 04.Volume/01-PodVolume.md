@@ -22,7 +22,9 @@ volumeBindingMode: Immediate
 allowVolumeExpansion: true  ## Volume 생성 후 용량 확장 가능
 ```
 
-Storage Class 생성(sc for StorageClass)
+Storage Class 생성
+
+. sc for StorageClass
 ```
 kc apply -f high2m-sc.yml
 
@@ -125,6 +127,7 @@ date-mirror-deploy-d9c75d75d-9bg8c   1/1     Running   0          5s
 ```
 
 POD 내 Volume 확인
+
 . /data Mount Point로 NVMe volume 마운트 확인 가능
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc exec -it date-mirror-deploy-d9c75d75d-9bg8c -- bash
@@ -144,7 +147,7 @@ tmpfs                             tmpfs     63G     0   63G   0% /proc/scsi
 tmpfs                             tmpfs     63G     0   63G   0% /sys/firmware
 ```
 
-정상적으로 File Write 가능 
+정상적으로 File Read/Write 가능 
 ```
 [root@date-mirror-deploy-d9c75d75d-9bg8c /]# cat /data/pod-out.txt
 Tue Jun 16 02:01:14 UTC 2020
@@ -154,7 +157,9 @@ Tue Jun 16 02:01:44 UTC 2020
 ```
 
 Volume 상세 정보 확인
+
 . Diamanti에서는 Volume 관련 자체 명령어 Set(dctl volume ) 제공
+
 . Volume Mirror 상태 등 확인 가능 
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ dctl volume describe pvc-e0d2afc4-0ed6-470f-9461-a1354c4edddf
