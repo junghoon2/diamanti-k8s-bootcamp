@@ -56,7 +56,7 @@ dia02   Ready    <none>   18d   v1.15.10   192.168.200.102   <none>        CentO
 dia03   Ready    <none>   18d   v1.15.10   192.168.200.103   <none>        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://1.13.1
 dia04   Ready    <none>   18d   v1.15.10   192.168.200.104   <none>        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://1.13.1
 ```
-## 컨테이너 데이터 네트워크 생성
+## Default 컨테이너 데이터 네트워크 생성
 **다른 명령어와 동일하게 명령어 예시에 따라 subnet, start/end IP, gateway, vlan 정보 등 입력**
 ```
 spkr@erdia22:~/02.k8s_code$ dctl network create
