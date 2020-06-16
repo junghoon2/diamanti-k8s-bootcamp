@@ -23,9 +23,35 @@ nginx01-6bdf767788-shs7g   1/1     Running   0          108s   10.10.100.13   di
 
 **2) YAML 파일 이용**
 
-- [Deploy YAML 파일 예제](./centos-pvc-deploy.yml)
+- [Deploy YAML 파일 예제](05.Deployment/centOS-deploy.yml)
 
 ```
+vi centOS-deploy.yml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: centos
+  labels:
+    app: centos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: centos  # POD label과 일치
+  template:    
+    metadata:
+      labels:
+        app: centos # Selector label과 일치
+    spec:
+      containers:
+      - name: centos
+        image: centos:7.5.1804
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
+
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc apply -f centos-deploy.yml
 deployment.apps/centos created
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get pod
@@ -42,6 +68,7 @@ exec 명령어 사용
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get pod -o wide
 NAME                       READY   STATUS    RESTARTS   AGE   IP             NODE    NOMINATED NODE   READINESS GATES
 nginx01-6bdf767788-shs7g   1/1     Running   0          52m   10.10.100.13   dia03   <none>           <none>
+
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc exec -it nginx01-6bdf767788-shs7g -- bash
 root@nginx01-6bdf767788-shs7g:/# hostname
 nginx01-6bdf767788-shs7g
