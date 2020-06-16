@@ -18,9 +18,9 @@ spec:
       - image: schoolofdevops/vote
         imagePullPolicy: Always
         name: vote
-        envFrom:
-          - configMapRef:
-              name: vote
+        envFrom:  # envFrom 사용 
+          - configMapRef:  
+              name: vote  # ConfigMap 이름 지정
         ports:
         - containerPort: 80
           protocol: TCP
