@@ -7,7 +7,9 @@
 
 ## 목적
 
-DIAMANTI 시스템 운영을 위한 초/중급 Kubernetes 실습 과정 입니다. POD를 생성하고 스토리지/네트워크를 연결하는 과정부터 Deployment, Statefulset, Daemonset 등 다양한 POD 실행 옵션을 실습 합니다. 아울러 ConfigureMap, PersistentVolume, Mirroring 등 다양한 k8s Object를 검증합니다.
+- ### DIAMANTI 시스템 운영을 위한 초/중급 Kubernetes 실습 과정
+- ### POD 생성, 스토리지 및 네트워크 연결
+- ### Service, ConfigureMap, PersistentVolume, Mirroring 등 다양한 k8s Object 실습
 
 ## 자료
 
