@@ -76,4 +76,4 @@ spkr@erdia22:~/02.k8s_code/13.ConfigMap$ curl 10.10.100.27|grep class
           <button id="b" type="submit" name="vote" class="b" value="b">Mastercard</button>
 ```
 
-![VOTE 화면](https://app.box.com/s/cx14wx74iwr45yxshafp9987w9gvq44c)
+![ScreenShot 화면](./vote-cm.png)
