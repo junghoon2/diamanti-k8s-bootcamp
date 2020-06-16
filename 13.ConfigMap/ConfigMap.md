@@ -80,9 +80,9 @@ ScreenShot 화면
 ![ScreenShot 화면](./vote-cm.png)
 
 ### ConfigMap 수정
-ConfigMap 수정은 1) YAML 또는 2) kubectl edit 명령어로 가능
-아래는 kubectl edit 명령어 예제(vi editor와 동일)
+- ConfigMap 수정은 1) YAML 또는 2) kubectl edit 명령어로 가능
 
+  아래는 kubectl edit 명령어 예제(vi editor와 동일)
 
 ```
 spkr@erdia22:~/02.k8s_code/13.ConfigMap$ kc edit cm vote
@@ -123,7 +123,7 @@ Events:  <none>
 ```
 
 ### 변경된 ConfigMap POD 적용
-ConfigMap 적용을 위해서는 POD Restart 필요
+- ConfigMap 적용을 위해서는 POD Restart 필요
 
 ```
 spkr@erdia22:~/02.k8s_code/13.ConfigMap$ kc delete pod vote-588576fc88-gzwrm
@@ -135,6 +135,6 @@ simple-webapp-color     1/1     Running   0          40m
 vote-588576fc88-z5f65   1/1     Running   0          34s
 ```
 
-ConfigMap 변경된 스크린샷
+변경된 ConfigMap 적용 스크린샷
 
 ![스크린 샷](./vote-cm-2.png)
