@@ -1,7 +1,7 @@
 ## 서버(Node) Down Test
-**Kubernetes 클러스터는 Node Down 시 다른 Node에서 해당 Application(POD)를 자동 재기동하여 전체 Application 갯수를 항상 선언된 상태로 유지함**
+### Kubernetes 클러스터는 Node Down 시 다른 Node에서 해당 Application(POD)를 자동 재기동하여 전체 Application 갯수를 항상 선언된 상태로 유지함
 
-**POD 상태 확인**
+### POD 상태 확인
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get pod -o wide
 NAME                       READY   STATUS    RESTARTS   AGE     IP             NODE    NOMINATED NODE   READINESS GATES
@@ -10,7 +10,7 @@ nginx01-6bdf767788-shs7g   1/1     Running   0          34m     10.10.100.13   d
 nginx01-6bdf767788-sw2jg   1/1     Running   0          19m     10.10.100.35   dia03   <none>           <none>
 ```
 
-**2번 Node(dia02) Down**
+### 2번 Node(dia02) Down
 
 drain 명령어 이용
 ```
@@ -53,7 +53,7 @@ pod/tiller-deploy-5668df8bc4-2m4pz evicted
 node/dia02 evicted
 ```
 
-**2번 Node(dia02) 실행 중 Application 4번 Node(dia04) 자동 재기동 됨**
+### 2번 Node(dia02) 실행 중 Application 4번 Node(dia04) 자동 재기동 됨
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get pod -o wide
 NAME                       READY   STATUS    RESTARTS   AGE   IP             NODE    NOMINATED NODE   READINESS GATES
@@ -82,7 +82,7 @@ dia03   Ready    <none>   20d   v1.15.10
 dia04   Ready    <none>   20d   v1.15.10
 ```
 
-**Application Deploy 시 해당 노드(dia02)로 Application 정상 배포됨**
+### Application Deploy 시 해당 노드(dia02)로 Application 정상 배포됨
 
 POD 20개 배표
 ```
@@ -102,4 +102,4 @@ spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get pod -o wide|grep dia04|wc -l
 5
 ```
 
-**Node 제거 후 다시 추가하면 정상적으로 개별 노드에 균등하게 POD 배분**
+### Node 제거 후 다시 추가하면 정상적으로 개별 노드에 균등하게 POD 배분
