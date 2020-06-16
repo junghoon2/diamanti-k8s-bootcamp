@@ -1,9 +1,4 @@
 # Kubernetes/DIAMANTI Bootcamp
----------
-
-| Duration       | 4H 5days     |
-| Level     | 초급 / 중급 |
-| Modules          | 10 |
 
 ## 목적
 
