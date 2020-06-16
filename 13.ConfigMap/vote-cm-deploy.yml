@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote
+  labels:
+    app: vote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vote  # POD label과 일치
+  template:    
+    metadata:
+      labels:
+        app: vote # Selector label과 일치
+    spec:
+      containers:
+      - image: schoolofdevops/vote
+        imagePullPolicy: Always
+        name: vote
+        envFrom:
+          - configMapRef:
+              name: vote
+        ports:
+        - containerPort: 80
+          protocol: TCP
