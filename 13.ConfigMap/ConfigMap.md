@@ -42,7 +42,7 @@ Events:  <none>
 ```
 
 ### POD ConfigMap 사용 
-- envFrom, configMapRef 으로 생성한 configMap 이름 지정 
+- YAML 파일에 envFrom, configMapRef 추가하고 configMap 이름 지정 
 
 소스 코드 : [Vote-CM-Deploy](./vote-cm-deploy.yml)
 ```
@@ -75,5 +75,6 @@ spkr@erdia22:~/02.k8s_code/13.ConfigMap$ curl 10.10.100.27|grep class
           <button id="a" type="submit" name="vote" class="a" value="a">Visa</button>
           <button id="b" type="submit" name="vote" class="b" value="b">Mastercard</button>
 ```
+ScreenShot 화면
 
 ![ScreenShot 화면](./vote-cm.png)
