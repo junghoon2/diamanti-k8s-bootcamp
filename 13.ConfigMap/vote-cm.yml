@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vote
+data:
+  OPTION_A: Visa
+  OPTION_B: Mastercard
