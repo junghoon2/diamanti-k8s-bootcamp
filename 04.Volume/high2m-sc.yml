@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: high2m
+parameters:
+  fsType: xfs
+  mirrorCount: "2"
+  perfTier: high
+provisioner: dcx.csi.diamanti.com
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
