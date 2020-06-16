@@ -27,4 +27,4 @@ spec:
       volumes:
       - name: date-pvc
         persistentVolumeClaim:
-          claimName: perf-pvc
+          claimName: perf-pvc  ## PVC 이름 지정
