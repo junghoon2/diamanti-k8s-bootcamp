@@ -1,10 +1,10 @@
 # DIAMANTI Kubernetes Volume
-- ### NVMe Disk를 Diamanti Storage 사용
-- ### 자체 CSI(Container Storage Interface) 드라이버 제공
+- ### NVMe Disk Kubernetes Volume 사용
+- ### Diamanti 자체 CSI(Container Storage Interface) 드라이버 제공
 
 ### Storage Class 
 
-소스 코드 : [StorageClass](04.Volume/high2m-sc.yml)
+소스 코드 : [StorageClass](./high2m-sc.yml)
 ```
 vi high2m-sc.yml
 
@@ -14,12 +14,12 @@ metadata:
   name: high2m
 parameters:
   fsType: xfs  ## ext4 등 FileType 선택 가능 
-  mirrorCount: "2"  ## Volume mirror 1 or 2 or 3 copy(최대 3) 설정 가능 
+  mirrorCount: "2"  ## Volume Mirror 설정, 1/2/3 copy(최대 3) 설정 가능 
   perfTier: high  
 provisioner: dcx.csi.diamanti.com  # Diamanti 자체 CSI 제공 
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
-allowVolumeExpansion: true  ## Volume 용량 확장 가능
+allowVolumeExpansion: true  ## Volume 생성 후 용량 확장 가능
 ```
 
 Storage Class 생성(sc for StorageClass)
@@ -48,7 +48,7 @@ Events:                <none>
 
 ### PVC(Persistent Volume Claim)
 
-소스 코드 [PVC](04.Volume/high2m-pvc.yml)
+소스 코드 [PVC](./high2m-pvc.yml)
 ```
 vi high2m-pvc.yml
 
@@ -62,8 +62,8 @@ spec:
   - ReadWriteOnce  ## block accessmode 지정 
   resources:
     requests:
-      storage: 10Gi
-  storageClassName: "high2m"  ## SC 지정
+      storage: 10Gi  ## 용량 지정 
+  storageClassName: "high2m"  ## SC 이름 지정
 ```
 
 PVC 생성 
@@ -77,7 +77,7 @@ perf-pvc                      Bound    pvc-e0d2afc4-0ed6-470f-9461-a1354c4edddf 
 ```
 
 ### POD 볼륨 할당(PVC 이용)
-소스 코드 [Deploy](04.Volume/date-pvc-deploy.yml)
+소스 코드 [Deploy](./date-pvc-deploy.yml)
 
 ```
 vi date-pvc-deploy.yml
@@ -114,7 +114,7 @@ spec:
           claimName: perf-pvc  ## PVC 이름 지정
 ```
 
-Deploy  w/ Volume 생성
+볼륨 설정이 포함된 POD Deploy 
 ```
 kc apply -f date-pvc-deploy.yml
 
@@ -124,7 +124,7 @@ centos7                              1/1     Running   0          23h
 date-mirror-deploy-d9c75d75d-9bg8c   1/1     Running   0          5s
 ```
 
-POD Volume 확인
+POD 내 Volume 확인
 . /data Mount Point로 NVMe volume 마운트 확인 가능
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc exec -it date-mirror-deploy-d9c75d75d-9bg8c -- bash
@@ -145,7 +145,7 @@ tmpfs                             tmpfs     63G     0   63G   0% /sys/firmware
 ```
 
 정상적으로 File Write 가능 
-````
+```
 [root@date-mirror-deploy-d9c75d75d-9bg8c /]# cat /data/pod-out.txt
 Tue Jun 16 02:01:14 UTC 2020
 Tue Jun 16 02:01:24 UTC 2020
@@ -181,4 +181,4 @@ Plexes:
           pvc-e0d2afc4-0ed6-470f-9461-a1354c4edddf.p1   dia01     Up        InUse
 ```
 
-[관련 정보 Diamanti Stoage](https://blog.naver.com/hoon295/221974330548)
+관련 정보: [Diamanti Stoage 할당](https://blog.naver.com/hoon295/221974330548)
