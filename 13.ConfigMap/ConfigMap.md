@@ -143,8 +143,6 @@ vote-588576fc88-z5f65   1/1     Running   0          34s
 POD 접속 후 환경 변수 정보로 확인도 가능
 ```
 spkr@erdia22:~/02.k8s_code/13.ConfigMap$ kc exec -it vote-588576fc88-z5f65 -- sh
-/app # echo $OPTIONS_A
-
 /app # echo $OPTION_A
 Samsung
 /app # echo $OPTION_B
