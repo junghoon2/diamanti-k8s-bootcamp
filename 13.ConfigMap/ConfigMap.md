@@ -78,3 +78,60 @@ spkr@erdia22:~/02.k8s_code/13.ConfigMap$ curl 10.10.100.27|grep class
 ScreenShot 화면
 
 ![ScreenShot 화면](./vote-cm.png)
+
+### ConfigMap 수정
+
+```
+spkr@erdia22:~/02.k8s_code/13.ConfigMap$ kc edit cm vote
+configmap/vote edited
+
+apiVersion: v1
+data:
+  OPTION_A: Samsung  # VISA to Samsung
+  OPTION_B: Apple  # MASTERCARD to Apple
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"OPTION_A":"Visa","OPTION_B":"Mastercard"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"vote","namespace":"default"}}
+  creationTimestamp: "2020-06-16T04:32:51Z"
+  name: vote
+  namespace: default
+  resourceVersion: "4913411"
+  selfLink: /api/v1/namespaces/default/configmaps/vote
+  uid: 17df2381-ecad-48f9-854a-57195cbb4ede
+  
+spkr@erdia22:~/02.k8s_code/13.ConfigMap$ kc describe cm vote
+Name:         vote
+Namespace:    default
+Labels:       <none>
+Annotations:  kubectl.kubernetes.io/last-applied-configuration:
+                {"apiVersion":"v1","data":{"OPTION_A":"Visa","OPTION_B":"Mastercard"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"vote","names...
+
+Data
+====
+OPTION_A:
+----
+Samsung
+OPTION_B:
+----
+Apple
+Events:  <none>
+```
+
+### 변경된 ConfigMap POD 적용
+ConfigMap 적용을 위해서는 POD Restart 필요
+
+```
+spkr@erdia22:~/02.k8s_code/13.ConfigMap$ kc delete pod vote-588576fc88-gzwrm
+pod "vote-588576fc88-gzwrm" deleted
+
+spkr@erdia22:~/02.k8s_code/13.ConfigMap$ kc get pod
+NAME                    READY   STATUS    RESTARTS   AGE
+simple-webapp-color     1/1     Running   0          40m
+vote-588576fc88-z5f65   1/1     Running   0          34s
+```
+
+ConfigMap 변경된 스크린샷
+
+![스크린 샷](./
