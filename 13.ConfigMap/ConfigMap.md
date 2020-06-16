@@ -1,9 +1,10 @@
 # Kubernetes ConfigMap
 
-- ### Kubernetes는 MySQL Port, 사용자 정보 등 Application Configuration 관련 정보를 별도의 ConfigMap Object로 관리
+- ### Kubernetes는 MySQL Port, 변수 등의 Application Configuration 관련 정보를 별도의 ConfigMap Object로 관리 가능 
 
 ### ConfigMap 예제
-- configmap 생성 
+- configmap 생성
+
 소스 코드 : [ConfigMap](./vote-cm.yml)
 
 ```
@@ -42,7 +43,7 @@ Events:  <none>
 ```
 
 ### POD ConfigMap 사용 
-- YAML 파일에 envFrom, configMapRef 추가하고 configMap 이름 지정 
+- YAML 파일 envFrom, configMapRef 추가 후 configMap 이름 지정 
 
 소스 코드 : [Vote-CM-Deploy](./vote-cm-deploy.yml)
 ```
@@ -138,3 +139,14 @@ vote-588576fc88-z5f65   1/1     Running   0          34s
 변경된 ConfigMap 적용 스크린샷
 
 ![스크린 샷](./vote-cm-2.png)
+
+POD 접속 후 환경 변수 정보로 확인도 가능
+```
+spkr@erdia22:~/02.k8s_code/13.ConfigMap$ kc exec -it vote-588576fc88-z5f65 -- sh
+/app # echo $OPTIONS_A
+
+/app # echo $OPTION_A
+Samsung
+/app # echo $OPTION_B
+Apple
+```
