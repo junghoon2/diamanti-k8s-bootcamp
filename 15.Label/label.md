@@ -68,3 +68,11 @@ spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/15.Label$ kc get deployments. nginx-
 NAME               READY   UP-TO-DATE   AVAILABLE   AGE   LABELS
 nginx-deployment   1/1     1            1           15m   app=web
 ```
+
+동일하게 Node 등 다른 Kubernetes Object Label 정보도 동일 명령어로 확인 가능
+- 향후 Node Affinity Scheduling에 사용
+```
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/15.Label$ kc get nodes dia01 --show-labels
+NAME    STATUS   ROLES    AGE   VERSION    LABELS
+dia01   Ready    <none>   26d   v1.15.10   beta.diamanti.com/runc=true,beta.diamanti.com/runtime-engine=docker,beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=dia01,kubernetes.io/os=linux
+```
