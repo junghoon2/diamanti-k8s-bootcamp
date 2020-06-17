@@ -1,5 +1,6 @@
 # Kubernetes Namespace
-- ### Kubernetes 내부 논리적인 분리 단위. 논리적인 분리 단위로 서로 다른 Namespace 간 통신 가능
+- ### Kubernetes 내부 논리적인 분리 단위 
+- ### 논리적인 분리로 서로 다른 Namespace 간 통신 가능
 - ### Diamanti는 Namespace 조회/변경을 위한 별도 명령어 Set 제공(dctl namespace ~) 
 
 ### Namespace 생성 및 조회
