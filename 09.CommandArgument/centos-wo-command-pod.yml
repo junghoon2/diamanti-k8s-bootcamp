@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+  name: centos7-wo-command
+  labels:
+    run: centos7
+spec:
+  containers:
+  - name: centos7
+    image: centos:7
