@@ -1,8 +1,8 @@
 # Kubernetes Namespace
-- ### Kubernetes 내부 논리적인 분리 단위. 논리적인 분리로 서로 다른 Namespace 간 통신은 가능
+- ### Kubernetes 내부 논리적인 분리 단위. 논리적인 분리 단위로 서로 다른 Namespace 간 통신 가능
 - ### Diamanti는 Namespace 조회/변경을 위한 별도 명령어 Set 제공(dctl namespace ~) 
 
-### Namespace 조회 및 생성
+### Namespace 생성 및 조회
 
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ kc create namespace prod-team1
@@ -30,7 +30,7 @@ spkr@erdia22:~/02.k8s_code/01.POD$ dctl namespace get
 Namespace:                prod-team1
 ```
 
-명령어 옵션 조회
+- 명령어 전체 옵션 조회
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ dctl namespace
 NAME:
@@ -48,10 +48,8 @@ OPTIONS:
    --help, -h  show help
 ```
 
-### 타 Namespace Object 조회 
-- -n(or --namespace) 옵션 사용 
-  kube-system Namesystem POD 및 서비스 정보 조회  
-  
+### 다른 Namespace Object 조회 
+- -n(or --namespace) 옵션 사용   
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ kc get pod -n kube-system
 NAME                                 READY   STATUS    RESTARTS   AGE
@@ -72,4 +70,35 @@ novnc            ClusterIP   None         <none>        80/TCP          26d
 tiller-deploy    ClusterIP   None         <none>        44134/TCP       26d
 ```
 
-### 현재 Namespace 내 Deploy(다른 Object 공통) 생성 또는 특정 Namespace 지정 
+### 현재 Namespace 내 POD(다른 Object 공통) 생성 또는 특정 Namespace 지정 
+- YAML 파일 namespace 옵션 지정하지 않으면 현재 namespace 내 POD 생성
+  namespace 옵션을 지정하면 해당 namespace로 POD 생성
+
+소스 코드 : [Without Namespace POD](./nginx-wo-ns-pod.yml)
+소스 코드 : [With Namespace POD](./nginx-ns-pod.yml)
+
+```
+vi nginx-ns-pod.yml
+
+(...)
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+  name: nginx
+  namespace: test  # 원하는 Namespace 지정 
+(...)
+
+spkr@erdia22:~/02.k8s_code/01.POD$ kc apply -f nginx-ns-pod.yml
+pod/nginx created
+
+spkr@erdia22:~/02.k8s_code/01.POD$ kc apply -f nginx-wo-ns-pod.yml
+pod/nginx created
+
+spkr@erdia22:~/02.k8s_code/01.POD$ kc get pod
+NAME    READY   STATUS              RESTARTS   AGE
+nginx   0/1     ContainerCreating   0          2s
+
+spkr@erdia22:~/02.k8s_code/01.POD$ kc get pod -n test
+NAME             READY   STATUS    RESTARTS   AGE
+nginx            1/1     Running   0          34s
+```
