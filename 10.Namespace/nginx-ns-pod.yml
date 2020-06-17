@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+  name: nginx
+  namespace: prod-team1
+  labels:
+    app: web
+spec:
+  containers:
+  - name: nginx
+    image: nginx
