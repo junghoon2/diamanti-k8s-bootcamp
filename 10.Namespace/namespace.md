@@ -31,7 +31,7 @@ spkr@erdia22:~/02.k8s_code/01.POD$ dctl namespace get
 Namespace:                prod-team1
 ```
 
-- 명령어 전체 옵션 조회
+- 명령어 전체 옵션
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ dctl namespace
 NAME:
