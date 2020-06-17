@@ -1,14 +1,15 @@
 # DIAMANTI Software Architecture
-- ### Kubernetes Cluster는 Master Node는 ETCD, apiserver, controller manager, scheduler 실행 중
-- ### Worker Node는 kubelet, kube-proxy, Container Runtime Engine 실행 중
-- ### Diamanti는 추가로 Master Node Armada, Convoy / Worker Node Bosun 실행 중
-- ### Diamanti는 위 서비스가 System Daemon(systemctl) 형태로 실행 중
+- ### Kubernetes Cluster Master Node는 apiserver, controller manager, scheduler, etcd 실행
+- ### Worker Node는 kubelet, kube-proxy, Container Runtime Engine(docker) 실행
+
+- ### Diamanti는 추가로 Master Node Armada, Bosun, Convoy / Worker Node Armada, Bosun 실행
+- ### Diamanti는 위 서비스가 Systemd Daemon(systemctl) 형태로 실행
 
 Kubernetes Architecture
 ![kubernetes architecture](./200617k8sArch.png)
 
-Master 서버 확인 방법
-- Cluster Status의 Server Role로 확인 가능 
+Master Role 서버 확인
+- Cluster Status의 Server Role로 항목 
 ```
 [diamanti@dia01 ~]$ dctl cluster status
 Name            : spkcluster
