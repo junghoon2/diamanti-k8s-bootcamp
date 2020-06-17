@@ -1,11 +1,12 @@
 # Kubernetes Label
 
-- ### Label(상표), Kubernetes에서 서로 다른 Object가 서로 선택 또는 구분 할 수 있도록 Namingg하는 방법
-- ### 예를 들어 Service가 POD 선택 시 Label 이용
+- ### Kubernetes에서 서로 다른 Object가 서로 선택 또는 구분 할 수 있도록 Naming하는 방법 (Label, 상표)
+  ### 예를 들어 Service에서 POD를 선택하는 경우 Label 정보를 이용
 
-소스 코드 : [Deploy Label](15.Label/nginxhello-deploy.yml)
 
-소스 코드 : [Service Label](./headless-svc.yml)
+소스 코드 : [Deploy YAML](15.Label/nginxhello-deploy.yml)
+
+소스 코드 : [Service YAML](./headless-svc.yml)
 
 ```
 vi headless-svc.yml
@@ -30,7 +31,7 @@ deployment.apps/nginx-deployment created
 
 ```
 Service Selector에서 지정한 label(app: web)과 Deployment의 label 정보(app: web)가 일치하므로 Service와 Deployment 연결됨 
-- POD IP(10.10.100.37)가 Service Endpoints로 등록됨 
+- POD IP 10.10.100.37 Service Endpoints로 등록됨 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/15.Label$ kc get pod -o wide
 NAME                                READY   STATUS        RESTARTS   AGE   IP             NODE    NOMINATED NODE   READINESS GATES
@@ -57,7 +58,12 @@ Object 별 label 정보는 --show-labels 옵션으로 확인 가능
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/15.Label$ kc get pod nginx-deployment-6c55bc594b-bql2r --show-labels
 NAME                                READY   STATUS    RESTARTS   AGE   LABELS
 nginx-deployment-6c55bc594b-bql2r   1/1     Running   0          13m   app=web,pod-template-hash=6c55bc594b
+
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/15.Label$ kc get svc web-svc --show-labels
 NAME      TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE    LABELS
 web-svc   ClusterIP   None         <none>        80/TCP    2d3h   <none>
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/15.Label$ kc get deployments. nginx-deployment --show-labels
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE   LABELS
+nginx-deployment   1/1     1            1           15m   app=web
 ```
