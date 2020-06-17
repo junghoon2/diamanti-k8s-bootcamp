@@ -3,6 +3,8 @@
 - ### Kubernetes에서 서로 다른 Object가 서로 선택 또는 구분 할 수 있도록 Naming하는 방법 (Label, 상표)
   ### 예를 들어 Service에서 POD를 선택하는 경우 Label 정보를 이용
 
+Kubernetes Label
+![Label](./200617k8sLabel.png)
 
 소스 코드 : [Deploy YAML](15.Label/nginxhello-deploy.yml)
 
