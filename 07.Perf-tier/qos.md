@@ -65,4 +65,4 @@ POD IOPS/Bandwidth 조회
 
 High Perf Tier POD에 대하여 IOPS 20K 이상, Bandwidth 500M 이상, Medium POD에 대하여 IOPS 5k, Bandwidth 125M 이상 성능 보장됨
 
-[관련 자료](https://blog.naver.com/hoon295/221971859515)
+[Performance Tier 관련 블로그 자료](https://blog.naver.com/hoon295/221971859515)
