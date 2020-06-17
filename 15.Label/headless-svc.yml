@@ -10,6 +10,5 @@ spec:
     port: 80
     protocol: TCP
     targetPort: 80
-    sessionAffinity: None
   selector:  # 선택해야 할 POD 선택
     app: web  # POD Label 과 동일
