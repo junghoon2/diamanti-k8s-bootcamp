@@ -4,7 +4,7 @@ metadata:
   annotations:
     diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
   name: nginx
-  namespace: test
+  namespace: test  # 원하는 Namespace 지정 
   labels:
     app: web
 spec:
