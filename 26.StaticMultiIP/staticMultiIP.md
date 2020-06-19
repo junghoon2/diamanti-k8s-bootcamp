@@ -52,9 +52,11 @@ spec:
     image: nginx
 ```
 
-IP 확인
+POD 생성 후 IP 확인
 - POD IP(10.10.120.91) & Endpoint ep1 IP 동일 
 ```
+kc apply -f nginx-endpoint-pod.yml
+
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ kc get pod -o wide
 NAME                                READY   STATUS        RESTARTS   AGE     IP             NODE    NOMINATED NODE   READINESS GATES
 centos7                             1/1     Running       0          79m     10.10.100.39   dia02   <none>           <none>
@@ -78,7 +80,7 @@ metadata:
 ```
 
 POD 생성 후 IP 확인 
-- 2개의 NIC 생성(eth0, eth1)
+- 2개 NIC 생성(eth0, eth1)
 
 ```
 kc apply -f busybox-multiIP-pod.yml
@@ -109,7 +111,7 @@ spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ kc exec -it busybo
 - Management NIC(mgmt) 와 Data NIC(eth0, eth1) 분리 
 
 
-2개의 IP 모두 Ping 가능
+2개 IP 모두 Ping 가능
 ```
 spkr@erdia22:~$ ping 10.10.120.11
 PING 10.10.120.11 (10.10.120.11) 56(84) bytes of data.
