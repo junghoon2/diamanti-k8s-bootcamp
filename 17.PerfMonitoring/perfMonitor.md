@@ -1,10 +1,10 @@
 # Kubernetes Performance Monitoring
 
-- ### Kubernetes 성능 모니터링(cpu, memory, IOPS 등)을 위하여 별도의 Component 설치 필요
+- ### Kubernetes는 성능 모니터링(cpu, memory, IOPS 등)을 위하여 기본 Package 이 외 별도 Component 설치 필요
 - ### Diamanti는 성능 모니터링에 필요한 Metrics, Prometheus, Admin Page 등을 기본 제공함
 - ### 성능 확인은 Admin GUI Page 또는 kubectl top {node/pod} 명령어로 확인 가능 
 
-### Metrics Server 
+### Metrics Server POD
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp$ kc get pod -n kube-system
 NAME                                 READY   STATUS    RESTARTS   AGE
@@ -66,12 +66,12 @@ spec:
       claimName: perf-pvc
 ```
 
-### 부하 생성 툴 fio 설치
+### 부하 생성 툴 fio 설치(yum)
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/17.PerfMonitoring$ kc exec -it centos7 -- bash
 [root@centos7 /]# yum -y install fio
 Loaded plugins: fastestmirror, ovl
-(... 생략...)
+(...)
 ```
 
 ### FIO 설정 파일
@@ -113,13 +113,16 @@ read: Laying out IO file (1 file / 5120MiB)
 read: (groupid=0, jobs=16): err= 0: pid=153: Fri Jun 19 04:27:42 2020
    read: IOPS=519k, BW=2029MiB/s (2127MB/s)(119GiB/60001msec)
     slat (usec): min=2, max=13429, avg=28.83, stdev=64.04
+(...)
 ```
 - READ IOPS 519K 
 
 ### Admin GUI Page 성능 확인 
 
-개별 POD 성능 확인
+개별 POD 별 성능
 ![POD 별 성능 확인](./200619admin-perfPage.png)
 
-그래프 형태 성능 확인 
+CPU, Memory, Disk 용량 사용량, IOPS(Read/Write), Latency(Read/Write), Bandwidth(Rx/Tx) 등 상세 정보 확인 가능 
+
+시계열 성능 그래프
 ![성능 그래프 확인](./200619admin-perfGraph.png)
