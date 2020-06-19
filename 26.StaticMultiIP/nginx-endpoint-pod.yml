@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"endpointId":"ep1","perfTier":"high"}'
+  name: nginx
+spec:
+  containers:
+  - name: nginx-pod
+    image: nginx

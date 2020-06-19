@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"web","perfTier":"high"}'
+    diamanti.com/endpoint1: '{"network":"blue","perfTier":"high"}'
+  name: busybox-multi-ip
+spec:
+  containers:
+  - name: busybox-pod
+    image: busybox
+    command:
+    - "/bin/sh"
+    - "-c"
+    - "sleep inf"
