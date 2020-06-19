@@ -1,3 +1,15 @@
+# POD 특정 IP & 복수 NIC 할당하기
+- ### Diamanti는 자체 CNI 기능으로 POD 별 특정 IP 또는 복수의 NIC 할당이 가능
+
+### 특정 IP(endpoint) 생성
+- ep1 이름으로 생성
+```
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ dctl network list
+NAME             TYPE      START ADDRESS   TOTAL     USED      GATEWAY       VLAN      NETWORK-GROUP   ZONE
+blue (default)   public    10.10.100.11    90        23        10.10.100.1   100
+ingress          public    10.10.110.190   11        2         10.10.110.1   110
+web              public    10.10.120.11    90        1         10.10.120.1   120
+
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp$ dctl endpoint create --help
 NAME:
    dctl endpoint create - Create an endpoint
@@ -19,9 +31,14 @@ NAME      NAMESPACE   CONTAINER   NETWORK   IP                MAC       GATEWAY 
 ep1       default                 web       10.10.120.91/24             10.10.120.1   120                                     <none>
 ```
 
-### POD IP 지정
+### POD IP 할당
 
+소스 코드 : [Nginx Endpoint POD](./nginx-endpoint-pod.yml)
+
+- annotations, endpointId 지정
 ```
+vi nginx-endpoint-pod.yml
+
 apiVersion: v1
 kind: Pod
 metadata:
@@ -32,3 +49,59 @@ spec:
   containers:
   - name: nginx-pod
     image: nginx
+```
+
+IP 확인
+- 생성한 10.10.120.91 IP로 POD 생성 
+```
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ kc get pod -o wide
+NAME                                READY   STATUS        RESTARTS   AGE     IP             NODE    NOMINATED NODE   READINESS GATES
+centos7                             1/1     Running       0          79m     10.10.100.39   dia02   <none>           <none>
+nginx                               1/1     Running       0          22s     10.10.120.91   dia02   <none>           <none>
+```
+
+### 복수 IP 할당
+
+소스 코드 : [Busybox Multi IP POD](./busybox-multiIP-pod.yml)
+
+- endpoint0, endpoint1 지정
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"web","perfTier":"high"}'
+    diamanti.com/endpoint1: '{"network":"blue","perfTier":"high"}'
+  name: busybox-multi-ip
+(...)
+```
+
+POD 생성 후 IP 확인 
+- 2개의 NIC 생성(eth0, eth1) 
+
+```
+kc apply -f busybox-multiIP-pod.yml
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ kc exec -it busybox-multi-ip -- sh
+/ # ip a show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+3: mgmt0@if221: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue
+    link/ether f6:52:23:e6:4d:bf brd ff:ff:ff:ff:ff:ff
+    inet 172.20.0.141/24 scope global mgmt0
+       valid_lft forever preferred_lft forever
+4: eth0@enp129s2f2d2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1496 qdisc noqueue qlen 1000
+    link/ether 8e:a2:00:61:a0:22 brd ff:ff:ff:ff:ff:ff
+    inet 10.10.120.11/24 scope global eth0
+       valid_lft forever preferred_lft forever
+5: eth1@enp129s4f1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1496 qdisc noqueue qlen 1000
+    link/ether 8e:a2:00:61:a0:16 brd ff:ff:ff:ff:ff:ff
+    inet 10.10.100.14/24 scope global eth1
+       valid_lft forever preferred_lft forever
+33: enp129s4f1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq qlen 1000
+    link/ether 8e:a2:00:61:a0:16 brd ff:ff:ff:ff:ff:ff
+50: enp129s2f2d2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq qlen 1000
+    link/ether 8e:a2:00:61:a0:22 brd ff:ff:ff:ff:ff:ff
+```
