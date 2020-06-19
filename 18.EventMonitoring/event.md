@@ -68,8 +68,7 @@ FIRST-SEEN   LAST-SEEN   COUNT     SEVERITY   NAMESPACE   NAME      UUID      KI
 ```
 
 Event 설정
-- SNMP 서버 통하여 Event 메시지 전달 가능
-- 보관 주기 설정 가능
+- SNMP 서버 및 보관 주기 설정 가능
 
 ```
 spkr@erdia22:~$ dctl event configure
