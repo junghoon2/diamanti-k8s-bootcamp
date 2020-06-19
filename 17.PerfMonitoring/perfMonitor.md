@@ -122,7 +122,7 @@ read: (groupid=0, jobs=16): err= 0: pid=153: Fri Jun 19 04:27:42 2020
 개별 POD 별 성능
 ![POD 별 성능 확인](./200619admin-perfPage.png)
 
-CPU, Memory, Disk 용량 사용량, IOPS(Read/Write), Latency(Read/Write), Bandwidth(Rx/Tx) 등 상세 정보 확인 가능 
+- CPU, Memory, Disk 용량 사용량, IOPS(Read/Write), Latency(Read/Write), Bandwidth(Rx/Tx) 등 상세 정보 확인 가능 
 
 시계열 성능 그래프
 ![성능 그래프 확인](./200619admin-perfGraph.png)
