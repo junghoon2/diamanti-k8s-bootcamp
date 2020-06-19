@@ -126,3 +126,32 @@ CPU, Memory, Disk 용량 사용량, IOPS(Read/Write), Latency(Read/Write), Bandw
 
 시계열 성능 그래프
 ![성능 그래프 확인](./200619admin-perfGraph.png)
+
+
+### kubectl top 
+
+전체 혹은 개별 단위 POD, Node 단위 CPU, Memory 성능 조회
+
+```
+spkr@erdia22:/mnt/c/Users/erdia$ kc top pod centos7
+NAME      CPU(cores)   MEMORY(bytes)
+centos7   8810m        77Mi
+
+spkr@erdia22:/mnt/c/Users/erdia$ kc top pod
+NAME                                CPU(cores)   MEMORY(bytes)
+centos7                             8810m        77Mi
+nginx-deployment-6c9b7977db-5grpk   0m           1Mi
+nginx-deployment-6c9b7977db-6bhdm   0m           1Mi
+nginx-deployment-6c9b7977db-f64vt   0m           1Mi
+nginx-deployment-6c9b7977db-sks4x   0m           1Mi
+web-server-846dbbd6dd-dk94r         0m           22Mi
+web-server-846dbbd6dd-vpwnq         0m           22Mi
+web-server-846dbbd6dd-xl2z7         0m           21Mi
+
+spkr@erdia22:/mnt/c/Users/erdia$ kc top node
+NAME    CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+dia01   2649m        6%     19644Mi         15%
+dia02   582m         1%     11167Mi         8%
+dia03   540m         1%     12257Mi         9%
+dia04   458m         1%     9833Mi          7%```
+```
