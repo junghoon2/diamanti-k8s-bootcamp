@@ -105,3 +105,24 @@ spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ kc exec -it busybo
 50: enp129s2f2d2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq qlen 1000
     link/ether 8e:a2:00:61:a0:22 brd ff:ff:ff:ff:ff:ff
 ```
+
+2개의 IP 모두 Ping 가능
+```
+spkr@erdia22:~$ ping 10.10.120.11
+PING 10.10.120.11 (10.10.120.11) 56(84) bytes of data.
+64 bytes from 10.10.120.11: icmp_seq=1 ttl=63 time=4.78 ms
+64 bytes from 10.10.120.11: icmp_seq=2 ttl=63 time=4.45 ms
+^C
+--- 10.10.120.11 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 4.451/4.618/4.786/0.180 ms
+spkr@erdia22:~$ ping 10.10.100.14
+PING 10.10.100.14 (10.10.100.14) 56(84) bytes of data.
+64 bytes from 10.10.100.14: icmp_seq=1 ttl=63 time=4.11 ms
+64 bytes from 10.10.100.14: icmp_seq=2 ttl=63 time=4.88 ms
+64 bytes from 10.10.100.14: icmp_seq=3 ttl=63 time=4.42 ms
+^C
+--- 10.10.100.14 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2001ms
+rtt min/avg/max/mdev = 4.110/4.472/4.882/0.316 ms
+```
