@@ -1,8 +1,9 @@
 # POD 특정 IP & 복수 NIC 할당하기
-- ### Diamanti는 자체 CNI 기능으로 POD 별 특정 IP 또는 복수의 NIC 할당이 가능
+- ### Diamanti는 자체 CNI 기능으로 POD 별 특정 IP 지정 또는 복수의 NIC 할당 가능
 
-### 특정 IP(endpoint) 생성
-- ep1 이름으로 생성
+### 특정 IP를 지정하여 endpoint 생성
+- name : ep1
+- 다른 명령어와 동일하게 명령어 예시 참조
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ dctl network list
 NAME             TYPE      START ADDRESS   TOTAL     USED      GATEWAY       VLAN      NETWORK-GROUP   ZONE
@@ -35,7 +36,7 @@ ep1       default                 web       10.10.120.91/24             10.10.12
 
 소스 코드 : [Nginx Endpoint POD](./nginx-endpoint-pod.yml)
 
-- annotations, endpointId 지정
+- annotations > endpointId 지정
 ```
 vi nginx-endpoint-pod.yml
 
@@ -52,7 +53,7 @@ spec:
 ```
 
 IP 확인
-- 생성한 10.10.120.91 IP로 POD 생성 
+- POD IP(10.10.120.91) & Endpoint ep1 IP 동일 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ kc get pod -o wide
 NAME                                READY   STATUS        RESTARTS   AGE     IP             NODE    NOMINATED NODE   READINESS GATES
@@ -64,7 +65,7 @@ nginx                               1/1     Running       0          22s     10.
 
 소스 코드 : [Busybox Multi IP POD](./busybox-multiIP-pod.yml)
 
-- endpoint0, endpoint1 지정
+- annotations > endpoint0, endpoint1 지정
 ```
 apiVersion: v1
 kind: Pod
@@ -77,7 +78,7 @@ metadata:
 ```
 
 POD 생성 후 IP 확인 
-- 2개의 NIC 생성(eth0, eth1) 
+- 2개의 NIC 생성(eth0, eth1)
 
 ```
 kc apply -f busybox-multiIP-pod.yml
@@ -105,6 +106,8 @@ spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ kc exec -it busybo
 50: enp129s2f2d2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq qlen 1000
     link/ether 8e:a2:00:61:a0:22 brd ff:ff:ff:ff:ff:ff
 ```
+- Management NIC(mgmt) 와 Data NIC(eth0, eth1) 분리 
+
 
 2개의 IP 모두 Ping 가능
 ```
@@ -116,6 +119,7 @@ PING 10.10.120.11 (10.10.120.11) 56(84) bytes of data.
 --- 10.10.120.11 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1001ms
 rtt min/avg/max/mdev = 4.451/4.618/4.786/0.180 ms
+
 spkr@erdia22:~$ ping 10.10.100.14
 PING 10.10.100.14 (10.10.100.14) 56(84) bytes of data.
 64 bytes from 10.10.100.14: icmp_seq=1 ttl=63 time=4.11 ms
