@@ -1,12 +1,13 @@
 # Kubernetes Volume Mirror
 - ### Disk fault, Node fail 등의 상황에서 Volume HA 구성을 위하여 Diamanti는 Node 간 Volume 복제(mirror) 기능 지원
 - ### Diamanti는 성능 향상을 위하여 기본적으로 POD와 Volume은 같은 Node에 배치
-- ### 노드 간 Volume 복제 시 NVMe Over Ethernet Protocol을 사용하여 고성능 지원
+- ### Mirror Volume은 같은 Cluster 내 다른 Node에 배치
+- ### 노드 간 Volume 복제 시 NVMe Over Ethernet Protocol을 사용하여 빠르게 복제 
 
-### StorageClass, PVC 생성
-소스 코드 : [high2m-sc](./high2m-sc.yml) [high2m-pvc](./high2m-pvc.yml)
+## StorageClass, PVC 생성
+소스 코드 : [high2m-sc](./high2m-sc.yml) , [high2m-pvc](./high2m-pvc.yml)
 
-Storage Class 생성 시 'mirrorCount' 설정을 '2'로 구성하면 2 Copy Mirror Volume 생성 가능
+Storage Class 생성 시 'mirrorCount' 설정을 '2'로 구성하면 2 Copy Mirror Volume 생성
 
 ```
 vi high2m-sc.yml
@@ -31,7 +32,7 @@ spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/37.VolumeMirror$ kc apply -f high2m-
 persistentvolumeclaim/mirror-pvc created
 ```
 
-### POD Volume 할당
+## POD Volume 할당
 소스 코드 : [date-pvc-deploy](./date-pvc-deploy.yml)
 
 ```
@@ -48,9 +49,9 @@ vi date-pvc-deploy.yml
 
 ```
 
-Mirror Volume 확인을 위하여 매 10초 마다 'date' 명령어 결과를 '/data/pod-out.txt' 파일로 저장 
+정상적으로 Data가 Mirror 되는지 확인을 위하여 매 10초 마다 'date' 명령어 결과를 '/data/pod-out.txt' 파일로 저장 
 
-### Data 확인
+## Data 확인
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/37.VolumeMirror$ kc exec -it date-mirror-deploy-7c5f85f89d-hfrb6 -- bash
 [root@date-mirror-deploy-7c5f85f89d-hfrb6 /]# cat /data/pod-out.txt
@@ -60,7 +61,7 @@ Mon Jun 22 06:39:40 UTC 2020
 Mon Jun 22 06:39:50 UTC 2020
 ```
 
-### Volume Mirror 구성 확인
+## Volume Mirror 구성 확인
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/37.VolumeMirror$ dctl volume list
 NAME                                       SIZE       NODE            LABELS                                                              PHASE     STATUS      ATTACHED-TO   DEVICE-PATH    PARENT    AGE
@@ -92,10 +93,10 @@ Plexes:
 
 ```
 
-dia02, dia03 노드에 Volume Mirror 구성 확인
+dia02, dia03 노드로 Mirror Volume 할당
 
-### Volume Mirror 확인 Test
-dia02 노드의 POD를 Drain하여 다른 노드에서 정상적으로 Data 확인되는지 검증
+## Volume Mirror 확인 Test
+dia02 노드 drain 하여 해당 POD를 다른 노드에서 실행
 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/37.VolumeMirror$ kc get pod -o wide
@@ -132,15 +133,17 @@ pod/result-849d78dd45-p72jg evicted
 node/dia02 evicted
 ```
 
-### dia02 -> dia03 POD 실행
-dia02에서 실행 중이던 POD가 dia03로 변경
+## POD dia02 -> dia03 실행
+dia02에서 실행 중이던 POD가 dia03에서 실행 중
 ```
 spkr@erdia22:~$ kc get pod -o wide
 NAME                                  READY   STATUS    RESTARTS   AGE     IP             NODE    NOMINATED NODE   READINESS GATES
 date-mirror-deploy-7c5f85f89d-srklb   1/1     Running   0          2m50s   10.10.100.13   dia03   <none>           <none>
 ```
 
-### Data 확인
+## Data 확인
+dia03 노드로 변경 후 기존 dia02 데이터 그대로 가져오는 지 검증
+
 ```
 spkr@erdia22:~$ kc exec -it date-mirror-deploy-7c5f85f89d-srklb -- bash
 [root@date-mirror-deploy-7c5f85f89d-srklb /]# cat /data/pod-out.txt
@@ -156,3 +159,6 @@ Mon Jun 22 06:40:38 UTC 2020
 
 Mirroring 되어 기존 Data 그대로 data 유실 없이 신규 POD에서 확인 가능 
 
+참조
+
+![Diamanti Ultima](./DiamantiUltima.png)
