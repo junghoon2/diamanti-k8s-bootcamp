@@ -1,13 +1,13 @@
 # Kubernetes Volume Mirror
 - ### Disk fault, Node fail 등의 상황에서 Volume HA 구성을 위하여 Diamanti는 Node 간 Volume 복제(mirror) 기능 지원
 - ### Diamanti는 성능 향상을 위하여 기본적으로 POD와 Volume은 같은 Node에 배치
-- ### Mirror Volume은 같은 Cluster 내 다른 Node에 배치
-- ### 노드 간 Volume 복제 시 NVMe Over Ethernet Protocol을 사용하여 빠르게 복제 
+- ### Mirror Volume은 같은 Cluster 내 다른 Node로 배치
+- ### 노드 간 Volume 복제 시 NVMe Over Ethernet Protocol을 사용하여 고성능 복제 지원
 
 ## StorageClass, PVC 생성
-소스 코드 : [high2m-sc](./high2m-sc.yml) , [high2m-pvc](./high2m-pvc.yml)
+소스 코드 : [high2m-sc](./high2m-sc.yml), [high2m-pvc](./high2m-pvc.yml)
 
-Storage Class 생성 시 'mirrorCount' 설정을 '2'로 구성하면 2 Copy Mirror Volume 생성
+Storage Class 생성 시 'mirrorCount'를 '2'로 설정하면 2 Copy Mirror Volume 생성
 
 ```
 vi high2m-sc.yml
@@ -93,10 +93,10 @@ Plexes:
 
 ```
 
-dia02, dia03 노드로 Mirror Volume 할당
+Mirror Volume dia02, dia03 노드 할당
 
 ## Volume Mirror 확인 Test
-dia02 노드 drain 하여 해당 POD를 다른 노드에서 실행
+dia02 노드 drain 하여 해당 POD를 다른 노드(dia03)로 실행
 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/37.VolumeMirror$ kc get pod -o wide
@@ -142,7 +142,7 @@ date-mirror-deploy-7c5f85f89d-srklb   1/1     Running   0          2m50s   10.10
 ```
 
 ## Data 확인
-dia03 노드로 변경 후 기존 dia02 데이터 그대로 가져오는 지 검증
+dia03 노드로 변경 후 기존 dia02 노드 데이터 그대로 가져오는 지 검증
 
 ```
 spkr@erdia22:~$ kc exec -it date-mirror-deploy-7c5f85f89d-srklb -- bash
@@ -157,8 +157,8 @@ Mon Jun 22 06:40:38 UTC 2020
 (...)
 ```
 
-Mirroring 되어 기존 Data 그대로 data 유실 없이 신규 POD에서 확인 가능 
+Mirroring 되어 기존 Data 그대로 data 유실 없이 신규 노드 POD에서 확인 가능 
+
 
 참조
-
 ![Diamanti Ultima](./DiamantiUltima.png)
