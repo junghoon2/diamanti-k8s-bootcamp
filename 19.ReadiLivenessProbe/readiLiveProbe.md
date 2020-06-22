@@ -54,6 +54,7 @@ vi tcp-read-live-probe-pod.yml
 ```
 
 HTTP Request가 아닌 TCP Socket 응답으로 체크
+
 해당 Request가 정상적이지 않을 경우 외부 서비스로 부터 응답을 받지 않음 
 
 ```
@@ -65,8 +66,10 @@ Name:         goproxy
 ```
 
 Readiness Option
-POD 실행 후 5초 Delay(delay=5s), 1초 안에 응답이 없을 경우(timeout=1s) 
-10초 간격 실행(period=10s), 성공 count(1회)/실패 count(3회), 3회 실패일 경우 Failure 상태
+
+: POD 실행 후 5초 Delay(delay=5s), 1초 안에 응답이 없을 경우(timeout=1s) 
+
+: 10초 간격 실행(period=10s), 성공 count(1회)/실패 count(3회), 3회 실패일 경우 Failure 상태
 
 ### Liveness, Readiness Probe 3가지 옵션
 ![3 Types](./probe3Types.png)
