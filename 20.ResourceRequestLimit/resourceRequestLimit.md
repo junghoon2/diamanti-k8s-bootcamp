@@ -1,8 +1,7 @@
 # Kubernetes Resource Request Limit
 
 - ### 같은 Node 내 다른 POD에 성능 영향을 끼치지 않도록 개별 POD 별 cpu/memory 사용량 Limit 설정 기능(limits)
-- ### POD Scheduling 시 요청 자원량 이상의 자원이 있는 Node로 할당이 필요한 경우 사용(requests) 
-  ### 예를 들어 DB 등의 중요 Application은 항상 8CPU 이상의 Node에 할당이 필요한 경우
+- ### POD Scheduling 시 요청 자원량 이상의 자원이 있는 Node로 할당이 필요한 경우 사용(requests). 예를 들어 DB 등의 중요 Application은 항상 8CPU 이상의 여유가 있는 Node에 할당이 필요한 경우 사용
 
 
 ### CPU 단위
@@ -35,9 +34,9 @@ NAME       CPU(cores)   MEMORY(bytes)
 cpu-demo   1001m        1Mi
 ```
 
-(POD Resource 사용량 확인은 kubectl top 명령어로 확인 가능)
+(POD Resource 사용량 확인은 kubectl top 명령어로 확인)
 
-CPU 사용량은 1001m(milli core), 1 Core로 확인됨 
+CPU 사용량은 1001m(milli core), 1 Core로 Argument 2 Core 사용하지 못 함.  
 
 ### CPU Requests 설정
 소스 코드 : [cpu-stress-request-pod](./cpu-stress-request-pod.yml)
@@ -53,7 +52,7 @@ vi cpu-stress-request-pod.yml
         cpu: "100"
 ```
 
-CPU 요청 용량(requests)으로 100 CPU 이상의 Node로 할당되도록 요청.
+CPU 요청 용량(requests)으로 100 CPU 이상의 Node가 할당되도록 요청.
 
 하지만 100 CPU 이상의 Node가 없어 Scheduling 되지 않고 Pending.
 
@@ -72,9 +71,10 @@ Events:
   Warning  FailedScheduling  55s (x9 over 12m)  default-scheduler  0/4 nodes are available: 4 Insufficient cpu.
 ```
 
-describe로 상세 메시지 확인 가능 
+(describe로 상세 메시지 확인 가능) 
 
 참조
 [ITChain Wordpress](https://itchain.wordpress.com/2018/05/16/kubernetes-resource-request-limit)
+
 [Kube.io](https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource)
 
