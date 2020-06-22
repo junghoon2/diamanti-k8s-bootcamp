@@ -1,6 +1,6 @@
 # Kubernetes Volume Snapshot 
 - ### Diamanti CSI 기능으로 Snapshot 및 Volume Replication 제공 
-- ### Volume -> Snapshot -> Snapshot에서 Replication Volume 생성 순으로 진행 
+- ### Volume -> Snapshot -> PV from Snapshot 순서 
 
 ### Snapshot 검증 용 PVC, POD 생성
 
@@ -22,8 +22,8 @@ persistentvolumeclaim/mariadb-data-mariadb-test-0   Bound    pvc-a6451f03-349d-4
 persistentvolumeclaim/snap-pvc                      Bound    pvc-306931e6-2c03-4cb0-8cc5-618c2b2bef34   10Gi       RWO            high2m         11s
 ```
 
-### Volume 확인
-- 10초 간격으로 Date 로그 생성 
+### POD Volume 확인
+- Data 확인을 위하여 10초 간격으로 'date' 명령어 결과 로그 생성 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/36.SnapshotReplication$ kc exec -it date-deploy-6cd8db7b5-r52d6 -- bash
 
@@ -36,7 +36,7 @@ Mon Jun 22 02:19:57 UTC 2020
 ```
 
 ### Snapshot 생성
-- snapshot은 dctl snapshot 자체 명령어 이용
+- snapshot은 자체 'dctl snapshot' 명령어 이용
 ```
 Snapshot 생성을 위하여 PV 이름 확인
 
@@ -54,7 +54,7 @@ NAME       SIZE      NODE      LABELS    PARENT                                 
 snap-pv    10.77GB   [dia04]   <none>    pvc-306931e6-2c03-4cb0-8cc5-618c2b2bef34   Available   31s
 ```
 
-### Snapshot으로 Volume 생성
+### PV from Snapshot
 - snapshot으로 PV 생성
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/36.SnapshotReplication$ dctl volume create snap-vol --src snap-pv
@@ -90,7 +90,7 @@ spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/36.SnapshotReplication$ kc apply -f 
 pod/busybox created
 ```
 
-### Snapshot Data 확인
+### POD 내 Snapshot Volume Data 확인
 - POD 실행하여 이전 snapshot data 확인
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/36.SnapshotReplication$ kc exec -it busybox -- sh
@@ -105,5 +105,7 @@ Mon Jun 22 02:20:17 UTC 2020
 Mon Jun 22 02:20:27 UTC 2020
 Mon Jun 22 02:20:37 UTC 2020
 Mon Jun 22 02:20:47 UTC 2020
+
+정상적으로 이전 data 확인 가능
 ```
 
