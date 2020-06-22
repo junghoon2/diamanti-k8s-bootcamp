@@ -25,7 +25,7 @@ vi cpu-stress-limit-pod.yml
     - "2"
 ```
 
-Argument로 cpu 사용량을 '2' 로 설정. 하지만, limits 설정이 '1'로 되어 1이상의 cpu를 사용하지 못함.
+Argument로 cpu 사용량을 '2' 로 설정. 하지만 limits 설정이 '1'로 되어 1이상의 cpu를 사용하지 못함.
 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/20.ResourceRequestLimit$ kc apply -f cpu-stress-limit-pod.yml
@@ -35,7 +35,8 @@ NAME       CPU(cores)   MEMORY(bytes)
 cpu-demo   1001m        1Mi
 ```
 
-POD Resource 사용량 확인은 kubectl top 명령어로 확인 가능
+(POD Resource 사용량 확인은 kubectl top 명령어로 확인 가능)
+
 CPU 사용량은 1001m(milli core), 1 Core로 확인됨 
 
 ### CPU Requests 설정
@@ -53,7 +54,8 @@ vi cpu-stress-request-pod.yml
 ```
 
 CPU 요청 용량(requests)으로 100 CPU 이상의 Node로 할당되도록 요청.
-하지만 100 CPU 이상의 Node가 없어 Scheduling 되지 않고 Pending 중.
+
+하지만 100 CPU 이상의 Node가 없어 Scheduling 되지 않고 Pending.
 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/20.ResourceRequestLimit$ kc get pod
@@ -69,3 +71,10 @@ Events:
   ----     ------            ----               ----               -------
   Warning  FailedScheduling  55s (x9 over 12m)  default-scheduler  0/4 nodes are available: 4 Insufficient cpu.
 ```
+
+describe로 상세 메시지 확인 가능 
+
+참조
+[ITChain Wordpress](https://itchain.wordpress.com/2018/05/16/kubernetes-resource-request-limit)
+[Kube.io](https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource)
+
