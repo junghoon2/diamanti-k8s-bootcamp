@@ -100,6 +100,5 @@ kubectl delete -f <FILENAME>
 
 **출처**
 
-[subicura](https://github.com/subicura/workshop-k8s-basic)
-
+- [subicura Github](https://github.com/subicura/workshop-k8s-basic)
 
