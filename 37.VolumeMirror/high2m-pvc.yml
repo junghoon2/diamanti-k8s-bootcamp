@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mirror-pvc
+#  namespace: diamanti-system
+spec:
+  accessModes:
+  - ReadWriteOnce  ## block accessmode 지정 
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: "high2m"  ## SC 지정
