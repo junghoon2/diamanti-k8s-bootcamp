@@ -13,8 +13,8 @@ spec:
     readinessProbe:
       tcpSocket:
         port: 8080
-      initialDelaySeconds: 5
-      periodSeconds: 10
+      initialDelaySeconds: 5  # 최초 5초간 Delay
+      periodSeconds: 10  # Probe 체크 시간 간격 
     livenessProbe:
       tcpSocket:
         port: 8080
