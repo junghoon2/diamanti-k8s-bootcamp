@@ -4,7 +4,7 @@
 
 ### Snapshot 검증 용 PVC, POD 생성
 
-소스 코드 : [PVC](./high2m-pvc.yml), [Deploy](./date-pvc-deploy.yml)
+소스 코드 : [high2m-pvc](./high2m-pvc.yml), [date-pvc-deploy](./date-pvc-deploy.yml)
 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/36.SnapshotReplication$ kc apply -f high2m-pvc.yml
@@ -68,7 +68,7 @@ snap-vol   10.77GB   [dia04]   <none>    -         Available                    
 
 ### Snapshot PV으로 PVC 생성
 
-소스 코드 : [PVC](./snap-pv-pvc.yml)
+소스 코드 : [snap-pv-pvc](./snap-pv-pvc.yml)
 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/36.SnapshotReplication$ kc apply -f snap-pv-pvc.yml
@@ -83,7 +83,7 @@ snap-pvc02                    Bound    snap-vol                                 
 
 ### 해당 PVC를 포함하는 POD 생성
 
-소스 코드 : [POD](./busybox-pvc-pod.yml)
+소스 코드 : [busybox-pvc-pod](./busybox-pvc-pod.yml)
 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/36.SnapshotReplication$ kc apply -f busybox-pvc-pod.yml
