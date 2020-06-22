@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: date-mirror-deploy
+  name: date-deploy
   labels:
-    app: date-mirror
+    app: date
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: date-mirror
+      app: date
   template:    
     metadata:
       labels:
-        app: date-mirror
+        app: date
     spec:
       containers:
       - name: date-pod
@@ -22,9 +22,9 @@ spec:
         - "-c"
         - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
         volumeMounts:
-        - name: date-pvc
+        - name: date
           mountPath: /data
       volumes:
-      - name: date-pvc
+      - name: date
         persistentVolumeClaim:
-          claimName: perf-pvc  ## PVC 이름 지정
+          claimName: snap-pvc  ## PVC 이름 지정

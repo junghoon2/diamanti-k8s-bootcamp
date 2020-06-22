@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: perf-pvc
+  name: snap-pvc
 #  namespace: diamanti-system
 spec:
   accessModes:
