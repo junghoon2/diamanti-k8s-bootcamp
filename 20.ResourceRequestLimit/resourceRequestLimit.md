@@ -5,7 +5,7 @@
 
 
 ### CPU 단위
-쿠버네티스의 CPU 1개는 클라우드 공급자용 vCPU/Core 1개와 베어메탈 인텔 프로세서에서의 1개 하이퍼스레드에 해당
+쿠버네티스의 CPU 1개는 클라우드 공급자용 vCPU/Core 1개와 베어메탈 인텔 프로세서에서의 1개 하이퍼스레드에 해당(1,000m=1CPU)
 
 ### CPU Limits 설정
 소스 코드 : [cpu-stress-limit-pod](./cpu-stress-limit-pod.yml)
