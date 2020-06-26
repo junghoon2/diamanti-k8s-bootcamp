@@ -7,7 +7,7 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteMany
-  nfs:
-    server: 172.17.16.91
-    path: "/nfs"
+  nfs:  # nfs 지정
+    server: 172.17.16.91  # NFS IP 지정
+    path: "/nfs01"  # NFS 공유 directory 지정
   

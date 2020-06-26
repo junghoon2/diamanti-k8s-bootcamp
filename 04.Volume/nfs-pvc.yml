@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs
-  namespace: test
+  name: nfs-pvc
+  # namespace: test
 spec:
   accessModes:
     - ReadWriteMany
