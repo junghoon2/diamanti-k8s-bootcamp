@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs
+  name: nfs-pv
 spec:
   capacity:
     storage: 10Gi
   accessModes:
     - ReadWriteMany
   nfs:  # nfs 지정
-    server: 172.17.16.91  # NFS IP 지정
-    path: "/nfs01"  # NFS 공유 directory 지정
+    server: 172.17.16.91  # NFS Server IP 지정
+    path: "/nfs01"  # NFS 공유 directory path 지정
   

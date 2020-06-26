@@ -6,7 +6,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: ""
+  storageClassName: ""  # PV를 사용하는 경우 SC 이름 지정하지 않음
+  volumeName: nfs-pv  # PV 이름 지정
   resources:
     requests:
       storage: 10Gi
