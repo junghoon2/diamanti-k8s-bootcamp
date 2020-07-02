@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erdia22-ssh
+  labels:
+    app: ssh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ssh  # POD label과 일치
+  template:    
+    metadata:
+      labels:
+        app: ssh # Selector label과 일치
+    spec:
+      containers:
+      - name: ssh
+        image: erdia22/ssh:0.3
+        imagePullPolicy: Always

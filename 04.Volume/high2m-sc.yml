@@ -4,7 +4,7 @@ metadata:
   name: high2m
 parameters:
   fsType: xfs  ## ext4 등 FileType 선택 가능 
-  mirrorCount: "2"  ## Volume mirror 1 or 2 or 3 copy(최대 3) 설정 가능 
+  mirrorCount: "2 "  ## Volume mirror 1 or 2 or 3 copy(최대 3) 설정 가능 
   perfTier: high  
 provisioner: dcx.csi.diamanti.com  # Diamanti 자체 CSI 제공 
 reclaimPolicy: Delete

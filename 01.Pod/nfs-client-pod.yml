@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  # annotations:
+  #   diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+  name: nfs-client
+  labels:
+    run: nfs-client
+spec:
+  containers:
+  - name: nfs-client
+    image: d3fk/nfs-client:latest
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "sleep inf"
