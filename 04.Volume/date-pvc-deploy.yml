@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: date-mirror-deploy
+  name: date-mirror-deploy02
   labels:
     app: date-mirror
 spec:
@@ -16,15 +16,15 @@ spec:
     spec:
       containers:
       - name: date-pod
-        image: centos:7.5.1804
+        image: busybox
         command:
         - "/bin/sh"
         - "-c"
         - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
         volumeMounts:
-        - name: date-pvc
+        - name: date-vol
           mountPath: /data
       volumes:
-      - name: date-pvc
+      - name: date-vol
         persistentVolumeClaim:
-          claimName: perf-pvc  ## PVC 이름 지정
+          claimName: nfs01-pvc  ## PVC 이름 지정
