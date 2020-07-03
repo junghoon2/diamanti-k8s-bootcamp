@@ -7,16 +7,16 @@
 - ### 4 Hour + 5 Days 예정
 - ### 01_클러스터관리및Default네트워크구성 부터 시작
 
-#### 자료
+### 자료
 
   * 교육 슬라이드 (별도 배포)  
 
-#### Youtube Resources
+### Youtube Resources
   * [이충섭 님 Kubernetes 소개 동영상(한글, 실습 포함)](https://youtu.be/WxzWXqTNdlw)
 
-#### Online Courses
+### Online Courses
   * [Udemy CKA 자격증 과정, 강추](https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests)
 
 
-#### Tutorials
+### Tutorials
   * [이충섭(subicura) 님 도커, k8s 실습 GitHub Code](https://github.com/subicura/workshop-k8s-basic)
