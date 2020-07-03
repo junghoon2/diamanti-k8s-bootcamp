@@ -11,7 +11,7 @@
   * 교육 슬라이드 (별도 배포)  
 
 #### Youtube Resources
-  * [이충섭 님 Kubernetes 소개 동영상(한글, 실습 포함)](https://https://www.youtube.com/watch?v=WxzWXqTNdlw&t=608s)
+  * [이충섭 님 Kubernetes 소개 동영상(한글, 실습 포함)](https://youtu.be/WxzWXqTNdlw)
 
 #### Online Courses
   * [Udemy CKA 자격증 과정, 강추](https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests)
