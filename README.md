@@ -5,6 +5,7 @@
 - ### DIAMANTI 시스템 운영을 위한 초/중급 Kubernetes 실습 과정
 - ### POD 생성, 스토리지 및 네트워크 연결 등 Kubernetes 전반적인 분야 실습
 - ### 4 Hour + 5 Days 예정
+- ### 01_클러스터관리및Default네트워크구성 부터 시작
 
 #### 자료
 
