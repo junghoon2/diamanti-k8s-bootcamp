@@ -1,5 +1,7 @@
 ## POD 생성
-**POD 생성은 2가지 방법으로 가능**
+**POD 생성은 1) Command 2) YAML File 2가지 방법으로 가능**
+
+> **TIP** `alias kc='kubectl'`을 입력하면 편하게 명령어를 입력할 수 있습니다.
 
 **1) Command 이용**
 ```
