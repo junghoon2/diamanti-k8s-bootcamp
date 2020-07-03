@@ -1,7 +1,7 @@
 # DIAMANTI Networking
-- ### Diamanti는 SR-IOV를 이용하여 물리 서버의 가상 NIC를 바로 POD의 NIC로 사용 가능
-- ### 서버 Overlay, Bridge, NAT 등의 중간 과정이 필요 없음
-- ### IP 대역 그룹(ex: web, db, dmz 등)으로 구분하여 개별 POD 별 IP 할당
+- ### Diamanti는 SR-IOV를 이용하여 물리 서버의 가상 NIC를 바로 POD의 NIC로 할당
+- ### SR-IOV를 사용하는 VM 및 타 Kubernetes 서버와 다르게 Overlay/Bridge/NAT 등의 중간 과정이 필요 없음
+- ### IP 대역으로 그룹화하여(ex: web, db, dmz 등) 개별 POD 별 IP 할당 가능
 
 
 기존 네트워크 IP 대역 그룹 확인
