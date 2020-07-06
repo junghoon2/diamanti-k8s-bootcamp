@@ -54,6 +54,18 @@ NAME       SIZE      NODE      LABELS    PARENT                                 
 snap-pv    10.77GB   [dia04]   <none>    pvc-306931e6-2c03-4cb0-8cc5-618c2b2bef34   Available   31s
 ```
 
+Mirrored Snapshot 생성 
+: -m option 사용 
+```
+spkr@erdia22:~$ dctl snapshot create snap2m-mariadb -m 2 --src pvc-55e681f6-f928-4ebc-a5cf-fac5623fc491
+NAME             SIZE      NODE      LABELS    PARENT                                     PHASE     AGE
+snap2m-mariadb   0         []        <none>    pvc-55e681f6-f928-4ebc-a5cf-fac5623fc491   Pending
+
+spkr@erdia22:~$ dctl snapshot get snap2m-mariadb
+NAME             SIZE       NODE            LABELS    PARENT                                     PHASE       AGE
+snap2m-mariadb   375.84GB   [dia03 dia04]   <none>    pvc-55e681f6-f928-4ebc-a5cf-fac5623fc491   Available   <invalid>
+```
+
 ### PV from Snapshot
 - snapshot으로 PV 생성
 ```

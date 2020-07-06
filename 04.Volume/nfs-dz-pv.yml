@@ -4,7 +4,7 @@ metadata:
   name: nfs01-pv
 spec:
   capacity:
-    storage: 10Gi
+    storage: 10Ti
   accessModes:
     - ReadWriteMany
   mountOptions:

@@ -10,4 +10,4 @@ spec:
   volumeName: nfs01-pv  # PV 이름 지정
   resources:
     requests:
-      storage: 10Gi
+      storage: 10Ti  # Max to 적정 용량으로 변경
