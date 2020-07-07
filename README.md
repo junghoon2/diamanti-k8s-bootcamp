@@ -9,7 +9,7 @@
 
 ### 사전 준비 사항
 * dctl, kubectl, helm Tool 설치
-* kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/tasks/tools/install-kubectl/)
+* kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/reference/kubectl/cheatsheet/)
 
 ```
 vi ~/.bashrc 
