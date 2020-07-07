@@ -2,7 +2,7 @@
 
 ### POD 생성
 ```
-kc apply [FILE]
+kc apply -f [FILE]
 
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/01.Pod$ kc apply -f ssh-pod.yml
 pod/ssh created
