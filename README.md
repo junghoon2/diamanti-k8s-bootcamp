@@ -12,6 +12,8 @@
 * kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/tasks/tools/install-kubectl/)
 
 ```
+vi ~/.bashrc 
+
 alias kc=kubectl
 complete -F __start_kubectl kc
 source <(kubectl completion bash)
