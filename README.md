@@ -8,8 +8,9 @@
 - ### 01_클러스터관리및Default네트워크구성 부터 시작
 
 ### 사전 준비 사항
-* dctl, kubectl, helm Tool 설치
-* kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/tasks/tools/install-kubectl/)
+> * Window 기준 : WSL(Window Subsystem Linux), IDE(MS Visual CODE 등) 설치
+> * dctl, kubectl, helm Tool 설치
+> * kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/tasks/tools/install-kubectl/)
 
 ```
 vi ~/.bashrc 
