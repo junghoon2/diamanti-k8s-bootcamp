@@ -8,7 +8,10 @@
 - ### 01_클러스터관리및Default네트워크구성 부터 시작
 
 ### 사전 준비 사항
-* dctl, kubectl, helm Tool 설치
+* dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download)
+
+![Tool](./200707DctlTool.png)
+
 * kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/reference/kubectl/cheatsheet/)
 
 ```
