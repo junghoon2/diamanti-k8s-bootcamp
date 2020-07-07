@@ -27,4 +27,4 @@ spec:
       volumes:
       - name: date
         persistentVolumeClaim:
-          claimName: snap-pvc  ## PVC 이름 지정
+          claimName: snap02-pvc  ## PVC 이름 지정
