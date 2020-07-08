@@ -68,6 +68,12 @@ dia01   Ready    <none>   18d   v1.15.10   192.168.200.101   <none>        CentO
 dia02   Ready    <none>   18d   v1.15.10   192.168.200.102   <none>        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://1.13.1
 dia03   Ready    <none>   18d   v1.15.10   192.168.200.103   <none>        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://1.13.1
 dia04   Ready    <none>   18d   v1.15.10   192.168.200.104   <none>        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://1.13.1
+
+(USER 권한에 따라 정보 조회가 안 될 수 있음.)
+spkr@erdia22:~/01.Ansible/02.module$ kc get nodes
+Error from server (Forbidden): nodes is forbidden: User "test01" cannot list resource "nodes" in API group "" at the cluster scope
+(USER 변경 필요)
+
 ```
 
 ## Default 컨테이너 데이터 네트워크 생성
