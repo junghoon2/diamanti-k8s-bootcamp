@@ -20,8 +20,6 @@
   - Execute a command in a container
 
 
-> 전체 명령어는 `kubectl`을 입력합니다.
-
 ## 명령 vs 선언
 
 ```
