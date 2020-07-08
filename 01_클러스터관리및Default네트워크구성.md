@@ -31,6 +31,12 @@ Password:
 Successfully logged in
 ```
 
+- ### Namespace 및 USER 정보 확인
+```
+[test01@dia01 ~]$ kubectl config current-context
+spkcluster:test01:test01
+```
+
 ## 클러스터 상태 확인
 - ### 전체 Cluster 상태 및 개별 Node 별 상태 확인 가능
 
