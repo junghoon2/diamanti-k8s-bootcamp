@@ -5,14 +5,11 @@
 - ### DIAMANTI 시스템 운영을 위한 초/중급 Kubernetes 실습 과정
 - ### POD 생성, 스토리지 및 네트워크 연결 등 Kubernetes 전반적인 분야 실습
 - ### 4 Hour + 5 Days 과정
-- ### 01_클러스터관리및Default네트워크구성 부터 시작
 
 ### 사전 준비 사항
-
 > * Window 기준 : WSL(Window Subsystem Linux), IDE(MS Visual CODE 등) 설치
 > * dctl, kubectl, helm Tool 설치
-> * kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/tasks/tools/install-kubectl/)
-
+> * 01_클러스터 관리 및 Default 네트워크 구성 부터 시작
 > * dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download)
 
 ![Tool](./200707DctlTool.png)
