@@ -1,6 +1,6 @@
 # Kubernetes Namespace
-- ### Kubernetes 내부 논리적인 분리 단위 
-- ### 논리적인 분리로 서로 다른 Namespace 간 통신 가능
+- ### Kubernetes 내부적으로 사용하는 논리 그룹 단위 
+- ### 논리적인 의미의 분리로 서로 다른 Namespace POD 간 통신 등은 가능함
 - ### Diamanti는 Namespace 조회/변경을 위한 별도 명령어 Set 제공(dctl namespace ~) 
 
 ### Namespace 생성 및 조회
@@ -71,7 +71,7 @@ novnc            ClusterIP   None         <none>        80/TCP          26d
 tiller-deploy    ClusterIP   None         <none>        44134/TCP       26d
 ```
 
-### 현재 Namespace 내 POD 생성 또는 특정 Namespace 지정 후 생성 
+### 현재 Namespace 내 POD 생성 또는 특정 Namespace 지정 
 - YAML 파일 namespace 옵션 지정하지 않으면 현재 namespace으로 POD 생성
 
   namespace 옵션을 지정하면 해당 namespace로 POD 생성
