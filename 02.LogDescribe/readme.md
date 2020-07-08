@@ -14,6 +14,7 @@ spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod
 [2020-06-16 00:23:40,721] INFO in event-simulator: USER1 logged in
 (...)
 ```
+
 -f(follow) 옵션 사용 시, 로그 메시지 계속 모니터링 가능
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod -f
@@ -22,6 +23,15 @@ spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod
 [2020-06-16 00:23:38,718] INFO in event-simulator: USER3 is viewing page3
 [2020-06-16 00:23:39,719] INFO in event-simulator: USER1 is viewing page2
 [2020-06-16 00:23:40,721] INFO in event-simulator: USER1 logged in
+```
+
+컨테이너 접속 확인
+```
+spkr@erdia22:~$ kc exec -it event-simulator-pod -- sh
+/ # tail -f /log/app.log
+[2020-07-08 05:05:34,408] INFO in event-simulator: USER4 logged out
+[2020-07-08 05:05:35,410] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2020-07-08 05:05:35,410] INFO in event-simulator: USER1 is viewing page2
 ```
 
 # POD 등 Object 상세 정보 확인(describe)
