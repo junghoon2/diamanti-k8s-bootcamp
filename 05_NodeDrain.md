@@ -104,3 +104,20 @@ spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get pod -o wide|grep dia04|wc -l
 ```
 
 ### Node 제거 후 다시 추가하면 정상적으로 개별 노드에 균등하게 POD 배분
+
+Deployment 제거
+```
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/05.Deployment$ kc get deployments.
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+date-deploy      1/1     1            1           24h
+nfs-pvc-deploy   1/1     1            1           12d
+nginx02          10/10   10           10          2d
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/05.Deployment$ kc delete deployments. nginx02
+deployment.extensions "nginx02" deleted
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/05.Deployment$ kc get deployments.
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+date-deploy      1/1     1            1           24h
+nfs-pvc-deploy   1/1     1            1           12d
+```
