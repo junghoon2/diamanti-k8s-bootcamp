@@ -4,7 +4,7 @@
 - ### IP 대역으로 그룹화하여(ex: web, db, dmz 등) 개별 POD 별 특정 IP 할당 가능
 
 
-기존 네트워크 IP 대역 그룹 확인
+현재 네트워크 IP 대역 그룹 확인
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ dctl network list
 NAME             TYPE      START ADDRESS   TOTAL     USED      GATEWAY       VLAN      NETWORK-GROUP   ZONE
@@ -58,7 +58,7 @@ event-simulator-pod                 1/1     Running   0          35m   10.10.100
 nginx                               1/1     Running   0          11s   10.10.120.11   dia02   <none>           <none>
 ```
 
-하나의 IP(USED 1) 사용 확인 가능
+신규 생성된 POD 용도로 하나의 IP가 사용됨 (USED 1)
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ dctl network list
 NAME             TYPE      START ADDRESS   TOTAL     USED      GATEWAY       VLAN      NETWORK-GROUP   ZONE
@@ -69,7 +69,7 @@ web              public    10.10.120.11    90        1         10.10.120.1   120
 
 ### SR-IOV POD Network
 
-SR-IOV를 사용하여 추가 NodePort 등의 Service 설정없이 curl 등으로 바로 확인 가능
+추가 NodePort 등의 Service 설정없이 curl로 해당 POD 바로 접속 가능(SR-IOV 가상 NIC 사용)
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ curl -I 10.10.120.11
 HTTP/1.1 200 OK
