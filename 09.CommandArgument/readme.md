@@ -1,5 +1,5 @@
 # Kubernetes POD Command
-- ### POD 실행 시 명령어(command)를 POD YAML 파일 추가 가능
+- ### POD 실행 시 수행하는 명령어(command process)를 POD YAML 파일 추가
   ### 예를 들어 CentOS POD 실행 시 Command를 추가하지 않으면 바로 종료(completed) 되나
   ### Sleep Command 추가하면 실행(running) 상태 유지 
 
