@@ -1,9 +1,9 @@
 # Kubernetes 클러스터 설치
-### 복잡한 k8s 클러스터 설치 과정 없이 DIAMANTI는 S/W + H/W 사전 설치된 Appliance로 형태로 제공
-### NTP, Mgt/컨테이너 네트워크 IP 등의 기본 정보 입력 후 5분 이내 클러스터 구성 가능
+- ### 복잡한 k8s 클러스터 설치 과정 없이 DIAMANTI는 S/W + H/W 사전 설치된 Appliance로 형태로 제공
+- ### NTP, Mgt/컨테이너 네트워크 IP 등의 기본 정보 입력 후 5분 이내 클러스터 구성 가능
 
 ## 클러스터 설치
-**명령어 예시에 따라 hostname, vip, storage vlan 등 정보 입력**
+- ### 명령어 예시에 따라 hostname, vip, storage vlan 등 정보 입력
 
 ```
 spkr@erdia22:~$ dctl cluster create
@@ -11,7 +11,8 @@ Error: example usage -  dctl cluster create mycluster master-01,master-02,master
 ```
 
 ## 클러스터 로그인
-**id/pwd 정보 입력** 
+- ### Namespace에 따른 개인별 id/pwd 정보 입력
+
 ```
 spkr@erdia22:~$ dctl -s 192.168.200.100 login
 Name            : spkcluster
@@ -20,13 +21,15 @@ Server          : spkcluster
 WARNING: Thumbprint : b1 13 09 07 38 34 0d 9f 5e 11 44 08 8b 1f bd 97 74 e2 22 cd 48 8c 2a 5c 65 14 06 63 b1 60 c9 99
 [CN:diamanti-signer@1590112299, OU:[], O=[] issued by CN:diamanti-signer@1590112299, OU:[], O=[]]
 Configuration written successfully
-Username: admin
+(각 개인 별 USER/PASSWORD 정보 입력)
+Username: 
 Password:
 Successfully logged in
 ```
 
 ## 클러스터 상태 확인
-**전체 Cluster 상태 및 개별 Node 별 상태 확인 가능**
+- ### 전체 Cluster 상태 및 개별 Node 별 상태 확인 가능
+
 ```
 spkr@erdia22:~$ dctl cluster status
 Name            : spkcluster
@@ -47,7 +50,7 @@ dia03     Good          Good         master    110/40000    1.08GiB/128GiB   1.3
 dia04     Good          Good         worker    0/40000      0/128GiB         1.47TB/3.05TB     0/500K     2/63      500M/36G    0/64, 0/64      beta.diamanti.com/runc=true,beta.diamanti.com/runtime-engine=docker,beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=dia04,kubernetes.io/os=linux
 ```
 
-**개별 노드 추가 정보 확인**
+- ### 노드 별 정보 확인
 ```
 spkr@erdia22:~$ kc get nodes -o wide
 NAME    STATUS   ROLES    AGE   VERSION    INTERNAL-IP       EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION          CONTAINER-RUNTIME
@@ -56,8 +59,9 @@ dia02   Ready    <none>   18d   v1.15.10   192.168.200.102   <none>        CentO
 dia03   Ready    <none>   18d   v1.15.10   192.168.200.103   <none>        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://1.13.1
 dia04   Ready    <none>   18d   v1.15.10   192.168.200.104   <none>        CentOS Linux 7 (Core)   3.10.0-957.el7.x86_64   docker://1.13.1
 ```
+
 ## Default 컨테이너 데이터 네트워크 생성
-**다른 명령어와 동일하게 명령어 예시에 따라 subnet, start/end IP, gateway, vlan 정보 등 입력**
+- ### 다른 명령어와 동일하게 명령어 예시에 따라 subnet, start/end IP, gateway, vlan 정보 등 입력
 ```
 spkr@erdia22:~/02.k8s_code$ dctl network create
 Error: example usage -  dctl network create blue -s 192.168.30.0/24 --start 192.168.30.101 --end 192.168.30.200 -g 192.168.30.1 -v 2
@@ -66,7 +70,7 @@ NAME      TYPE      START ADDRESS   TOTAL     USED      GATEWAY       VLAN      
 web01     public    10.10.130.11    90        0         10.10.130.1   130
 ```
 
-**생성 후 해당 네트워크 대역 확인**
+- ### 생성 후 해당 네트워크 IP 대역 확인**
 ```
 spkr@erdia22:/mnt/c/Users/erdia$ dctl network list
 NAME             TYPE      START ADDRESS   TOTAL     USED      GATEWAY       VLAN      NETWORK-GROUP   ZONE
