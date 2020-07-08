@@ -23,6 +23,8 @@ NAME                       READY   STATUS    RESTARTS   AGE    IP             NO
 nginx01-6bdf767788-shs7g   1/1     Running   0          108s   10.10.100.13   dia03   <none>           <none>
 ```
 
+축하합니다 ^^ 첫번째 POD 생성을 완료 하였습니다. 
+
 **2) YAML 파일 이용**
 
 - [Deploy YAML 파일 예제](05.Deployment/centOS-deploy.yml)
