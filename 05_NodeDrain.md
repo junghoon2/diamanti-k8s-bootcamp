@@ -12,7 +12,8 @@ nginx01-6bdf767788-sw2jg   1/1     Running   0          19m     10.10.100.35   d
 
 ### 2번 Node(dia02) Down
 
-drain 명령어 이용
+drain(배출하다) 명령어 이용
+
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc drain dia02
 node/dia02 cordoned
@@ -64,7 +65,7 @@ nginx01-6bdf767788-sw2jg   1/1     Running   0          22m   10.10.100.35   dia
 
 ## Node 원복
 
-uncordon 명령어 사용
+uncordon(방역선) 명령어 사용
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get nodes
 NAME    STATUS                     ROLES    AGE   VERSION
