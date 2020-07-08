@@ -20,7 +20,7 @@
   - Execute a command in a container
 
 
-## 명령 vs 선언
+## 명령어 vs YAML 파일
 
 ```
 kubectl scale --replicas=3 rs/whoami
