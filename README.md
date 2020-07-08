@@ -7,7 +7,7 @@
 - ### 4 Hour + 5 Days 과정
 
 ### 사전 준비 사항
-> * Window 기준 : WSL(Window Subsystem Linux), IDE(MS Visual CODE 등) 설치
+> * Window 기준 : WSL(Window Subsystem Linux), IDE(MS Visual CODE 등), Window Terminal(SSH Tool) 설치
 > * 01_클러스터 관리 및 Default 네트워크 구성 부터 시작
 > * dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download)
 
