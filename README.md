@@ -13,11 +13,11 @@
 > * dctl, kubectl, helm Tool 설치
 > * kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/tasks/tools/install-kubectl/)
 
-* dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download)
+> * dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download)
 
 ![Tool](./200707DctlTool.png)
 
-* kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/reference/kubectl/cheatsheet/)
+> * kc alias, kc 자동 완성 설정 [kubectl 환경 구성](https://kubernetes.io/ko/docs/reference/kubectl/cheatsheet/)
 
 ```
 vi ~/.bashrc 
