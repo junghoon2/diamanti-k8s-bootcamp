@@ -11,7 +11,7 @@ Error: example usage -  dctl cluster create mycluster master-01,master-02,master
 ```
 
 ## 클러스터 로그인
-- ### Namespace에 따른 개인별 id/pwd 정보 입력
+- ### Namespace에 따른 개인별 id/pwd(test01 ~ test09) 정보 입력
 
 ```
 VIP 정보 확인
