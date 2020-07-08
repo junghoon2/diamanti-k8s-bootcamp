@@ -75,6 +75,15 @@ kubectl get nodes -o yaml
 kubectl get nodes -o json
 kubectl get nodes -o json |
       jq ".items[] | {name:.metadata.name} + .status.capacity"
+
+# YAML 파일 형태 저장
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/05.Deployment$ kc get deploy date-deploy -o yaml > /tmp/date-deploy.yml
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/05.Deployment$ cat /tmp/date-deploy.yml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+ (...)
 ```
 
 **describe**
