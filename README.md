@@ -13,7 +13,7 @@
 > * [Window Terminal(SSH Tool)](https://lts0606.tistory.com/341)
 > * [WSL - Terminal 연동](https://docs.microsoft.com/ko-kr/windows/terminal/)
 > * WSL Git 설치
-> * dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download)
+> * dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download, Linux 설치)
 
 ![Tool](./200707DctlTool.png)
 
