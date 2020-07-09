@@ -8,12 +8,11 @@
 
 ### 사전 준비 사항
 > * Window 기준 아래 Tool 설치
-   : [WSL(Window Subsystem Linux)](https://webdir.tistory.com/541)
-   : [MS Visual CODE, IDE](https://webnautes.tistory.com/1197)
-   : [Window Terminal(SSH Tool)](https://lts0606.tistory.com/341)
-   : [WSL - Terminal 연동](https://docs.microsoft.com/ko-kr/windows/terminal/)
-   : WSL Git 설치
-> * 01_클러스터 관리 및 Default 네트워크 구성 부터 시작
+> * [WSL(Window Subsystem Linux)](https://webdir.tistory.com/541)
+> * [MS Visual CODE, IDE](https://webnautes.tistory.com/1197)
+> * [Window Terminal(SSH Tool)](https://lts0606.tistory.com/341)
+> * [WSL - Terminal 연동](https://docs.microsoft.com/ko-kr/windows/terminal/)
+> * WSL Git 설치
 > * dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download)
 
 ![Tool](./200707DctlTool.png)
@@ -27,6 +26,8 @@ alias kc=kubectl
 complete -F __start_kubectl kc
 source <(kubectl completion bash)
 ```
+
+> * 01_클러스터 관리 및 Default 네트워크 구성 부터 시작
 
 ### 자료
 
