@@ -6,6 +6,7 @@
 - ### Diamanti는 위 서비스가 Systemd Daemon(systemctl) 형태로 실행
 
 Kubernetes Architecture
+
 ![kubernetes architecture](./200617k8sArch.png)
 
 Master Role 서버 확인
@@ -29,7 +30,7 @@ dia03     Good          Good         master    300/40000    1.18GiB/128GiB   1.3
 dia04     Good          Good         worker    110/40000    66MiB/128GiB     1.47TB/3.05TB     0/500K     7/63      500M/36G    0/64, 0/64      beta.diamanti.com/runc=true,beta.diamanti.com/runtime-engine=docker,beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=dia04,kubernetes.io/os=linux
 ```
 
-Diamanti Cluster는 API, Controller, Scheduler 등이 Systemd 데몬으로 실행
+Diamanti Cluster는 API, Controller, Scheduler 등의 주요 Kubernetes Master Node Component가 Systemd 데몬으로 실행
 ```
 [diamanti@dia01 ~]$ systemctl status apiserver.service
 ● apiserver.service - Kubernetes API Server
@@ -120,7 +121,8 @@ Jun 17 09:32:32 dia01 etcd[23566]: finished scheduled compaction at 5075743 (too
 ```
 
 Diamanti S/W Architecture
-- 기존 Kubernetes 서비스 이 외 추가로 Master : armada, bosun, convoy / Worker : armada, bosun 실행 중 
+- Default Kubernetes Master Component 이 외 추가로 Master : armada, bosun, convoy / Worker : armada, bosun 실행 중 
+- CPU, Memory 이 외 Storage, Network 상태 추적 용도
 
 ![Diamanti Service](./200617DiamantiArchService.png)
 
@@ -191,6 +193,7 @@ Jun 17 09:35:21 dia01 convoy[24058]: I0617 09:35:21.113957   24058 volume_schedu
 ```
 
 Worknode(dia04) 에서는 Convoy Systemd Daemon 실행 중이지 않음 
+
 ```
 [diamanti@dia04 ~]$ systemctl status convoy.service
 ● convoy.service - Convoy server
