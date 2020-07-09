@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-webapp-color
+  labels:
+    name: simple-webapp-color
+spec:
+  containers:
+  - name: simple-webapp-color
+    image: kodekloud/simple-webapp
+    envFrom:
+    - secretRef:  # from Secret
+        name: app-secret  # 생성한 Secret 이름
+    ports:
+    - containerPort: 80
