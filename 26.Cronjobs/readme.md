@@ -29,6 +29,13 @@ spec:
 
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.Cronjobs$ kc apply -f job.yml
 job.batch/pi created
+```
+
+작업 수행 결과 확인
+```
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.Cronjobs$ kc get job
+NAME   COMPLETIONS   DURATION   AGE
+pi     13/20         5m18s      5m18s
 
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.Cronjobs$ kc get pod
 NAME                              READY   STATUS              RESTARTS   AGE
