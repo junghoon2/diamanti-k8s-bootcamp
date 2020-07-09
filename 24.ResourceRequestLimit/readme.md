@@ -74,6 +74,7 @@ Events:
 (describe로 상세 메시지 확인 가능) 
 
 참조
+
 [ITChain Wordpress](https://itchain.wordpress.com/2018/05/16/kubernetes-resource-request-limit)
 
 [Kube.io](https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource)
