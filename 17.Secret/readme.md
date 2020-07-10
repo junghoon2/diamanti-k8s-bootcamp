@@ -1,6 +1,6 @@
 # Kubernetes Secret
-### Password 등의 민감한 정보를 Kubernetes에서는 Secret를 사용하여 저장
-### POD에서 secretRef 등의 설정을 이용하여 해당 암호화 정보를 환경 변수로 사용 
+### MariaDB Password 등의 민감한 정보를 Kubernetes에서는 Secret Object를 사용하여 저장
+### POD에서 secretRef 설정을 이용하여 해당 암호화 정보를 환경 변수로 사용 
 
 - ### 암호화 문구 만들기
 ```
@@ -54,7 +54,7 @@ spec:
     - containerPort: 80
 ```
 
-- ### POD 실행 
+- ### POD 실행을 통한 암호화된 환경 변수 확인 
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/17.Secret$ kc apply -f webapp-color-pod.yml
 
