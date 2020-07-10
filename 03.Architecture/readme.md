@@ -6,6 +6,7 @@
 - ### Diamanti는 위 서비스가 Systemd Daemon(systemctl) 형태로 실행
 
 Kubernetes Architecture
+
 ![kubernetes architecture](./200617k8sArch.png)
 
 Master Role 서버 확인
