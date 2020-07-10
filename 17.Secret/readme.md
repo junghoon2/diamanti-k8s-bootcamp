@@ -1,6 +1,6 @@
 # Kubernetes Secret
-## Password 등의 민감한 정보를 Kubernetes에서는 Secret를 사용하여 저장
-## POD에서 secretRef 등의 설정을 이용하여 해당 암호화 정보를 환경 변수로 사용 
+### Password 등의 민감한 정보를 Kubernetes에서는 Secret를 사용하여 저장
+### POD에서 secretRef 등의 설정을 이용하여 해당 암호화 정보를 환경 변수로 사용 
 
 - ### 암호화 문구 만들기
 ```
