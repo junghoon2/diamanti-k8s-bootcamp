@@ -1,7 +1,10 @@
 # Kubernetes Namespace
-- ### Kubernetes 내부적으로 사용하는 논리 그룹 단위 
-- ### 논리적인 의미의 분리로 서로 다른 Namespace POD 간 통신 등은 가능함
-- ### Diamanti는 Namespace 조회/변경을 위한 별도 명령어 Set 제공(dctl namespace ~) 
+- ### What : Namespace(이름 공간), Kubernetes 내부적으로 사용하는 논리 그룹 단위 
+- ### Why/When :
+- ### POD, Volume 등이 생성되는 기본 공간 
+- ### 서로 다른 Namesapce POD 간 통신을 위하여 Namespace DNS 지정 필요
+- ### 개별 Namespace 별 CPU/Memory 등 Resource 할당 가능 
+- ### How : Diamanti는 Namespace 조회/변경을 위한 별도 명령어 Set 제공(dctl namespace ~) 
 
 ### Namespace 생성 및 조회
 
