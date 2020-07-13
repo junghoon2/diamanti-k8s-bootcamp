@@ -1,7 +1,7 @@
 # Kubernetes POD Command
-- ### POD 실행 시 수행하는 명령어(command process)를 POD YAML 파일 추가
+- ### POD 실행 시 수행하는 명령어(command process)를 POD YAML 파일에 정의 가능
   ### 예를 들어 CentOS POD 실행 시 Command를 추가하지 않으면 바로 종료(completed) 되나
-  ### Sleep Command 추가하면 실행(running) 상태 유지 
+  ### Sleep Command 추가하면 Process 실행(running) 상태를 유지하여 종료되지 않음 
 
 ### POD without Command
 소스 코드 : [POD Without Command](./centos-wo-command-pod.yml)

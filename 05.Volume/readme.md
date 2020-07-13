@@ -1,6 +1,7 @@
 # DIAMANTI Kubernetes Volume
 - ### NVMe Disk Kubernetes Volume 사용
 - ### Diamanti 자체 CSI(Container Storage Interface) 드라이버 제공
+- ### 단일 노드 당 1M IOPS 및 under ~ms Latency 제공(일반 VM 대비 20 ~ 30배 성능 향상)
 
 ### Storage Class 
 
@@ -116,7 +117,8 @@ spec:
           claimName: perf-pvc  ## PVC 이름 지정
 ```
 
-볼륨 설정이 포함된 POD Deploy 
+볼륨(PVC) 설정이 포함된 POD Deploy 
+
 ```
 kc apply -f date-pvc-deploy.yml
 

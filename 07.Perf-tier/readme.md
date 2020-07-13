@@ -17,7 +17,8 @@ medium        5k             125M                -                  -           
 Default 로 best-effort/medium/high 3가지 Type 제공 
 
 ### Performance Tier 생성
-- 예제 명령어 참고 가능
+- 예제 help 명령어 참고
+
 ```
 spkr@erdia22:~/02.k8s_code/14.secret$ dctl perf-tier create
 Error: example usage -  dctl perf-tier create perf-tier1 -i 1k -b 1G -l type=backend

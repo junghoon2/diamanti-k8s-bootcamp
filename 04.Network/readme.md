@@ -1,8 +1,8 @@
 # DIAMANTI Networking
 - ### Diamanti는 SR-IOV를 이용하여 물리 서버의 가상 NIC를 바로 POD의 NIC로 할당
-- ### VM 및 타 Kubernetes 클러스터와 다르게 Overlay/Bridge/NAT 등의 중간 과정이 필요 없음
-- ### IP 대역으로 그룹화하여(ex: web, db, dmz 등) 개별 POD 별 특정 IP 할당 가능
-
+- ### POD 네트워크 성능 향상 및 네트워크 장애 처리 과정의 단순화
+- ### VM 및 타 Kubernetes 클러스터와 다르게 Overlay/NAT 등의 중간 과정이 필요 없음
+- ### 서비스 별 IP 대역을 그룹화하여(ex: web, db, dmz 등) 개별 POD 별 특정 IP 할당 가능
 
 현재 네트워크 IP 대역 그룹 확인
 ```
@@ -32,7 +32,7 @@ web              public    10.10.120.11    90        0         10.10.120.1   120
 
 ### POD 네트워크 IP 대역 지정
 
-소스 코드 : [WEB IP 대역 지정](../01.Pod/nginx-network-pod.yml)
+소스 코드 : [WEB IP 대역 지정](./nginx-network-pod.yml)
 
 신규 생성된 web IP 대역(10.10.120.0/24)으로 nginx POD IP 할당
 ```
@@ -69,6 +69,7 @@ web              public    10.10.120.11    90        1         10.10.120.1   120
 
 ### SR-IOV POD Network
 
+Node Port NAT 설정 없이 POD 접속  
 추가 NodePort 등의 Service 설정없이 curl로 해당 POD 바로 접속 가능(SR-IOV 가상 NIC 사용)
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ curl -I 10.10.120.11

@@ -4,20 +4,37 @@
 - ### Diamanti는 성능 모니터링에 필요한 Metrics, Prometheus, Admin Page 등을 기본 제공함
 - ### 성능 확인은 Admin GUI Page 또는 kubectl top {node/pod} 명령어로 확인 가능 
 
-### Metrics Server POD
-```
-spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp$ kc get pod -n kube-system
-NAME                                 READY   STATUS    RESTARTS   AGE
-coredns-54d89499d4-98lqg             1/1     Running   0          6d22h
-coredns-54d89499d4-tn9t9             1/1     Running   0          8d
-coredns-54d89499d4-vr5bz             1/1     Running   0          28d
-helm-chart-687577f867-9c6jh          1/1     Running   0          8d
-metrics-server-v1-5d46b6d959-2sjfl   1/1     Running   0          28d
-novnc-547484d7df-r7zvm               1/1     Running   0          8d
-tiller-deploy-5668df8bc4-s4b7m       1/1     Running   0          7d2h
-```
+### Collectd POD
 
-### 부하 생성을 위한 POD, PVC 생성 
+```
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/15.Daemonset$ kc get pod -n diamanti-system
+NAME                                       READY   STATUS    RESTARTS   AGE
+alertmanager-0                             1/1     Running   0          3d5h
+collectd-v0.8-6wmw4                        5/5     Running   10         11d
+collectd-v0.8-9tl7q                        5/5     Running   0          11d
+collectd-v0.8-fxlkh                        5/5     Running   0          11d
+collectd-v0.8-twcdb                        5/5     Running   0          11d
+csi-diamanti-driver-fjhg6                  2/2     Running   2          11d
+csi-diamanti-driver-r796l                  2/2     Running   2          11d
+csi-diamanti-driver-rqnvw                  2/2     Running   6          11d
+csi-diamanti-driver-xwswm                  2/2     Running   2          11d
+csi-external-attacher-6bbc9d4bbd-r297v     1/1     Running   0          3d6h
+csi-external-provisioner-957ff6577-29ldk   1/1     Running   0          3d6h
+csi-external-resizer-9848cdf68-cpwzn       1/1     Running   0          3d6h
+csi-external-snapshotter-8c8959567-2rl85   1/1     Running   2          10d
+grafana-84d4cbdb47-g4xpp                   1/1     Running   0          7d6h
+nfs-csi-diamanti-driver-hgl5k              2/2     Running   0          11d
+nfs-csi-diamanti-driver-pq5mf              2/2     Running   0          11d
+nfs-csi-diamanti-driver-sfw54              2/2     Running   0          11d
+nfs-csi-diamanti-driver-xvqn4              2/2     Running   4          11d
+prometheus-v1-0                            1/1     Running   0          3h5m
+prometheus-v1-1                            1/1     Running   0          11d
+prometheus-v1-2                            1/1     Running   0          168m
+provisioner-7b58589b9d-td4bc               1/1     Running   0          3d6h
+snapshot-controller-66fb5f8fbd-kqf7d       2/2     Running   4          10d
+```
+- ### POD 모니터링 예제
+### 부하 생성을 위한 Sample POD/PVC 생성 
 
 소스 코드 : [PVC](./high-pvc.yml)
 
@@ -98,6 +115,7 @@ rwmixwrite=0
 ```
 
 ### 부하 생성 및 부하 테스트 결과 예시
+### 예제 randread.fio 파일 Copy
 ```
 [root@centos7 /]# fio randread.fio --output /data/randread.out
 Jobs: 16 (f=16): [r(16)][14.8%][r=1948MiB/s,w=0KiB/s][r=499k,w=0 IOPS][eta 00m:52s]

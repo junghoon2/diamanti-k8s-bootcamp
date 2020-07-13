@@ -1,0 +1,246 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    diamanti.com/app: collectd
+    diamanti.com/cluster-service: "true"
+    version: collectd-v0.8
+  name: collectd-v0.8
+  namespace: diamanti-system
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      diamanti.com/app: collectd
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        diamanti.com/app: collectd
+        diamanti.com/cluster-service: "true"
+        version: collectd-v0.8
+    spec:
+      containers:
+      - args:
+        - --profiling=false
+        - --port=4194
+        - --prometheus_endpoint=/metrics
+        - --application_metrics_count_limit=100
+        - --docker=unix:///var/run/docker.sock
+        - --housekeeping_interval=4s
+        - --storage_duration=2m0s
+        - --disable_metrics=percpu,process,sched,tcp,udp,disk,diskIO
+        - --docker_only
+        - --disable_root_cgroup_stats
+        image: diamanti/cadvisor:v1.34.0
+        imagePullPolicy: IfNotPresent
+        name: cadvisor
+        ports:
+        - containerPort: 4194
+          hostPort: 4194
+          name: http
+          protocol: TCP
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /rootfs
+          name: rootfs
+          readOnly: true
+        - mountPath: /var/run
+          name: var-run
+        - mountPath: /sys
+          name: sys
+          readOnly: true
+        - mountPath: /var/lib/docker
+          name: docker
+          readOnly: true
+        - mountPath: /var/lib/containers
+          name: crio
+          readOnly: true
+        - mountPath: /var/log/pods
+          name: podlogs
+          readOnly: true
+      - command:
+        - sh
+        - -c
+        - /bin/collectd_exporter --collectd.listen-address=:$(COLLECTD_EXPORTER_PORT)
+        env:
+        - name: COLLECTD_EXPORTER_PORT
+          value: "9111"
+        image: prom/collectd-exporter:v0.4.0
+        imagePullPolicy: IfNotPresent
+        name: collectd-exporter
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - command:
+        - sh
+        - -c
+        - /bin/node_exporter --collector.diskstats --collector.textfile.directory
+          /metrics --web.listen-address=":9111"
+        image: prom/node-exporter:v0.17.0
+        imagePullPolicy: IfNotPresent
+        name: node-exporter
+        resources: {}
+        securityContext:
+          privileged: true
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /metrics
+          name: diamanti-data
+          readOnly: true
+      - image: diamanti/nvidia-dcgm-exporter:1.7.1
+        imagePullPolicy: IfNotPresent
+        name: nvidia-dcgm-exporter
+        resources: {}
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /run/prometheus
+          name: diamanti-data
+      - env:
+        - name: CONFIG_FILE
+          value: /config/collectd.conf
+        - name: BOSUN_HOST
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: BOSUN_PORT
+          value: "12347"
+        - name: COLLECTD_EXPORTER_HOST
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: COLLECTD_EXPORTER_PORT
+          value: "25826"
+        - name: PROMETHEUS_HOST
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: PROMETHEUS_PORT
+          value: "9103"
+        - name: ETCD_HOST
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: ETCD_PORT
+          value: "2379"
+        - name: KUBELET_HOST
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: KUBELET_PORT
+          value: "4194"
+        image: diamanti/collectd:v0.8
+        imagePullPolicy: IfNotPresent
+        name: collectd-es
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /dev
+          name: devices
+        - mountPath: /nodename
+          name: nodename
+          readOnly: true
+        - mountPath: /host/proc/mounts
+          name: host-proc
+          readOnly: true
+        - mountPath: /host/proc/diskstats
+          name: host-proc-diskstats
+          readOnly: true
+        - mountPath: /host/proc/uptime
+          name: host-proc-uptime
+          readOnly: true
+        - mountPath: /var/lib/kubelet:rslave
+          name: kubelet
+        - mountPath: /config
+          name: collectd-config
+          readOnly: true
+        - mountPath: /metrics
+          name: diamanti-data
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: monitoring-system
+      serviceAccountName: monitoring-system
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /
+          type: ""
+        name: rootfs
+      - hostPath:
+          path: /var/run
+          type: ""
+        name: var-run
+      - hostPath:
+          path: /sys
+          type: ""
+        name: sys
+      - hostPath:
+          path: /var/lib/docker
+          type: ""
+        name: docker
+      - hostPath:
+          path: /var/lib/containers
+          type: ""
+        name: crio
+      - hostPath:
+          path: /var/log/pods
+          type: ""
+        name: podlogs
+      - hostPath:
+          path: /dev
+          type: ""
+        name: devices
+      - hostPath:
+          path: /etc/hostname
+          type: ""
+        name: nodename
+      - hostPath:
+          path: /proc/mounts
+          type: ""
+        name: host-proc
+      - hostPath:
+          path: /proc/diskstats
+          type: ""
+        name: host-proc-diskstats
+      - hostPath:
+          path: /proc/uptime
+          type: ""
+        name: host-proc-uptime
+      - hostPath:
+          path: /var/lib/kubelet
+          type: ""
+        name: kubelet
+      - hostPath:
+          path: /etc/diamanti/collectd
+          type: ""
+        name: collectd-config
+      - hostPath:
+          path: /var/lib/diamanti/stats
+          type: ""
+        name: diamanti-data
+  templateGeneration: 1
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate

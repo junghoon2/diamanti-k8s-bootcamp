@@ -11,6 +11,7 @@ Kubernetes Architecture
 
 Master Role 서버 확인
 - Cluster Status의 Server Role로 항목 
+
 ```
 [diamanti@dia01 ~]$ dctl cluster status
 Name            : spkcluster

@@ -1,39 +1,3 @@
-# POD 로그 확인(log)
-- ### POD에서 생성되는 로그 정보는 kubectl log {POD Name} 명령어로 확인 가능
-- ### 장애 등의 상황에서 POD 로그 확인 용도로 사용
-
-소스 코드 : [event-simulator-pod](02.LogDescribe/event-simulator-pod.yml)
-
-```
-kc apply -f event-simulator-pod.yml
-
-spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod
-[2020-06-16 00:23:37,716] INFO in event-simulator: USER1 is viewing page2
-[2020-06-16 00:23:38,718] INFO in event-simulator: USER3 is viewing page3
-[2020-06-16 00:23:39,719] INFO in event-simulator: USER1 is viewing page2
-[2020-06-16 00:23:40,721] INFO in event-simulator: USER1 logged in
-(...)
-```
-
--f(follow) 옵션 사용 시, 로그 메시지 계속 모니터링 가능
-```
-spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod -f
-spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod
-[2020-06-16 00:23:37,716] INFO in event-simulator: USER1 is viewing page2
-[2020-06-16 00:23:38,718] INFO in event-simulator: USER3 is viewing page3
-[2020-06-16 00:23:39,719] INFO in event-simulator: USER1 is viewing page2
-[2020-06-16 00:23:40,721] INFO in event-simulator: USER1 logged in
-```
-
-컨테이너 접속 확인
-```
-spkr@erdia22:~$ kc exec -it event-simulator-pod -- sh
-/ # tail -f /log/app.log
-[2020-07-08 05:05:34,408] INFO in event-simulator: USER4 logged out
-[2020-07-08 05:05:35,410] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
-[2020-07-08 05:05:35,410] INFO in event-simulator: USER1 is viewing page2
-```
-
 # POD 등 Object 상세 정보 확인(describe)
 - ### POD 상태, 이미지 버전 정보 등 Object 상세 정보 확인 용도
 - ### kubectl describe pod {POD Name} 
@@ -98,7 +62,7 @@ Events:
   ```
   
 ### POD 뿐만 아니라 Service, Node 등 다양한 Cluster Object 상세 정보 확인 가능 
-소스 코드 : [Service 예시](11.Service/headless-svc.yml)
+소스 코드 : [Service 예시](./headless-svc.yml)
 
 서비스 상세 정보
 ```
@@ -200,4 +164,40 @@ Allocated resources:
   memory             9706Mi (7%)  1956Mi (1%)
   ephemeral-storage  0 (0%)       0 (0%)
 Events:              <none>
+```
+
+# POD 로그 확인(log)
+- ### POD에서 생성되는 로그 정보는 kubectl log {POD Name} 명령어로 확인 가능
+- ### 장애 등의 상황에서 POD 로그 확인 용도로 사용
+
+소스 코드 : [event-simulator-pod](./event-simulator-pod.yml)
+
+```
+kc apply -f event-simulator-pod.yml
+
+spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod
+[2020-06-16 00:23:37,716] INFO in event-simulator: USER1 is viewing page2
+[2020-06-16 00:23:38,718] INFO in event-simulator: USER3 is viewing page3
+[2020-06-16 00:23:39,719] INFO in event-simulator: USER1 is viewing page2
+[2020-06-16 00:23:40,721] INFO in event-simulator: USER1 logged in
+(...)
+```
+
+-f(follow) 옵션 사용 시, 로그 메시지 계속 모니터링 가능
+```
+spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod -f
+spkr@erdia22:~/02.k8s_code/01.POD$ kc logs event-simulator-pod
+[2020-06-16 00:23:37,716] INFO in event-simulator: USER1 is viewing page2
+[2020-06-16 00:23:38,718] INFO in event-simulator: USER3 is viewing page3
+[2020-06-16 00:23:39,719] INFO in event-simulator: USER1 is viewing page2
+[2020-06-16 00:23:40,721] INFO in event-simulator: USER1 logged in
+```
+
+컨테이너 접속 확인
+```
+spkr@erdia22:~$ kc exec -it event-simulator-pod -- sh
+/ # tail -f /log/app.log
+[2020-07-08 05:05:34,408] INFO in event-simulator: USER4 logged out
+[2020-07-08 05:05:35,410] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2020-07-08 05:05:35,410] INFO in event-simulator: USER1 is viewing page2
 ```
