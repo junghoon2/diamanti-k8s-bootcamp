@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: pi
 spec:
-  completions: 20  # 실행 완료 횟수
+  completions: 20  # 필요 실행 완료 횟수
   parallelism: 4  # 동시 실행 횟수
   template:
     metadata:

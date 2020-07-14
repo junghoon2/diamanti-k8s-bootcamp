@@ -54,7 +54,7 @@ pod/tiller-deploy-5668df8bc4-2m4pz evicted
 node/dia02 evicted
 ```
 
-### 2번 Node(dia02) 실행 중 Application 4번 Node(dia04) 자동 재기동 됨
+### 2번 Node(dia02)에서 실행 중인 Application이 4번 Node(dia04)에서 자동 재기동 됨
 ```
 spkr@erdia22:~/02.k8s_code/04.Deploy$ kc get pod -o wide
 NAME                       READY   STATUS    RESTARTS   AGE   IP             NODE    NOMINATED NODE   READINESS GATES
@@ -83,7 +83,9 @@ dia03   Ready    <none>   20d   v1.15.10
 dia04   Ready    <none>   20d   v1.15.10
 ```
 
-### Application Deploy 시 해당 노드(dia02)로 Application 정상 배포됨
+Node 원복 시 기존 Application이 자동으로 실행되지 않음 
+
+### 추가 Application Deploy 시 해당 노드(dia02)로 Application 정상 배포됨
 
 POD 20개 배표
 ```

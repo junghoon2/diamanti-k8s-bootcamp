@@ -86,7 +86,7 @@ NAME      TYPE      START ADDRESS   TOTAL     USED      GATEWAY       VLAN      
 web01     public    10.10.130.11    90        0         10.10.130.1   130
 ```
 
-- ### 생성 후 해당 네트워크 IP 대역 확인**
+- ### 생성 후 해당 네트워크 IP 대역 확인
 ```
 spkr@erdia22:/mnt/c/Users/erdia$ dctl network list
 NAME             TYPE      START ADDRESS   TOTAL     USED      GATEWAY       VLAN      NETWORK-GROUP   ZONE
