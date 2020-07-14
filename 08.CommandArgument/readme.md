@@ -4,6 +4,29 @@
   ### Sleep Command 추가하면 Process 실행(running) 상태를 유지하여 종료되지 않음 
 
 ### POD without Command
+```
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp$ kc create deployment busybox --image=busybox
+deployment.apps/busybox created
+
+Busybox POD 실행 시 Running 상태가 아니라 Completed 상태로 바로 종료되어 Exec(접속)등이 불가능
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp$ kc get pod
+NAME                              READY   STATUS              RESTARTS   AGE
+busybox-6c5b64fb4f-4d86h          0/1     CrashLoopBackOff    3          100s
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp$ kc describe pod busybox-6c5b64fb4f-4d86h
+Name:           busybox-6c5b64fb4f-4d86h
+
+(...)
+
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Completed
+
+(...)
+```
+
 소스 코드 : [POD Without Command](./centos-wo-command-pod.yml)
 ```
 vi centos-wo-command-pod.yml
