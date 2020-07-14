@@ -1,4 +1,4 @@
-# POD 등 Object 상세 정보 확인(describe)
+# POD 등 Kubernetes Object 상세 정보 확인(describe)
 - ### POD 상태, 이미지 버전 정보 등 Object 상세 정보 확인 용도
 - ### kubectl describe pod {POD Name} 
 

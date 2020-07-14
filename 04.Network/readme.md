@@ -69,7 +69,7 @@ web              public    10.10.120.11    90        1         10.10.120.1   120
 
 ### SR-IOV POD Network
 
-Node Port NAT 설정 없이 POD 접속  
+물리 서버의 Port의 NAT 설정 없이 바로 POD NIC로 바로 접속 가능  
 추가 NodePort 등의 Service 설정없이 curl로 해당 POD 바로 접속 가능(SR-IOV 가상 NIC 사용)
 ```
 spkr@erdia22:~/02.k8s_code/01.POD$ curl -I 10.10.120.11
