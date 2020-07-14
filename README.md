@@ -7,12 +7,13 @@
 - ### 4 Hour + 5 Days 과정
 
 ### 사전 준비 사항
-> * Window 기준 아래 Tool 설치
+* Window 기준 아래 Tool 설치
 > * [WSL(Window Subsystem Linux)](https://webdir.tistory.com/541)
 > * [MS Visual CODE, IDE](https://webnautes.tistory.com/1197)
 > * [Window Terminal(SSH Tool)](https://lts0606.tistory.com/341)
 > * [WSL - Terminal 연동](https://docs.microsoft.com/ko-kr/windows/terminal/)
 > * WSL Git 설치
+
 > * dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download, Linux 설치)
 
 ![Tool](./200707DctlTool.png)
@@ -30,7 +31,6 @@ source <(kubectl completion bash)
 > * 01_클러스터 관리 및 Default 네트워크 구성 부터 시작
 
 ### 자료
-
 * 교육 슬라이드 (별도 배포)  
 
 ### Youtube Resources
@@ -42,3 +42,10 @@ source <(kubectl completion bash)
 
 ### Tutorials
 * [이충섭(subicura) 님 도커, k8s 실습 GitHub Code](https://github.com/subicura/workshop-k8s-basic)
+
+### Blog
+* [아리수(Kakao) 님 Kubernetes](https://arisu1000.tistory.com/category/Kubernetes)
+* [Diamanti 관련 블로그(한글)](https://blog.naver.com/hoon295)
+
+### 책
+ * [쿠버네티스 입문](http://www.yes24.com/Product/Goods/85578606?scode=032&OzSrank=2)
