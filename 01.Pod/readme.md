@@ -2,6 +2,24 @@
 
 - ### YAML 파일을 이용하여 POD 생성(apply), 확인(get), 삭제(delete) 실습
 
+YAML 파일 옵션 변경
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
+  name: busybox  # POD 이름 지정 
+spec:
+  containers:
+  - name: busybox-pod
+    image: busybox:0.1  # 이미지 버전 지정, docker hub 등 tag 정보 지정
+    command:
+    - "/bin/sh"
+    - "-c"
+    - "sleep inf"
+```
+
 
 POD 생성
 ```
