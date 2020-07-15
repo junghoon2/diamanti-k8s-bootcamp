@@ -2,7 +2,7 @@
 - ### Disk fault, Node fail 등의 상황에서 Volume HA 구성을 위하여 Diamanti는 Node 간 Volume 복제(mirror) 기능 지원
 - ### Diamanti는 성능 향상을 위하여 기본적으로 POD와 Volume은 같은 Node에 배치
 - ### Mirror Volume은 같은 Cluster 내 다른 Node로 배치
-- ### 노드 간 Volume 복제 시 NVMe Over Ethernet Protocol을 사용하여 고성능 복제 지원
+- ### 노드 간 Volume 복제 시 NVMe Over Ethernet Protocol 및 전용 스토리지 네트워크(20G)을 사용하여 고성능 복제 가능
 
 ## StorageClass, PVC 생성
 소스 코드 : [high2m-sc](./high2m-sc.yml), [high2m-pvc](./high2m-pvc.yml)
