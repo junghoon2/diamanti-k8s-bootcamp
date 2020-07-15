@@ -1,5 +1,6 @@
 # POD 장애, Error 등의 상황은 상세 정보 확인(describe), 로그 확인(logs)으로 대부분 장애 처리가 가능함
 
+- ### kubernetes 장점이 메시지 및 로그가 굉장히 직관적이라 메시지 가이드에 따라 처리하면 대부분 처리 가능 
 
 ## POD 등 Kubernetes Object 상세 정보 확인(describe)
 - ### POD 상태, 이미지 버전 정보 등 Object 상세 정보 확인 용도
