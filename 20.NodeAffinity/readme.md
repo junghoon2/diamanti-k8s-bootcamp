@@ -1,9 +1,9 @@
 # Kubernetes Affinity
 - ### affinity(밀접한 관계, 선호)
 - ### POD 실행 시 원하는 노드로 할당 또는 제외해서 POD Scheduling 가능 
-- ### 또는 특정 POD가 실행 중인 Node를 제외하고 또는 선택해서 POD Scheduling
+- ### 또는 특정 POD가 실행 중인 Node를 제외하고 또는 그 노드만 선택해서 POD Scheduling 가능
 - ### 예를 들어 Redis Application을 같은 Node에 2개 이상 실행하지 않게 하거나 
-  ### Web Server와 Redis를 같은 Node에 실행하도록 설정 가능 
+  ### Web Server와 Redis를 같은 Node에 실행하게 설정 가능 
 
 ### Label 설정
 Scheduling 하기 전 먼저 Node 이름(Label) 지정 
