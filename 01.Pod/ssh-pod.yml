@@ -9,7 +9,7 @@ metadata:
 spec:
   containers:
   - name: ssh
-    image: erdia22/sshd:0.1
+    image: erdia22/sshd:0.1  # 이미지 당 단일 Process 실행 권고
     command:
       - "/bin/sh"
       - "-c"
