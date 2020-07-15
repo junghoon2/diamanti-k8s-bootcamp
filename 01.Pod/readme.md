@@ -1,6 +1,7 @@
 # 기본 Kubernetes POD YAML File 
 
 - ### YAML 파일을 이용하여 POD 생성(apply), 확인(get), 삭제(delete) 실습
+- ### 첨부 YAML 파일을 이용하여 다양한 POD Application 실행 가능
 
 YAML 파일 옵션 변경
 ```
@@ -54,6 +55,7 @@ Examples:
 ```
 
 삭제 시 시간 소요
+
 . delete 옵션 지정으로 빠르게 삭제 가능
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/01.Pod$ kc delete pod --help
