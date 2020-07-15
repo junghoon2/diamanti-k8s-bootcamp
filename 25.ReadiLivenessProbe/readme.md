@@ -1,6 +1,6 @@
 # Kubernetes Liveness Readiness Probe
-- ### 컨테이너 Hang 등의 상황으로 Process는 실행 중이나 정상 실행 중이지 않을 경우 컨테이너 강제 Restart 설정 기능(liveness Probe)
-- ### 컨테이너가 준비되지 않으면 외부 서비스로 부터 Requests를 받지 않도록 하는 기능(readiness Probe)
+- ### 컨테이너 Hang 등의 상황으로 Process는 실행 중이나 정상 실행 중이지 않을 경우 컨테이너 강제 Restart하는 기능(liveness Probe)
+- ### 컨테이너가 서비스를 받을 준비가 되어 있지 않으면 외부 서비스로 부터 Requests를 받지 않도록 하는 기능(readiness Probe)
 
 ### Liveness Probe
 소스 코드 : [http-liveness-pod](./http-liveness-pod.yml)

@@ -1,6 +1,6 @@
 # DIAMANTI Kubernetes Volume
-- ### NVMe Disk Kubernetes Volume 사용
-- ### Diamanti 자체 CSI(Container Storage Interface) 드라이버 제공
+- ### POD는 Remote Storage가 아닌 Local NVMe Disk를 바로 사용하여 성능 향상 효과가 큼
+- ### Diamanti 자체 CSI(Container Storage Interface) 드라이버 제공하여 안정적인 기술 지원
 - ### 단일 노드 당 1M IOPS 및 under ~ms Latency 제공(일반 VM 대비 20 ~ 30배 성능 향상)
 
 ### Storage Class 

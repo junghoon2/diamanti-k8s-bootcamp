@@ -1,4 +1,7 @@
-# POD 등 Kubernetes Object 상세 정보 확인(describe)
+# POD 장애, Error 등의 상황은 상세 정보 확인(describe), 로그 확인(logs)으로 대부분 장애 처리가 가능함
+
+
+## POD 등 Kubernetes Object 상세 정보 확인(describe)
 - ### POD 상태, 이미지 버전 정보 등 Object 상세 정보 확인 용도
 - ### kubectl describe pod {POD Name} 
 
@@ -166,7 +169,7 @@ Allocated resources:
 Events:              <none>
 ```
 
-# POD 로그 확인(log)
+## POD 로그 확인(log)
 - ### POD에서 생성되는 로그 정보는 kubectl log {POD Name} 명령어로 확인 가능
 - ### 장애 등의 상황에서 POD 로그 확인 용도로 사용
 
