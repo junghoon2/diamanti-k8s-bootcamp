@@ -1,6 +1,6 @@
 # DIAMANTI User 정책
-- ### 계정 별 Namespace 및 각 Component(Volume, POD 등) 별 권한(edit/view)을 다르게 할당하여 개별 User 별 권한 제어. RBAC(Role Based Access Control)
-- ### 예를 들어 test 유저는 test 네임스페이스 안에서 POD 삭제 등의 기능이 가능하고 다른 네임스페이스는 가능하지 않도록 설정
+- ### Cluster 계정 별 Namespace, Component(Volume, POD 등), 권한(edit/view) 할당 가능. RBAC(Role Based Access Control)
+  ### 예를 들어 test 유저는 test 네임스페이스 안에서 POD 생성/삭제 등의 기능만 다른 네임스페이스의 POD 등은 조회/생성 등이 가능하지 않도록 설정 가능 
 
 ### Namespace 및 Group 생성
 ```
