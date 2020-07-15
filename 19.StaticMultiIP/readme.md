@@ -1,5 +1,5 @@
 # POD 특정 IP & 복수 NIC 할당하기
-- ### Diamanti는 자체 CNI 기능으로 POD 별 특정 IP 지정 또는 복수의 NIC 할당 가능
+- ### Diamanti는 자체 CNI 기능으로 POD 별 특정 IP 지정 또는 단일 POD에 복수의 NIC를 할당 가능함
 
 ### 특정 IP를 지정하여 endpoint 생성
 - name : ep1
