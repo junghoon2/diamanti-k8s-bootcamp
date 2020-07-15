@@ -2,7 +2,7 @@
 - ### Diamanti는 자체 CNI 기능으로 POD 별 특정 IP 지정 또는 단일 POD에 복수의 NIC를 할당 가능함
 
 ### 특정 IP를 지정하여 endpoint 생성
-- name : ep1
+- endpoint name : ep1
 - 다른 명령어와 동일하게 명령어 예시 참조
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/26.StaticMultiIP$ dctl network list
