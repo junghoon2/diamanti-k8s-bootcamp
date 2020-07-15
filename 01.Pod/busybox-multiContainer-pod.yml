@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
+  name: busybox-multi-container  # POD 이름 지정 
+spec:
+  containers:
+  - name: busybox01
+    image: busybox:1.32.0  # 이미지 버전 지정, docker hub 등 tag 정보 지정
+    command:
+    - "/bin/sh"
+    - "-c"
+    - "sleep inf"
+  - name: busybox02
+    image: busybox  # 이미지 버전 지정, docker hub 등 tag 정보 지정
+    command:
+    - "/bin/sh"
+    - "-c"
+    - "sleep inf"
