@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
   - name: centos7
-    image: centos:7
+    image: centos:7ddd
     command:
       - "/bin/sh"
       - "-c"
