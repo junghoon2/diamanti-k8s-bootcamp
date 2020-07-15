@@ -1,6 +1,6 @@
 # Kubernetes ConfigMap
 
-- ### Kubernetes는 MySQL Port, 변수 등의 Application Configuration 관련 정보를 별도의 ConfigMap Object로 관리 가능 
+- ### Kubernetes는 MySQL Port, 변수 등의 Application 설정 관련 정보를 별도의 ConfigMap이라는 Kubernetes Object로 관리
 
 ### ConfigMap 예제
 - configmap 생성
