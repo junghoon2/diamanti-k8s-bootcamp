@@ -8,7 +8,16 @@ spec:
   - host: webdemo.com  # webdemo.com 으로 접속하는 트래픽 처리
     http:
       paths:
-      - path: /  # 별도 path 지정도 가능 
+      - path: /web  # 별도 path 지정도 가능 
         backend:
           serviceName: web  # backend 'web' service에 대하여 분기
           servicePort: 80
+      - path: /app  # 별도 path 지정도 가능 
+        backend:
+          serviceName: web01  # backend 'web01' service에 대하여 분기
+          servicePort: 80
+      - path: /httpd  # 별도 path 지정도 가능 
+        backend:
+          serviceName: web02  # backend 'web01' service에 대하여 분기
+          servicePort: 80
+  

@@ -3,10 +3,10 @@ kind: Service
 metadata:
   labels:
     run: web
-  name: web
+  name: web01
 spec:
   selector:
-    run: web  # POD Label 지정
+    run: web01  # POD Label 지정
     # run: web01
   clusterIP: None
   type: ClusterIP  
