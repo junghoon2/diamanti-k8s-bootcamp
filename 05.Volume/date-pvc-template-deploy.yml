@@ -24,7 +24,15 @@ spec:
         volumeMounts:  # Volume을 POD에 어디에 마운트 할 것인지
         - name: date-vol  # Volume 이름
           mountPath: /data  # Mount 이름 
-      volumes:  # 어떤 Volume을 사용할 것인지
-      - name: date-vol
-        persistentVolumeClaim:
-          claimName: perf-pvc  ## PVC 이름 지정
+  volumeClaimTemplates:
+    - metadata:
+        name: date-vol
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: high2m
+        volumeMode: Filesystem
+          

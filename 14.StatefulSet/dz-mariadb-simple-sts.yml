@@ -78,8 +78,8 @@ spec:
           name: mariadb-localtime
         - mountPath: /home/mysql/data
           name: mariadb-data
-        - mountPath: /nfs
-          name: nfs  
+        # - mountPath: /nfs
+        #   name: nfs  
       volumes:
         - configMap:
             defaultMode: 420
@@ -89,9 +89,9 @@ spec:
             path: /etc/localtime
             type: File
           name: mariadb-localtime     
-        - name: nfs
-          persistentVolumeClaim:
-            claimName: nfs
+        # - name: nfs
+        #   persistentVolumeClaim:
+        #     claimName: nfs
   updateStrategy:
     rollingUpdate:
       partition: 0
