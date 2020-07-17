@@ -5,12 +5,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: store
+      app: redis
   replicas: 3
   template:
     metadata:
       labels:
-        app: store
+        app: redis
     spec:
       affinity:
         podAntiAffinity: ## POD 할당되지 않은 Node로 Scheduling
@@ -20,7 +20,7 @@ spec:
               - key: app  ## Key 선택
                 operator: In
                 values:
-                - store
+                - redis
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: redis-server

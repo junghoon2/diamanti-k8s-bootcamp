@@ -5,12 +5,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: web-store
+      app: web
   replicas: 3
   template:
     metadata:
       labels:
-        app: web-store
+        app: web
     spec:
       affinity:
         podAntiAffinity:  ## 다른 Node로 실행
@@ -20,7 +20,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - web-store
+                - web
             topologyKey: "kubernetes.io/hostname"
         podAffinity:  ## 같은 Node로 실행
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -29,7 +29,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - store
+                - redis
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: web-app
