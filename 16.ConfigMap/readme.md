@@ -42,6 +42,20 @@ Mastercard
 Events:  <none>
 ```
 
+ConfigMap from file 
+
+```
+spkr@erdia22:~/12.k8s_code/61.PJT/01.MariaDB-DZ$ kc create cm mariadb-cm -n test --from-file=my.cnf
+configmap/mariadb-cm created
+
+spkr@erdia22:~/12.k8s_code/61.PJT/01.MariaDB-DZ$ kc get cm -n test
+NAME                                DATA   AGE
+helm-mariadb-galera-configuration   1      7d9h
+helm-mariadb-galera-tests           1      7d9h
+mariadb-cm                          1      68s
+mariadb-exporter-cm                 1      8s
+```
+
 ### POD ConfigMap 사용 
 - YAML 파일 envFrom, configMapRef 추가 후 configMap 이름 지정 
 
