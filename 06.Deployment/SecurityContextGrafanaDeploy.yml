@@ -15,7 +15,7 @@ spec:
       app: grafana
   strategy:
     rollingUpdate:
-      maxSurge: 25%
+      maxSurge: 25%  # Surge 외과 수술
       maxUnavailable: 25%
     type: RollingUpdate
   template:
@@ -25,6 +25,8 @@ spec:
       labels:
         app: grafana
     spec:
+      # securityContext:
+      #   runAsUser: 0    
       containers:
       - image: grafana/grafana:7.0.5
         imagePullPolicy: IfNotPresent
