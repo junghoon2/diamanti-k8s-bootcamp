@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs01-pvc
-  # namespace: test
+  namespace: ac1-db
 spec:
   accessModes:
     - ReadWriteMany
