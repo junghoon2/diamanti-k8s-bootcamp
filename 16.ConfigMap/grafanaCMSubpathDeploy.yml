@@ -5,7 +5,7 @@ metadata:
   labels:
     app: grafana
   name: grafana
-  namespace: diamanti-system
+  namespace: monitoring
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
@@ -13,15 +13,10 @@ spec:
   selector:
     matchLabels:
       app: grafana
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%  # Surge 외과 수술
-      maxUnavailable: 25%
-    type: RollingUpdate
   template:
     metadata:
       annotations:
-        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+        diamanti.com/endpoint0: '{"network":"grafana","perfTier":"high"}'
       labels:
         app: grafana
     spec:
@@ -36,6 +31,14 @@ spec:
         resources:
           requests:
             memory: 1Gi
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/grafana/grafana.ini
+            subPath: grafana.ini
+      volumes:
+        - name: config-volume
+          configMap:
+            name: grafana-cm
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

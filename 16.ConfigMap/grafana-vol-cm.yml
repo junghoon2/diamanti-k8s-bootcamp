@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-cm
+  namespace: monitoring
+data:
+  grafana.ini: |
+    [smtp]
+    enabled = true
+    host = smtp.gmail.com:587
+    user = erdia22@gmail.com
+    password = vsnmipwxjrzkcwew
+    ;cert_file =
+    ;key_file =
+    skip_verify = true
+    from_address = erdia22@gmail.com
+    from_name = Grafana
+    # EHLO identity in SMTP dialog (defaults to instance_name)
+    ;ehlo_identity = dashboard.example.com
