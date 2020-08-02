@@ -34,7 +34,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: status.podIP
-        # image: nkkim/mariadb:10.1.33.6
+        # image: nkkim/mariadb:10.1.33.4
         image: mariadb:10.1.33
         imagePullPolicy: Always
         lifecycle:
