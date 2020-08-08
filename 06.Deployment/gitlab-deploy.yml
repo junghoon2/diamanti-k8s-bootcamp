@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab
+  labels:
+    app: gitlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab  # POD label과 일치
+  template:    
+    metadata:
+      labels:
+        app: gitlab # Selector label과 일치
+    spec:
+      containers:
+      - name: gitlab
+        image: gitlab/gitlab-ce:13.0.12-ce.0
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "sleep inf"
+        volumeMounts:  # Volume을 POD에 어디에 마운트 할 것인지
+        - name: gitlab-config  # Volume 이름
+          mountPath: /srv/gitlab/config  # Mount point 이름 
+        - name: gitlab-logs 
+          mountPath: /srv/gitlab/logs  
+        - name: gitlab-data 
+          mountPath: /srv/gitlab/data            
+      volumes:  # 어떤 Volume을 사용할 것인지
+      - name: gitlab-config
+        persistentVolumeClaim:
+          claimName: gitlab-config  ## PVC 이름 지정        
+      - name: gitlab-logs
+        persistentVolumeClaim:
+          claimName: gitlab-logs  ## PVC 이름 지정        
+      - name: gitlab-data
+        persistentVolumeClaim:
+          claimName: gitlab-data  ## PVC 이름 지정 
