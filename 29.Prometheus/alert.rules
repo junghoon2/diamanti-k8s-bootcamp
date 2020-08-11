@@ -2,12 +2,13 @@ groups:
 - name: volume_space
   rules:
   - alert: VolumeOutOfSpace
-    expr: collectd_df_df_complex{df="nvme2n1", source="dia04", type='free'} /1024 /1024 /1024 < 3
+    expr: collectd_df_df_complex{df="nvme2n1", source="dia04", type='free'} /1024 /1024 /1024 < 100
     for: 1m
     labels:
       severity: warning
     annotations:
-      summary: Volume {{ $labels.instance }} is out of space
+      summary: Volume {{ $labels.df }} {{ $labels.source }} is out of space  # 정보 입력 가능
+      description: Check the dctl volume list for finding pod name
 - name: NodeDown
   rules:
   - alert: nodedown
