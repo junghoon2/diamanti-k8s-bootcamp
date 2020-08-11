@@ -1,0 +1,60 @@
+groups:
+- name: volume_space
+  rules:
+  - record: "job:diamanti_available_space:myjob"
+    expr: min_over_time(diamanti_available_space{}[5m])
+  - alert: VolumeOutOfSpace
+    expr: job:diamanti_available_space:myjob < 1
+    for: 1m
+    labels:
+      severity: info
+    annotations:
+      summary: Volume {{ $labels.instance }} is out of space
+- name: NodeDown
+  rules:
+  - alert: nodedown
+    expr: up{job="node-exporter"} == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 30 s"
+- name: memory
+  rules:
+  - alert: OutOfMemory
+    expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 98
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Out of memory (instance {{ $labels.instance }})"
+      description: "Node memory is filling up (< 98% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+- name: networkIn
+  rules:
+  - alert: UnusualNetworkThroughputIn
+    expr: sum by (instance) (irate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 1
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Unusual network throughput in (instance {{ $labels.instance }})"
+      description: "Host network interfaces are probably receiving too much data (> 1 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+- name: networkOut
+  rules:
+  - alert: UnusualNetworkThroughputOut
+    expr: sum by (instance) (irate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Unusual network throughput out (instance {{ $labels.instance }})"
+      description: "Host network interfaces are probably sending too much data (> 1 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+- name: ExceedMemoryUsage
+  rules:
+  - alert: ExceedMemoryUsage
+    expr: diamanti_container_memory_usage_bytes{container_name="memory-demo-ctr"} > 195000000
+    for: 1m
+    annotations:
+      summary: "POD {{ $labels.instance }} memory uses more 195M"
+      description: "Check memory usage of {{ $labels.instance }}. Delete drop_cache memory 'echo 3 /proc/sys/vm/drop_caches'"
