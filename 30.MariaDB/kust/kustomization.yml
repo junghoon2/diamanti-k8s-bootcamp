@@ -2,3 +2,6 @@ secretGenerator:
 - name: mysql-pass
   literals:
   - password=password
+generatorOptions:
+  disableNameSuffixHash: true
+    

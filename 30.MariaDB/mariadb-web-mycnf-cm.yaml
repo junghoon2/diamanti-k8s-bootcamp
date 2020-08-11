@@ -1,0 +1,155 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: test-db
+data:
+  my.cnf: |
+    [mysqld]
+    ###### General ######
+    user                      = mysql
+    port                      = 13306
+    #basedir                   = /usr 
+    # datadir                   = /home/mysql/data
+    socket                   = /tmp/mysql.sock
+    tmpdir                    = /tmp
+    lc_messages_dir           = /usr/share/mysql/english
+    lc_messages               = en_US
+    character-set-server      = utf8mb4
+    collation-server          = utf8mb4_general_ci
+    init_connect              = "set collation_connnection=utf8mb4_general_ci"
+    init_connect              = "set names utf8mb4"
+    lower_case_table_names 	  = 1
+    group_concat_max_len = 5242880
+
+    ###### Other ######
+    #performance_schema              = 1
+    max_connections                  = 3000
+    max_connect_errors               = 99999
+    max_allowed_packet               = 1024M
+    wait_timeout                     = 3600
+    interactive_timeout              = 3600
+    query_cache_size                 = 0
+    query_cache_limit                = 0
+    query_cache_type                 = 0
+    log_bin_trust_function_creators  = 1
+    table_open_cache = 60000
+    table_definition_cache = 60000
+    skip-name-resolve
+    skip-host-cache
+    thread_cache_size = 32
+
+    ###### Session Memory ######
+    sort_buffer_size = 1M
+    join_buffer_size = 1M
+    read_buffer_size = 1M
+    read_rnd_buffer_size = 1M
+    max_heap_table_size = 1024M
+    tmp_table_size = 1024M
+
+    ###### MyISAM Engine ######
+    key_buffer_size = 32M
+    myisam-recover-options = backup,force
+
+    ###### Aria Engine ######
+    aria_pagecache_buffer_size = 1024M
+
+    ###### InnoDB Engine ######
+    innodb_file_format             = Barracuda
+    innodb_file_format_max         = Barracuda
+    innodb_file_per_table          = 1
+    innodb_data_file_path          = ibdata1:100M:autoextend
+    innodb_data_home_dir           = /home/mysql/data
+    innodb_io_capacity             = 400
+    innodb_thread_concurrency      = 0
+    innodb_max_dirty_pages_pct     = 75
+    innodb_stats_on_metadata       = 0
+    innodb_lock_wait_timeout       = 50
+    innodb_buffer_pool_size        = 32G
+    innodb_buffer_pool_instances   = 16
+    innodb_log_buffer_size         = 512M
+    innodb_log_file_size           = 512M
+    innodb_log_files_in_group      = 3
+    innodb_open_files              = 60000
+    #innodb_flush_log_at_trx_commit = 1
+    innodb_flush_log_at_trx_commit = 0
+    innodb_flush_method            = O_DIRECT
+    #innodb_print_all_deadlocks    = 1
+    innodb_doublewrite             = 1
+
+    ###### MariaDB ThreadPool ######
+    #thread_pool_size         = 16
+    #thread_handling          = pool-of-threads
+    #thread_pool_max_threads  = 1000
+
+    ###### Logging ######
+    #general_log        = 1
+    general_log        = 0
+    general_log_file   = /home/mysql/log/mariadb_general.log
+    slow_query_log      = 1
+    slow_query_log_file = /home/mysql/log/mariadb_slow.log
+    long_query_time     = 1
+    log-error           = /home/mysql/log/mariadb_error.log
+    expire_logs_days    = 7
+
+    ###### Galera Config Start ######
+    ## Galera Base Config ##
+    server-id                = 10
+    #log-bin                  = /home/mysql/log/mysql-bin
+    log-bin-index            = /home/mysql/log/mysql-bin.index
+    max_binlog_size          = 1G
+    expire_logs_days         = 3
+
+    transaction_isolation    = READ-COMMITTED
+    binlog_format            = ROW
+    log_slave_updates	 = 1
+    default-storage-engine   = INNODB
+    innodb_autoinc_lock_mode = 2
+
+    ## Galera Wsrep Options ##
+    wsrep_on                       = 1
+    wsrep_provider                 = /usr/lib64/galera/libgalera_smm.so
+    wsrep_cluster_name             = "diamnati_db_version_test_06"
+    wsrep_cluster_address          = "gcomm://"
+    # wsrep_node_name                = mariadb-doner-0
+    # wsrep_node_address             = 172.16.112.195
+    wsrep_data_home_dir            = /home/mysql/data
+    wsrep_log_conflicts            = ON
+    wsrep_drupal_282555_workaround = ON
+    wsrep_max_ws_rows              = 1048576
+    wsrep_max_ws_size              = 2147483647
+    wsrep_replicate_myisam         = ON
+    wsrep_sync_wait		       = 1
+
+    ## Galera Wsrep_Provider_Options ##
+    wsrep_provider_options = "evs.send_window=512;evs.user_send_window=256;gcache.dir=/home/mysql/data; gcache.size=1G; gcs.fc_factor=0.99; gcs.fc_limit=256;"
+
+
+    ## Galera Wsrep State Transfer Options ##
+    # method : rsync, mysqldump, xtrabaxkup, mariabackup
+    #wsrep_sst_receive_address =
+    #wsrep_sst_donor           =
+    wsrep_sst_method           = rsync
+    wsrep_sst_auth             = sst:123
+
+    ###### Galera Config End ######
+
+    [mysqldump]
+    quick
+    max_allowed_packet = 1024M
+
+    [mysqlhotcopy]
+    interactive-timeout = 3600
+
+    [mysqld_safe]
+    open_files_limit = 65535
+    socket                   = /tmp/mysql.sock
+    [mysql]
+    socket	= /tmp/mysql.sock
+
+    [mariabackup]
+    open_files_limit = 65535
+    close_files = 1
+
+    [mysqladmin]
+    socket =/tmp/mysql.sock 
