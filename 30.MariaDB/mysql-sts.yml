@@ -1,31 +1,19 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-  namespace: test-db
-  labels:
-    app: wordpress
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: wordpress-mysql
   namespace: test-db
+  annotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'  # network 이름 지정
   labels:
     app: wordpress
 spec:
+  serviceName: wordpress-db
+  replicas: 1
   selector:
     matchLabels:
       app: wordpress
       tier: mysql
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -35,6 +23,13 @@ spec:
       containers:
       - image: mysql:5.6
         name: mysql
+        resources:
+          requests:
+            cpu: "30"
+            memory: 64Gi
+          limits:
+            cpu: "30"
+            memory: 64Gi
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
@@ -47,7 +42,15 @@ spec:
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
+        - name: config-volume
+          # mountPath: /etc/my.cnf.d
+          mountPath: /etc/my.cnf
+          subPath: my.cnf
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pv-claim
+      - name: config-volume
+        configMap:
+          name: mysql-config01
+          optional: true

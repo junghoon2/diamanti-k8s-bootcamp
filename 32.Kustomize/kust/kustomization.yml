@@ -1,3 +1,4 @@
+# kc kustomize <directory>
 # secret 파일 만들어 준다. 
 secretGenerator:
 - name: mysql-pass

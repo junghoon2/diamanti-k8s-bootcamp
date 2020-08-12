@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: test-db
+data:
+  my.cnf: |
+    [mysqld]
+    innodb_buffer_pool_size          = 96GB
+    max_connections                  = 2000    
+    innodb_flush_log_at_trx_commit   = 1
+    sync_binlog                      = 1

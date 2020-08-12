@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: registry
+    chart: registry-0.5.0
+    heritage: Tiller
+    release: gitlab
+  name: gitlab-registry
+  namespace: gitlab
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: registry
+      release: gitlab
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: registry
+        release: gitlab
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: registry
+                  release: gitlab
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      containers:
+      - image: registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v2.9.1-gitlab
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /debug/health
+            port: 5001
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: registry
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /debug/health
+            port: 5001
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/docker/registry/
+          name: registry-server-config
+          readOnly: true
+        - mountPath: /etc/ssl/certs/
+          name: etc-ssl-certs
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - image: registry.gitlab.com/gitlab-org/build/cng/alpine-certificates:20171114-r3
+        imagePullPolicy: IfNotPresent
+        name: certificates
+        resources:
+          requests:
+            cpu: 50m
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/ssl/certs
+          name: etc-ssl-certs
+      - command:
+        - sh
+        - /config/configure
+        image: busybox:latest
+        imagePullPolicy: IfNotPresent
+        name: configure
+        resources:
+          requests:
+            cpu: 50m
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /config
+          name: registry-secrets
+        - mountPath: /registry
+          name: registry-server-config
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: registry-server-config
+      - name: registry-secrets
+        projected:
+          defaultMode: 420
+          sources:
+          - configMap:
+              name: gitlab-registry
+          - secret:
+              items:
+              - key: registry-auth.crt
+                path: certificate.crt
+              name: gitlab-registry-secret
+          - secret:
+              items:
+              - key: secret
+                path: httpSecret
+              name: gitlab-registry-httpsecret
+          - secret:
+              name: gitlab-minio-secret
+      - emptyDir:
+          medium: Memory
+        name: etc-ssl-certs
