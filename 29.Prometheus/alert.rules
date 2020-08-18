@@ -2,7 +2,7 @@ groups:
 - name: volume_space
   rules:
   - alert: VolumeOutOfSpace
-    expr: collectd_df_df_complex{df="nvme2n1", source="dia04", type='free'} /1024 /1024 /1024 < 100
+    expr: collectd_df_df_complex{df=~"nvme4n1",exported_instance="adzdia03",type="free"}/(1024*1024*1024) < 300
     for: 1m
     labels:
       severity: warning

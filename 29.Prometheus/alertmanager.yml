@@ -6,7 +6,7 @@ global:
   smtp_from: 'erdia22@gmail.com'
   #smtp_from: 'alertmanager@example.org'
   smtp_auth_username: 'erdia22@gmail.com'
-  smtp_auth_password: 
+  smtp_auth_password: ''
 
 # The root route on which each incoming alert enters.
 route:
@@ -76,7 +76,7 @@ receivers:
 
 - name: 'email_receiver'
   email_configs:
-  - to: 'erdia22@gmail.com, leejunghoon@spkr.co.kr'  # 다중 사용자는 ', ' 괄호 안 쉼표 사용
+  - to: 'erdia22@gmail.com, leejunghoon@spkr.co.kr, chunma@douzone.com'  # 다중 사용자는 ', ' 괄호 안 쉼표 사용
 #    smarthost: 'smtp.worksmobile.com:587"
 #    from: 'nkkim@edentns.com'
 #    auth_username: 'nkkim@edentns.com'
