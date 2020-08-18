@@ -10,6 +10,13 @@ spec:
   containers:
   - image: severalnines/sysbench
     name: sysbench
+    resources:
+      requests:
+        cpu: "30"
+        memory: 64Gi
+      limits:
+        cpu: "30"
+        memory: 64Gi
     command:
     - "/bin/sh"
     - "-c"
@@ -21,4 +28,3 @@ spec:
   - name: mariadb-pvc
     persistentVolumeClaim:
       claimName: mariadb-pvc
-  restartPolicy: Never
