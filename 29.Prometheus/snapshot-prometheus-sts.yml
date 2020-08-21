@@ -5,11 +5,10 @@ metadata:
     diamanti.com/app: prometheus
     diamanti.com/cluster-service: "true"
     version: prometheus-v1.0
-  name: prometheus-v1
+  name: prometheus-snap-v1
   namespace: diamanti-system
 spec:
-  podManagementPolicy: Parallel
-  replicas: 3
+  replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -24,6 +23,8 @@ spec:
         diamanti.com/cluster-service: "true"
         version: prometheus-v1.0
     spec:
+      # nodeSelector:
+      #   kubernetes.io/hostname: dia01
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -38,22 +39,21 @@ spec:
                 - dia01
                 - dia02
                 - dia03
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: diamanti.com/app
-                operator: In
-                values:
-                - prometheus
-            topologyKey: kubernetes.io/hostname
+        # podAntiAffinity:
+        #   requiredDuringSchedulingIgnoredDuringExecution:
+        #   - labelSelector:
+        #       matchExpressions:
+        #       - key: diamanti.com/app
+        #         operator: In
+        #         values:
+        #         - prometheus
+        #     topologyKey: kubernetes.io/hostname
       containers:
       - command:
         - sh
         - -c
         - /bin/prometheus --config.file=/etc/prometheus/config/prometheus.yml --storage.tsdb.retention.time=180d
-          --web.enable-admin-api 
-          --storage.tsdb.no-lockfile --storage.tsdb.path=/prometheus --web.enable-lifecycle
+          --storage.tsdb.no-lockfile --storage.tsdb.path=/prometheus/snapshots/20200821T014329Z-a82139158f23cbc --web.enable-lifecycle
           --web.console.libraries=/usr/share/prometheus/console_libraries --web.console.templates=/usr/share/prometheus/consoles
         image: quay.io/prometheus/prometheus:v2.10.0
         imagePullPolicy: IfNotPresent
@@ -70,7 +70,7 @@ spec:
         - mountPath: /etc/prometheus/config
           name: config-volume
           readOnly: true
-        - mountPath: /prometheus
+        - mountPath: /prometheus/snapshots
           name: prometheus-persistent-storage
       dnsPolicy: ClusterFirst
       hostNetwork: true
@@ -86,7 +86,7 @@ spec:
           type: ""
         name: config-volume
       - hostPath:
-          path: /var/lib/diamanti/stats
+          path: /var/lib/diamanti/stats/snapshots
           type: ""
         name: prometheus-persistent-storage
   # volumeClaimTemplates:
@@ -100,7 +100,3 @@ spec:
   #         storage: 400Gi
   #     storageClassName: medium
   #     volumeMode: Filesystem
-  updateStrategy:
-    rollingUpdate:
-      partition: 0
-    type: RollingUpdate

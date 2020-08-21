@@ -6,7 +6,7 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-      - prometheus-svc:9093
+      - adzdia03:9093
     scheme: http
     timeout: 10s
 rule_files:

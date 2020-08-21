@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: static-volume
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  csi:  # flexvol 아닌 csi로 volume 생성  
+    driver: dcx.csi.diamanti.com
+    fsType: xfs
+    volumeAttributes:
+      name: static-volume
+      perfTier: high  # perfTier 할당이 되나? 
+    volumeHandle: static-volume
+  volumeMode: Filesystem

@@ -19,7 +19,6 @@ spec:
     metadata:
       annotations:
         diamanti.com/endpoint: none
-      creationTimestamp: null
       labels:
         diamanti.com/app: alertmanager
         diamanti.com/cluster-service: "true"
@@ -32,7 +31,7 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - dia03  # 왜 그럴까?
+                - adzdia03  # 왜 그럴까?
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:

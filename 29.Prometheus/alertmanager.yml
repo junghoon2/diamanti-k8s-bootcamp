@@ -76,7 +76,7 @@ receivers:
 
 - name: 'email_receiver'
   email_configs:
-  - to: 'erdia22@gmail.com, leejunghoon@spkr.co.kr, chunma@douzone.com'  # 다중 사용자는 ', ' 괄호 안 쉼표 사용
+  - to: 'erdia22@gmail.com, leejunghoon@spkr.co.kr, nkkim@edentns.com, chkim@spkr.co.kr, chunma@douzone.com, ys2cdh@douzone.com, kyounghak1@douzone.com'  # 다중 사용자는 ', ' 괄호 안 쉼표 사용
 #    smarthost: 'smtp.worksmobile.com:587"
 #    from: 'nkkim@edentns.com'
 #    auth_username: 'nkkim@edentns.com'

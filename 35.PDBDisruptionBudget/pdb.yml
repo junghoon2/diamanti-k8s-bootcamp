@@ -1,0 +1,16 @@
+# Set a Pod Disruption Budget
+
+# A pod disruption budget sets an absolute minimum number of pods that need to run for your application to still be available.
+# A PDB selects the pods by specifying the label of the pod:
+
+# 최소한 유지되어야 할 POD 개수 지정 가능
+# Galera 2ea POD 이상 유지되어야 하는 경우 사용 가능 
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: nginx-pdb
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: nginx

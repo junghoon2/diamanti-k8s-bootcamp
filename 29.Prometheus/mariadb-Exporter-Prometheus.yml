@@ -6,7 +6,7 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-      - adzdia03:9093
+      - dia03:9093
     scheme: http
     timeout: 10s
 rule_files:
@@ -20,10 +20,10 @@ scrape_configs:
   scheme: http
   static_configs:
   - targets:
-    - adzdia01:9103
-    - adzdia02:9103
-    - adzdia03:9103
-    - adzdia04:9103
+    - dia01:9103
+    - dia02:9103
+    - dia03:9103
+    - dia04:9103
   relabel_configs:
   - source_labels: [__address__]
     separator: ;
@@ -80,10 +80,10 @@ scrape_configs:
   scheme: http
   static_configs:
   - targets:
-    - adzdia01:9111
-    - adzdia02:9111
-    - adzdia03:9111
-    - adzdia04:9111
+    - dia01:9111
+    - dia02:9111
+    - dia03:9111
+    - dia04:9111
   relabel_configs:
   - source_labels: [__address__]
     separator: ;
@@ -206,53 +206,9 @@ scrape_configs:
   scrape_interval: 10s
   static_configs:
   - targets:
-    - 10.82.1.124:9104
-    - 10.82.1.125:9104
-    - 10.82.1.126:9104
+    - 10.10.110.14:9104
     labels:
-      group: 'ac1-web-db'
-  - targets:
-    - 10.82.1.50:9104
-    - 10.82.1.51:9104
-    - 10.82.1.52:9104
-    labels:
-      group: 'ac1-mail-db'
-  - targets:
-    - 10.82.1.114:9104
-    - 10.82.1.115:9104
-    - 10.82.1.116:9104
-    labels:
-      group: 'ac2-web-db'
-  - targets:
-    - 10.82.1.117:9104
-    - 10.82.1.118:9104
-    - 10.82.1.119:9104
-    labels:
-      group: 'ac2-mail-db'
-  - targets:
-    - 10.82.1.90:9104
-    - 10.82.1.91:9104
-    - 10.82.1.92:9104
-    labels:
-      group: 'ac3-web-db'
-  - targets:
-    - 10.82.1.87:9104
-    - 10.82.1.88:9104
-    - 10.82.1.89:9104
-    labels:
-      group: 'ac3-mail-db'
-  - targets:
-    - 10.82.1.155:9104
-    - 10.82.1.156:9104
-    - 10.82.1.157:9104
-    labels:
-      group: 'ac4-web-db'
-  - targets:
-    - 10.82.1.152:9104
-    - 10.82.1.153:9104
-    - 10.82.1.154:9104
-    labels:
-      group: 'ac4-mail-db'
+      group: 'test-db'
   relabel_configs:
   - source_labels: [__address__]
     separator: ;

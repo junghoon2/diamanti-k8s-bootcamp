@@ -191,10 +191,11 @@ scrape_configs:
   honor_labels: true
   honor_timestamps: true
   params:
-    match[]:
-    - '{job="node-exporter"}'
-    - '{job="collectd-exporter"}'
-    - '{__name__=~"job:.*"}'
+    # match[]:
+    # - '{job="node-exporter"}'
+    # - '{job="collectd-exporter"}'
+    # - '{job="mysql-exporter"}'
+    # - '{__name__=~"job:.*"}'
   scrape_interval: 10s
   scrape_timeout: 10s
   metrics_path: /federate
