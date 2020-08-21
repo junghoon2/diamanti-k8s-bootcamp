@@ -1,13 +1,13 @@
 groups:
-- name: volume_space
+- name: VolumeOutOfSpace
   rules:
   - alert: VolumeOutOfSpace
-    expr: collectd_df_df_complex{df=~"nvme.*",type="free"}/(1024*1024*1024) < 300
+    expr: collectd_df_df_complex{df=~"nvme.*",type="free"}/(1024*1024*1024) < 50
     for: 1m
     labels:
       severity: warning
     annotations:
-      summary: Volume {{ $labels.df }} {{ $labels.source }} is out of space  # 정보 입력 가능
+      summary: Volume {{ $labels.df }} {{ $labels.source }} is out of space 
       description: "MariaDB Instance Volume 용량이 50G 미만 입니다. 해당 POD 이름은 Volume 정보 기준(dctl volume list|grep )으로 수동 검색해 주십시요."
 - name: MariaDBDown
   rules:
@@ -18,7 +18,7 @@ groups:
       severity: critical
     annotations:
       summary: "MariaDB {{ $labels.source }} of {{ $labels.group }} down"
-      description: "{{ $labels.source }} of {{ $labels.group }} MariaDB has been down for more than 30s"
+      description: "{{ $labels.source }} of {{ $labels.group }} Down, MariaDB Instance가 Down 되었습니다. 컨테이너 접속 후 재기동 바랍니다."
 - name: NodeDown
   rules:
   - alert: nodedown
