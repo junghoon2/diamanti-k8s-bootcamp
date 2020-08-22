@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: nginx
+  labels:
+    app: web  # Service 등에서 참조할 Lable 이름 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: nginx
+        # image: nginxdemos/hello
+        image: nginx:1.19.2
+        # image: nginx      
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: '1'
+        volumeMounts:
+          - name: nginx-conf
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+          - name: nginx-default-conf
+            mountPath: /etc/nginx/conf.d/default.conf
+            subPath: default.conf
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf-cm
+            # items:
+            # - key: nginx.conf
+            #   path: nginx.conf
+        - name: nginx-default-conf
+          configMap:
+            name: nginx-default-conf-cm
+            # items:
+            # - key: default.conf
+            #   path: default.conf
