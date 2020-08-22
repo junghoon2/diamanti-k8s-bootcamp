@@ -19,7 +19,6 @@ spec:
     metadata:
       annotations:
         diamanti.com/endpoint: none
-      creationTimestamp: null
       labels:
         diamanti.com/app: prometheus
         diamanti.com/cluster-service: "true"
