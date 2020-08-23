@@ -6,47 +6,77 @@ metadata:
 data:
   default.conf: |
     server {
-        listen       80;
-        listen  [::]:80;
-        server_name  localhost;
+      listen 80 default_server;
+      server_name _;
+      # return 404;
+      return 301 https://$host$request_uri;  # 동일한 URL로 redirect
+    }
 
-        #charset koi8-r;
-        #access_log  /var/log/nginx/host.access.log  main;
+    server {
+        listen 443 ssl;
+        server_name assets.example.com;
+        root /usr/share/nginx/assets;
+    }
 
-        location / {
-            root   /usr/share/nginx/html;
-            index  index.html index.htm;
-        }
+    server {
+      listen 443 ssl default_server ;
+      server_name  _;
+      root /usr/share/nginx/html;
 
-        #error_page  404              /404.html;
+      #charset koi8-r;
+      #access_log  /var/log/nginx/host.access.log  main;
 
-        # redirect server error pages to the static page /50x.html
-        #
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
-        }
+      ssl_certificate /etc/nginx/ssl/public.pem;
+      ssl_certificate_key /etc/nginx/ssl/private.key;
 
-        # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-        #
-        #location ~ \.php$ {
-        #    proxy_pass   http://127.0.0.1;
-        #}
+      rewrite ^(/.*)\.html(\?.*)?$ $1$2 redirect;  # 2개 그룹으로 나눈다
+      rewrite ^/(.*)/$ /$1 redirect;
 
-        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-        #
-        #location ~ \.php$ {
-        #    root           html;
-        #    fastcgi_pass   127.0.0.1:9000;
-        #    fastcgi_index  index.php;
-        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-        #    include        fastcgi_params;
-        #}
+      # location / {
+      #     root   /usr/share/nginx/html;
+      #     index  index.html index.htm;
+      # }
 
-        # deny access to .htaccess files, if Apache's document root
-        # concurs with nginx's one
-        #
-        #location ~ /\.ht {
-        #    deny  all;
-        #}
+      location / {
+        try_files $uri/index.html $uri.html $uri/ $uri =404;
+      }
+
+      location = /admin {
+        auth_basic "Login Required";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+        try_files $uri/index.html $uri.html $uri/ $uri =404;
+      }
+
+
+      # redirect server error pages to the static page /50x.html
+      #
+      error_page  404              /404.html;
+      error_page   500 501 502 503 504  /50x.html;
+
+      # location = /50x.html {
+      #     root   /usr/share/nginx/html;
+      # }
+
+      # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+      #
+      #location ~ \.php$ {
+      #    proxy_pass   http://127.0.0.1;
+      #}
+
+      # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+      #
+      #location ~ \.php$ {
+      #    root           html;
+      #    fastcgi_pass   127.0.0.1:9000;
+      #    fastcgi_index  index.php;
+      #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+      #    include        fastcgi_params;
+      #}
+
+      # deny access to .htaccess files, if Apache's document root
+      # concurs with nginx's one
+      #
+      #location ~ /\.ht {
+      #    deny  all;
+      #}
     }

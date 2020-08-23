@@ -12,11 +12,11 @@ spec:
     name: sysbench
     resources:
       requests:
-        cpu: "30"
-        memory: 64Gi
+        cpu: "32"
+        memory: 96Gi
       limits:
-        cpu: "30"
-        memory: 64Gi
+        cpu: "32"
+        memory: 96Gi
     command:
     - "/bin/sh"
     - "-c"
