@@ -98,7 +98,6 @@ spec:
     type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
-      creationTimestamp: null
       labels:
         app: mariadb
       name: mariadb-data

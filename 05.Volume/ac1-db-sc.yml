@@ -1,0 +1,19 @@
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"allowVolumeExpansion":true,"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"ac-db"},"parameters":{"fsType":"xfs","mirrorCount":"1","perfTier":"ac-db-20k-500m"},"provisioner":"dcx.csi.diamanti.com","reclaimPolicy":"Delete","volumeBindingMode":"Immediate"}
+  creationTimestamp: "2020-07-29T01:33:44Z"
+  name: ac-db
+  resourceVersion: "5434411"
+  selfLink: /apis/storage.k8s.io/v1/storageclasses/ac-db
+  uid: 4714aee8-17b8-4000-930a-d3d4b507c4b3
+parameters:
+  fsType: xfs
+  mirrorCount: "1"
+  perfTier: ac-db-20k-500m
+provisioner: dcx.csi.diamanti.com
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

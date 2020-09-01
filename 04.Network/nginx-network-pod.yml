@@ -3,6 +3,7 @@ kind: Pod
 metadata:
   annotations:
     diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'  # network 이름 지정
+    diamanti.com/endpoint1: '{"network":"red","perfTier":"high"}'  # network 이름 지정
   name: nginx
 spec:
   containers:
