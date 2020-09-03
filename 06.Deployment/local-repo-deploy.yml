@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: local-repo-image
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: local-repo-image
+  template:
+    metadata:
+      labels:
+        app: local-repo-image
+    spec:
+      containers:
+      - image: 10.10.100.38:5000/nginx-dz:0.91
+        name: local-repo-image
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi

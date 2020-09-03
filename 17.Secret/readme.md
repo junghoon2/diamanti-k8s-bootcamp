@@ -4,7 +4,7 @@
 
 - ### 암호화 문구 만들기
 ```
-base64 util 사용하여 'root', 'password'에 대한 암호화 문 생성 
+base64 util 사용하여 'root', 'password'에 대한 암호화 문 생성(먼저, 암호화하고 Secret으로 저장함) 
 
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp$ echo -n 'root'|base64
 cm9vdA==
@@ -54,7 +54,8 @@ spec:
     - containerPort: 80
 ```
 
-- ### POD 실행을 통한 암호화된 환경 변수 확인 
+- ### POD 실행을 통한 암호화된 환경 변수 확인
+POD 안에서 복호화 된 상태의 해당 key 값에 대한 value 확인 가능  
 ```
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/17.Secret$ kc apply -f webapp-color-pod.yml
 

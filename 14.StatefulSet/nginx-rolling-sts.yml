@@ -14,18 +14,29 @@ spec:
       labels:
         app: nginx
       annotations:
-# endpointPrefix 지정, 순서대로 할당됨 
-        diamanti.com/endpoint0: '{"endpointPrefix":"ac1-web-db","perfTier":"high"}' 
+        diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'  # network 이름 지정
     spec:
       containers:
       - name: nginx
         image: k8s.gcr.io/nginx-slim:0.8
+        # image: nginx
         ports:
         - containerPort: 80
           name: web
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+          failureThreshold: 15
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 1
         volumeMounts:
         - name: www
           mountPath: /usr/share/nginx/html
+  updateStrategy:
+    type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
       name: www
