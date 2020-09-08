@@ -25,6 +25,7 @@ metadata:
   name: coffee-svc
   namespace: nginx
 spec:
+  clusterIP: None
   ports:
   - port: 80
     targetPort: 8080
@@ -36,7 +37,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tea
+  name: spk-tea
   namespace: nginx
 spec:
   replicas: 3
@@ -60,6 +61,7 @@ metadata:
   name: tea-svc
   namespace: nginx
 spec:
+  clusterIP: None
   ports:
   - port: 80
     targetPort: 8080
