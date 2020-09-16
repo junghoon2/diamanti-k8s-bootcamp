@@ -1,11 +1,10 @@
-# apiVersion: extensions/v1beta1
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: cafe-ingress
+  name: cafe-traefik-ingress
   # namespace: ingress-nginx
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  # annotations:
+  #   kubernetes.io/ingress.class: "traefik"
 spec:
   rules:
   - host: cafe.example.com

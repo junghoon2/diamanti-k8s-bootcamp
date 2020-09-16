@@ -16,7 +16,7 @@ spec:
   podTemplate:
     metadata:
       labels:
-        foo: bar
+        app: kibana
     spec:
       containers:
       - name: kibana

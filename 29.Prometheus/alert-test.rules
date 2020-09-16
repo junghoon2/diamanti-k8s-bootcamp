@@ -2,7 +2,7 @@ groups:
 - name: volume_space
   rules:
   - alert: VolumeOutOfSpace
-    expr: collectd_df_df_complex{df="nvme2n1", source="dia04", type='free'} /1024 /1024 /1024 < 0.1
+    expr: collectd_df_df_complex{df="mapper_centos_diamanti-data",exported_instance="dia01",instance="dia01:9103",job="collectd-exporter",source="dia01",type="free"} / 1024 /1024 /1024 < 300
     for: 1m
     labels:
       severity: warning

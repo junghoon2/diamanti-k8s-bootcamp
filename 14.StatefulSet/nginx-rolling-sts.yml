@@ -18,20 +18,20 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: k8s.gcr.io/nginx-slim:0.8
-        # image: nginx
+        # image: k8s.gcr.io/nginx-slim:0.8
+        image: nginx
         ports:
         - containerPort: 80
           name: web
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 80
-          failureThreshold: 15
-          initialDelaySeconds: 60
-          periodSeconds: 60
-          successThreshold: 1
-          timeoutSeconds: 1
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ready
+        #     port: 80
+        #   failureThreshold: 15
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 60
+        #   successThreshold: 1
+        #   timeoutSeconds: 1
         volumeMounts:
         - name: www
           mountPath: /usr/share/nginx/html

@@ -21,7 +21,8 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.prometheus.port }}"
 {{- end }}
-        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'        
+        # diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'     
+        diamanti.com/endpoint0: '{"endpointId":"nginx-ing-ep1","perfTier":"high"}'     
 {{- if .Values.controller.pod.annotations }}
 {{ toYaml .Values.controller.pod.annotations | indent 8 }}
 {{- end }}
@@ -147,4 +148,5 @@ spec:
 {{- end }}
           - -ready-status={{ .Values.controller.readyStatus.enable }}
           - -ready-status-port={{ .Values.controller.readyStatus.port }}
+          # - -udp-services-configmap=${POD_NAMESPACE}/jvb-udp-svc
 {{- end }}

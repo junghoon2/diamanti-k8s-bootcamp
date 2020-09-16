@@ -7,8 +7,7 @@ metadata:
 spec:
   group: k8s.nginx.org
   versions:
-  - name: v1alpha1  # Spektra 3.0 version upgrade error
-  # - name: v1
+  - name: v1alpha1
     served: true
     storage: true
   scope: Namespaced

@@ -22,7 +22,7 @@ spec:
       metadata:
         labels:
           # additional labels for pods
-          foo: bar
+          app: elasticsearch
       spec:
         # this changes the kernel setting on the node to allow ES to use mmap
         # if you uncomment this init container you will likely also want to remove the
@@ -94,7 +94,7 @@ spec:
       metadata:
         labels:
           # additional labels for pods
-          app: elastic
+          app: elasticsearch
       spec:
         ###
         # uncomment the line below if you are using a service mesh such as linkerd2 that uses service account tokens for pod identification.
