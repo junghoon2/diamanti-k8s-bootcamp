@@ -167,7 +167,7 @@ controller:
 
     ## Whitelist IPv4 IP/CIDR blocks to allow access to NGINX stub_status or the NGINX Plus API. Separate multiple IP/CIDR by commas.
     # allowCidrs: "127.0.0.1"
-    allowCidrs: "172.16.0.0/16"
+    # allowCidrs: "172.16.0.0/16"
 
   service:
     ## Creates a service to expose the Ingress controller pods.
@@ -263,7 +263,7 @@ controller:
 
   readyStatus:
     ## Enables readiness endpoint "/nginx-ready". The endpoint returns a success code when NGINX has loaded all the config after startup.
-    enable: false
+    enable: true
 
     ## Set the port where the readiness endpoint is exposed.
     port: 8081
