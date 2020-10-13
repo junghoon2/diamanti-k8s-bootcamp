@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   annotations:
-    diamanti.com/endpoint0: '{"endpointId":"ep1","perfTier":"high"}'
+    diamanti.com/endpoint0: '{"endpointId":"ep2","perfTier":"middle"}'
   name: nginx
 spec:
   containers:

@@ -16,9 +16,8 @@ spec:
     spec:
       containers:
       - name: centos
-        image: centos:7.7.1908
+        image: centos:7.7.12
         command:
         - "/bin/sh"
         - "-c"
         - "sleep inf"
-        

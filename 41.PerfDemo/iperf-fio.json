@@ -1,0 +1,120 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "ReplicationController",
+            "metadata": {
+                "name": "ip-NODE-QOS-INDEX"
+            },
+            "spec": {
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "diamanti.com/endpoint0": "{\"network\":\"NET\",\"perfTier\":\"QOS\"}"
+                        },
+                        "labels": {
+                            "diamanti.com/app": "ip-NODE-QOS-INDEX"
+                        }
+                    },
+                    "spec": {
+			"nodeSelector": {
+				"kubernetes.io/hostname" : "NODE"
+                        },
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "RT",
+                                        "value": "60000"
+                                    },
+                                    {
+                                        "name": "RW",
+                                        "value": "OP_TYPE"
+                                    },
+			       	    {
+					"name":"RWRPCT",
+					"value": "PER_TYPE"
+			           },		
+                                    {
+                                        "name": "QD",
+                                        "value": "16"
+                                    },
+                                    {
+                                        "name": "BLOCK_SIZE",
+                                        "value": "16k"
+                                    }
+                                ],
+                                "image": "diamanti/fio-rw:0.1",
+                                "imagePullPolicy": "IfNotPresent",
+                                "name": "fio",
+                                "volumeMounts": [
+                                    {
+                                        "mountPath": "/data",
+                                        "name": "vol-NODE-QOS-INDEX"
+                                    }
+                                ]
+                            },
+                            {
+                                "command": [
+                                    "/usr/bin/iperf3",
+                                    "-s"
+                                ],
+                                "image": "diamanti/iperf:v0.1",
+                                "imagePullPolicy": "IfNotPresent",
+                                "name": "server"
+                            },
+                            {
+		                "command": ["/bin/sh", "-c"],
+		                "args": [ "sleep 60 && /usr/bin/iperf3 -M 1454 -c ip-DEST-QOS-INDEX -P 8 -t 60000"],
+                                "image": "diamanti/iperf:v0.1",
+                                "imagePullPolicy": "IfNotPresent",
+                                "name": "client"
+                            }
+                        ],
+                        "dnsPolicy": "ClusterFirst",
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "volumes": [
+                            {
+                                "name": "vol-NODE-QOS-INDEX",
+				"flexVolume": {
+		                    "driver": "diamanti.com/volume",
+               	        	    "fsType": "xfs",
+		                    "options": {
+               			        "name": "vol-NODE-QOS-INDEX",
+		                        "perfTier": "QOS",
+	                                "type": "Simple"
+               	       	            }
+                	        }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "name": "ip-NODE-QOS-INDEX"
+            },
+            "spec": {
+                "clusterIP": "None",
+                "ports": [
+                    {
+                        "name": "tcp",
+                        "port": 5201,
+                        "protocol": "TCP",
+                        "targetPort": 5201
+                    }
+                ],
+                "selector": {
+                    "diamanti.com/app": "ip-NODE-QOS-INDEX"
+                }
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {}
+}
