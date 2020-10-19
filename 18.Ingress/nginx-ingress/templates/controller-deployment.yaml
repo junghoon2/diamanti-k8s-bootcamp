@@ -22,8 +22,8 @@ spec:
         prometheus.io/port: "{{ .Values.prometheus.port }}"
 {{- end }}
         # diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'     
-        # diamanti.com/endpoint0: '{"endpointId":"nginx-ing-ep1","perfTier":"high"}'     
-        diamanti.com/endpoint0: '{"endpointId":"jitsi-ing-ep1","perfTier":"high"}'     
+          diamanti.com/endpoint0: '{"endpointId":"nginx-ing-ep1","perfTier":"high"}'     
+        # diamanti.com/endpoint0: '{"endpointId":"jitsi-ing-ep1","perfTier":"high"}'     
 {{- if .Values.controller.pod.annotations }}
 {{ toYaml .Values.controller.pod.annotations | indent 8 }}
 {{- end }}

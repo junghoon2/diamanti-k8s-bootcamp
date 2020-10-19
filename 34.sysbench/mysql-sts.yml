@@ -1,0 +1,71 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: wordpress-mysql
+  namespace: demo
+  annotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'  # network 이름 지정
+  labels:
+    app: wordpress
+spec:
+  serviceName: wordpress-db
+  replicas: 3
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: mysql
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: mysql
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname  ## Key 값 지정
+                operator: In  ## In, NotIn, Exists, DoesNotExist, Gt, Lt 사용 가능
+                values:
+                - dia01
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        resources:
+          requests:
+            cpu: "8"
+            memory: 32Gi
+          limits:
+            cpu: "8"
+            memory: 32Gi
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+        - name: config-volume
+          # mountPath: /etc/my.cnf.d
+          mountPath: /etc/my.cnf
+          subPath: my.cnf
+      volumes:
+      - name: config-volume
+        configMap:
+          name: mysql-config01
+          optional: true
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: 100Gi  # SC 지정 없으면 default SC(best-effort) 사용  

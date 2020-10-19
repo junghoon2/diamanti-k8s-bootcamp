@@ -171,7 +171,7 @@ controller:
 
   service:
     ## Creates a service to expose the Ingress controller pods.
-    create: true
+    create: false
 
     ## The type of service to create for the Ingress controller.
     type: ClusterIP

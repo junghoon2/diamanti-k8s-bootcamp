@@ -9,5 +9,4 @@ spec:
   resources:
     requests:
       storage: 10Gi
-      # storage: 5Ti  # 노드 Disk 용량을 넘으면 할당이 안 됨
   storageClassName: "high2m"  ## SC 지정

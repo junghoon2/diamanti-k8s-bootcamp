@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sysbench
+  namespace: demo
+  annotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'  # network 이름 지정
+spec:
+  serviceName: sysbench
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: sysbench
+  template:
+    metadata:
+      labels:
+        app: sysbench
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname  ## Key 값 지정
+                operator: In  ## In, NotIn, Exists, DoesNotExist, Gt, Lt 사용 가능
+                values:
+                - dia02
+      containers:
+      - image: severalnines/sysbench
+        name: sysbench
+        resources:
+          requests:
+            cpu: "8"
+            memory: 32Gi
+          limits:
+            cpu: "8"
+            memory: 32Gi
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "sleep inf"

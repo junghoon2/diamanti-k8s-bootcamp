@@ -42,6 +42,7 @@ spec:
       name: www
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
       resources:
         requests:
           storage: 1Gi  # SC 지정 없으면 default SC(best-effort) 사용  

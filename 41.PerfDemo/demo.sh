@@ -24,7 +24,7 @@ echo "dctl perf-tier list"
 dctl perf-tier list
 read enter
 
-echo "Performance test using iperf & fio"
+echo "Performance test using fio & iperf"
 $(dirname ${BASH_SOURCE})/create-iperf-fio.sh dia01 dia02 dia03 blue
 read enter
 
