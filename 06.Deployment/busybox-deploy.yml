@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: centos
+  labels:
+    app: centos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: centos  # POD label과 일치
+  template:    
+    metadata:
+      labels:
+        app: centos # Selector label과 일치
+    spec:
+      containers:
+      - name: centos
+        image: centos:7.7.12
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "sleep inf"
