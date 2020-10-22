@@ -3,10 +3,12 @@ apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: elasticsearch
+  namespace: elastic-system
 spec:
-  version: 7.4.0
+  # version: 7.4.0
+  version: 7.9.2
   nodeSets:
-  - name: default-nodes
+  - name: default
     count: 3
     config:
       # most Elasticsearch configuration parameters are possible to set, e.g: node.attr.attr_name: attr_value
@@ -18,6 +20,9 @@ spec:
       node.remote_cluster_client: false
       # this allows ES to run on nodes even if their vm.max_map_count has not been increased, at a performance cost
       node.store.allow_mmap: false
+      # path.repo: /usr/share/elasticsearch/backup
+      http.port: 19204
+      bootstrap.memory_lock: true
     podTemplate:
       metadata:
         labels:

@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: nginx-nginx-ingress
     helm.sh/chart: nginx-ingress-0.6.1
-  name: nginx-nginx-ingress
+  name: telnet-nginx-ingress
   namespace: ingress
 spec:
   progressDeadlineSeconds: 600
@@ -26,7 +26,7 @@ spec:
   template:
     metadata:
       annotations:
-        diamanti.com/endpoint0: '{"endpointId":"nginx-ing-ep122","perfTier":"high"}'
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
         prometheus.io/port: "9113"
         prometheus.io/scrape: "true"
       labels:

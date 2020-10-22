@@ -1,0 +1,166 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    esMajorVersion: "7"
+  generation: 1
+  labels:
+    app: elasticsearch-master
+    chart: elasticsearch
+    heritage: Tiller
+    release: elastic
+  name: elasticsearch-master
+  namespace: elastic
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: elasticsearch-master
+  serviceName: elasticsearch-master-headless
+  template:
+    metadata:
+      labels:
+        app: elasticsearch-master
+        chart: elasticsearch
+        heritage: Tiller
+        release: elastic
+      name: elasticsearch-master
+      annotations: 
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'      
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - elasticsearch-master
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - env:
+        - name: node.name
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: cluster.initial_master_nodes
+          value: elasticsearch-master-0,elasticsearch-master-1,elasticsearch-master-2,
+        - name: discovery.seed_hosts
+          value: elasticsearch-master-headless
+        - name: cluster.name
+          value: elasticsearch
+        - name: network.host
+          value: 0.0.0.0
+        - name: ES_JAVA_OPTS
+          value: -Xmx8g -Xms8g
+        - name: node.data
+          value: "true"
+        - name: node.ingest
+          value: "true"
+        - name: node.master
+          value: "true"
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+        imagePullPolicy: IfNotPresent
+        name: elasticsearch
+        ports:
+        - containerPort: 19204
+          name: http
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - |
+              #!/usr/bin/env bash -e
+              # If the node is starting up wait for the cluster to be ready (request params: 'wait_for_status=green&timeout=1s' )
+              # Once it has started only check that the node itself is responding
+              START_FILE=/tmp/.es_start_file
+
+              http () {
+                  local path="${1}"
+                  if [ -n "${ELASTIC_USERNAME}" ] && [ -n "${ELASTIC_PASSWORD}" ]; then
+                    BASIC_AUTH="-u ${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}"
+                  else
+                    BASIC_AUTH=''
+                  fi
+                  curl -XGET -s -k --fail ${BASIC_AUTH} http://127.0.0.1:9200${path}
+              }
+
+              if [ -f "${START_FILE}" ]; then
+                  echo 'Elasticsearch is already running, lets check the node is healthy'
+                  http "/"
+              else
+                  echo 'Waiting for elasticsearch cluster to become cluster to be ready (request params: "wait_for_status=green&timeout=1s" )'
+                  if http "/_cluster/health?wait_for_status=green&timeout=1s" ; then
+                      touch ${START_FILE}
+                      exit 0
+                  else
+                      echo 'Cluster is not yet ready (request params: "wait_for_status=green&timeout=1s" )'
+                      exit 1
+                  fi
+              fi
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 3
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "8"
+            memory: 64Gi
+          requests:
+            cpu: "1"
+            memory: 32Gi
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-master
+      dnsPolicy: ClusterFirst
+      # initContainers:
+      # - command:
+      #   - sysctl
+      #   - -w
+      #   - vm.max_map_count=262144
+      #   image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+      #   imagePullPolicy: IfNotPresent
+      #   name: configure-sysctl
+      #   resources: {}
+      #   securityContext:
+      #     privileged: true
+      #     runAsUser: 0
+      #   terminationMessagePath: /dev/termination-log
+      #   terminationMessagePolicy: File
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      terminationGracePeriodSeconds: 120
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: elasticsearch-master
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 30Gi
+      volumeMode: Filesystem
+      storageClassName: "high"

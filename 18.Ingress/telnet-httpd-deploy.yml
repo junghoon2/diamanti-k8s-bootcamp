@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telnet01
+  namespace: ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telnet01
+  template:
+    metadata:
+      labels:
+        app: telnet01
+    spec:
+      containers:
+      - name: telnet01
+        image: erdia22/telnet-httpd:0.9
+        ports:
+        - containerPort: 80
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "sleep inf"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telnet02
+  namespace: ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telnet02
+  template:
+    metadata:
+      labels:
+        app: telnet02
+    spec:
+      containers:
+      - name: telnet02
+        image: erdia22/telnet-httpd:0.9
+        ports:
+        - containerPort: 80
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "sleep inf"

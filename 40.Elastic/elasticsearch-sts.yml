@@ -1,0 +1,341 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  creationTimestamp: "2020-10-21T06:23:23Z"
+  generation: 1
+  # labels:
+  #   common.k8s.elastic.co/template-hash: "774535489"
+  #   common.k8s.elastic.co/type: elasticsearch
+  #   elasticsearch.k8s.elastic.co/cluster-name: elasticsearch
+  #   elasticsearch.k8s.elastic.co/statefulset-name: elasticsearch-es-default
+  name: elasticsearch
+  namespace: elastic-system
+  # ownerReferences:
+  # - apiVersion: elasticsearch.k8s.elastic.co/v1
+  #   blockOwnerDeletion: true
+  #   controller: true
+  #   kind: Elasticsearch
+  #   name: elasticsearch
+  #   uid: 1d384a71-6a09-44b7-b75d-ef4628efc974
+  # resourceVersion: "7551051"
+  # selfLink: /apis/apps/v1/namespaces/elastic-system/statefulsets/elasticsearch-es-default
+  # uid: 0339051e-4072-45c3-9854-3ebf32391e68
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      common.k8s.elastic.co/type: elasticsearch
+      elasticsearch.k8s.elastic.co/cluster-name: elasticsearch
+      elasticsearch.k8s.elastic.co/statefulset-name: elasticsearch-es-default
+  serviceName: elasticsearch-es-default
+  template:
+    metadata:
+      annotations:
+        co.elastic.logs/module: elasticsearch
+      creationTimestamp: null
+      labels:
+        app: elasticsearch
+        common.k8s.elastic.co/type: elasticsearch
+        elasticsearch.k8s.elastic.co/cluster-name: elasticsearch
+        elasticsearch.k8s.elastic.co/config-hash: "2921979778"
+        elasticsearch.k8s.elastic.co/http-scheme: https
+        elasticsearch.k8s.elastic.co/node-data: "true"
+        elasticsearch.k8s.elastic.co/node-ingest: "true"
+        elasticsearch.k8s.elastic.co/node-master: "true"
+        elasticsearch.k8s.elastic.co/node-ml: "true"
+        elasticsearch.k8s.elastic.co/statefulset-name: elasticsearch-es-default
+        # elasticsearch.k8s.elastic.co/version: 7.9.2
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  elasticsearch.k8s.elastic.co/cluster-name: elasticsearch
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      automountServiceAccountToken: false
+      containers:
+      - env:
+        - name: ES_JAVA_OPTS
+          value: -Xms8g -Xmx8g
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: PROBE_PASSWORD_PATH
+          value: /mnt/elastic-internal/probe-user/elastic-internal-probe
+        - name: PROBE_USERNAME
+          value: elastic-internal-probe
+        - name: READINESS_PROBE_PROTOCOL
+          value: https
+        - name: HEADLESS_SERVICE_NAME
+          value: elasticsearch-es-default
+        - name: NSS_SDB_USE_CACHE
+          value: "no"
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - bash
+              - -c
+              - /mnt/elastic-internal/scripts/pre-stop-hook-script.sh
+        name: elasticsearch
+        ports:
+        - containerPort: 19204
+          name: https
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - bash
+            - -c
+            - /mnt/elastic-internal/scripts/readiness-probe-script.sh
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "4"
+            memory: 16Gi
+          requests:
+            cpu: "1"
+            memory: 4Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /mnt/elastic-internal/downward-api
+          name: downward-api
+          readOnly: true
+        - mountPath: /usr/share/elasticsearch/bin
+          name: elastic-internal-elasticsearch-bin-local
+        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          name: elastic-internal-elasticsearch-config
+          readOnly: true
+          subPath: elasticsearch.yml
+        - mountPath: /usr/share/elasticsearch/config
+          name: elastic-internal-elasticsearch-config-local
+        - mountPath: /usr/share/elasticsearch/plugins
+          name: elastic-internal-elasticsearch-plugins-local
+        - mountPath: /usr/share/elasticsearch/config/http-certs
+          name: elastic-internal-http-certificates
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/probe-user
+          name: elastic-internal-probe-user
+          readOnly: true
+        - mountPath: /usr/share/elasticsearch/config/transport-remote-certs/
+          name: elastic-internal-remote-certificate-authorities
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/scripts
+          name: elastic-internal-scripts
+          readOnly: true
+        - mountPath: /usr/share/elasticsearch/config/transport-certs
+          name: elastic-internal-transport-certificates
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/unicast-hosts
+          name: elastic-internal-unicast-hosts
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/xpack-file-realm
+          name: elastic-internal-xpack-file-realm
+          readOnly: true
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-data
+        - mountPath: /usr/share/elasticsearch/logs
+          name: elasticsearch-logs
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - bash
+        - -c
+        - /mnt/elastic-internal/scripts/prepare-fs.sh
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+        imagePullPolicy: IfNotPresent
+        name: elastic-internal-init-filesystem
+        resources:
+          limits:
+            cpu: 100m
+            memory: 50Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+        securityContext:
+          privileged: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /mnt/elastic-internal/elasticsearch-config-local
+          name: elastic-internal-elasticsearch-config-local
+        - mountPath: /mnt/elastic-internal/elasticsearch-plugins-local
+          name: elastic-internal-elasticsearch-plugins-local
+        - mountPath: /mnt/elastic-internal/elasticsearch-bin-local
+          name: elastic-internal-elasticsearch-bin-local
+        - mountPath: /mnt/elastic-internal/transport-certificates
+          name: elastic-internal-transport-certificates
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/scripts
+          name: elastic-internal-scripts
+          readOnly: true
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-data
+        - mountPath: /usr/share/elasticsearch/logs
+          name: elasticsearch-logs
+        - mountPath: /mnt/elastic-internal/downward-api
+          name: downward-api
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/elasticsearch-config
+          name: elastic-internal-elasticsearch-config
+          readOnly: true
+        - mountPath: /usr/share/elasticsearch/config/http-certs
+          name: elastic-internal-http-certificates
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/probe-user
+          name: elastic-internal-probe-user
+          readOnly: true
+        - mountPath: /usr/share/elasticsearch/config/transport-remote-certs/
+          name: elastic-internal-remote-certificate-authorities
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/unicast-hosts
+          name: elastic-internal-unicast-hosts
+          readOnly: true
+        - mountPath: /mnt/elastic-internal/xpack-file-realm
+          name: elastic-internal-xpack-file-realm
+          readOnly: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 180
+      volumes:
+      - downwardAPI:
+          defaultMode: 420
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.labels
+            path: labels
+        name: downward-api
+      - emptyDir: {}
+        name: elastic-internal-elasticsearch-bin-local
+      # - name: elastic-internal-elasticsearch-config
+      #   secret:
+      #     defaultMode: 420
+      #     optional: false
+      #     secretName: elasticsearch-es-default-es-config
+      - name: elastic-internal-elasticsearch-config
+        configMap:
+            name: elasticsearch-config
+      - emptyDir: {}
+        name: elastic-internal-elasticsearch-config-local
+      - emptyDir: {}
+        name: elastic-internal-elasticsearch-plugins-local
+      - name: elastic-internal-http-certificates
+        secret:
+          defaultMode: 420
+          optional: false
+          secretName: elasticsearch-es-http-certs-internal
+      - name: elastic-internal-probe-user
+        secret:
+          defaultMode: 420
+          items:
+          - key: elastic-internal-probe
+            path: elastic-internal-probe
+          optional: false
+          secretName: elasticsearch-es-internal-users
+      - name: elastic-internal-remote-certificate-authorities
+        secret:
+          defaultMode: 420
+          optional: false
+          secretName: elasticsearch-es-remote-ca
+      - configMap:
+          defaultMode: 493
+          name: elasticsearch-es-scripts
+          optional: false
+        name: elastic-internal-scripts
+      - name: elastic-internal-transport-certificates
+        secret:
+          defaultMode: 420
+          optional: false
+          secretName: elasticsearch-es-transport-certificates
+      - configMap:
+          defaultMode: 420
+          name: elasticsearch-es-unicast-hosts
+          optional: false
+        name: elastic-internal-unicast-hosts
+      - name: elastic-internal-xpack-file-realm
+        secret:
+          defaultMode: 420
+          optional: false
+          secretName: elasticsearch-es-xpack-file-realm
+      - name: elasticsearch-data
+        persistentVolumeClaim:
+          claimName: claim-name-placeholder
+      - emptyDir: {}
+        name: elasticsearch-logs
+  updateStrategy:
+    type: OnDelete
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      name: elasticsearch-data
+      ownerReferences:
+      - apiVersion: elasticsearch.k8s.elastic.co/v1
+        blockOwnerDeletion: false
+        controller: true
+        kind: Elasticsearch
+        name: elasticsearch
+        uid: 1d384a71-6a09-44b7-b75d-ef4628efc974
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: high
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+status:
+  collisionCount: 0
+  currentReplicas: 3
+  currentRevision: elasticsearch-es-default-765b44747b
+  observedGeneration: 1
+  readyReplicas: 3
+  replicas: 3
+  updateRevision: elasticsearch-es-default-765b44747b
+  updatedReplicas: 3

@@ -20,7 +20,14 @@ spec:
       - backend:
           serviceName: tea-svc
           servicePort: 80
-        path: /tea
+        path: /
+  - host: mobile.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: httpd-svc
+          servicePort: 80
+        path: /httpd
       - backend:
           serviceName: coffee-svc
           servicePort: 80
