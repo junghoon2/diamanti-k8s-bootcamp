@@ -1,0 +1,9 @@
+FROM centos
+
+RUN set -ex \
+    && yum -y install nginx telnet \
+    && yum -y clean all
+
+EXPOSE 80
+STOPSIGNAL SIGTERM
+CMD ["nginx" "-g" "daemon"]
