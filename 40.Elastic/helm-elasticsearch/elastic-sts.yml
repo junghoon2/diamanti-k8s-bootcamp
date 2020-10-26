@@ -1,0 +1,191 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    esMajorVersion: "7"
+  generation: 1
+  labels:
+    app: douzone-master
+    chart: elasticsearch
+    heritage: Tiller
+    release: elastic
+  name: douzone-master
+  namespace: elastic
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: douzone-master
+  serviceName: douzone-master-headless
+  template:
+    metadata:
+      labels:
+        app: douzone-master
+        chart: elasticsearch
+        heritage: Tiller
+        release: elastic
+      name: douzone-master
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - douzone-master
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      containers:
+      - env:
+        - name: node.name
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: cluster.initial_master_nodes
+          value: douzone-master-0,douzone-master-1,douzone-master-2,
+        - name: discovery.seed_hosts
+          value: douzone-master-headless
+        - name: cluster.name
+          value: douzone
+        - name: network.host
+          value: 0.0.0.0
+        - name: ES_JAVA_OPTS
+          value: -Xmx8g -Xms8g
+        - name: node.data
+          value: "true"
+        - name: node.ingest
+          value: "true"
+        - name: node.master
+          value: "true"
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+        imagePullPolicy: IfNotPresent
+        name: elasticsearch
+        ports:
+        - containerPort: 9200
+          name: http
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - |
+              #!/usr/bin/env bash -e
+              # If the node is starting up wait for the cluster to be ready (request params: "wait_for_status=green&timeout=1s" )
+              # Once it has started only check that the node itself is responding
+              START_FILE=/tmp/.es_start_file
+
+              http () {
+                local path="${1}"
+                local args="${2}"
+                set -- -XGET -s
+
+                if [ "$args" != "" ]; then
+                  set -- "$@" $args
+                fi
+
+                if [ -n "${ELASTIC_USERNAME}" ] && [ -n "${ELASTIC_PASSWORD}" ]; then
+                  set -- "$@" -u "${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}"
+                fi
+
+                curl --output /dev/null -k "$@" "http://127.0.0.1:9200${path}"
+              }
+
+              if [ -f "${START_FILE}" ]; then
+                echo 'Elasticsearch is already running, lets check the node is healthy'
+                HTTP_CODE=$(http "/" "-w %{http_code}")
+                RC=$?
+                if [[ ${RC} -ne 0 ]]; then
+                  echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:9200/ failed with RC ${RC}"
+                  exit ${RC}
+                fi
+                # ready if HTTP code 200, 503 is tolerable if ES version is 6.x
+                if [[ ${HTTP_CODE} == "200" ]]; then
+                  exit 0
+                elif [[ ${HTTP_CODE} == "503" && "7" == "6" ]]; then
+                  exit 0
+                else
+                  echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:9200/ failed with HTTP code ${HTTP_CODE}"
+                  exit 1
+                fi
+
+              else
+                echo 'Waiting for elasticsearch cluster to become ready (request params: "wait_for_status=green&timeout=1s" )'
+                if http "/_cluster/health?wait_for_status=green&timeout=1s" "--fail" ; then
+                  touch ${START_FILE}
+                  exit 0
+                else
+                  echo 'Cluster is not yet ready (request params: "wait_for_status=green&timeout=1s" )'
+                  exit 1
+                fi
+              fi
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 3
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "8"
+            memory: 16Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: douzone-master
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      # initContainers:
+      # - command:
+      #   - sysctl
+      #   - -w
+      #   - vm.max_map_count=262144
+      #   image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+      #   imagePullPolicy: IfNotPresent
+      #   name: configure-sysctl
+      #   resources: {}
+      #   securityContext:
+      #     privileged: true
+      #     runAsUser: 0
+      #   terminationMessagePath: /dev/termination-log
+      #   terminationMessagePolicy: File
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      terminationGracePeriodSeconds: 120
+  updateStrategy:
+    type: OnDelete
+  volumeClaimTemplates:
+  - metadata:
+      name: douzone-master
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: 30Gi
+      volumeMode: Filesystem
+    
