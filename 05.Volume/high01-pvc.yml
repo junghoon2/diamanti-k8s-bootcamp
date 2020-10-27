@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: perf-high-pvc
-#  namespace: diamanti-system
+  name: grafana-storage
+  namespace: grafana
 spec:
   accessModes:
   - ReadWriteOnce  ## block accessmode 지정 
   resources:
     requests:
       # storage: 10Gi
-      storage: 300Gi  # 노드 Disk 용량을 넘으면 할당이 안 됨
+      storage: 10Gi  # 노드 Disk 용량을 넘으면 할당이 안 됨
   storageClassName: "high"  ## SC 지정
