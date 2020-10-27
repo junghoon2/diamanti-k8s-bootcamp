@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testclient
+  namespace: kafka
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: kafka-client
+  template:
+    metadata:
+      labels:
+        app: kafka-client
+    spec:
+      containers:
+      - name: kafka
+        image: confluentinc/cp-kafka:5.0.1
+        command:
+          - sh
+          - -c
+          - "sleep inf"
