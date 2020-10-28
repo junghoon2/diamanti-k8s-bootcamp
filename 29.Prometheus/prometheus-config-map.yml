@@ -124,9 +124,9 @@ data:
         scheme: http
         static_configs:
         - targets:
-          - 10.10.100.71:8080
-          - 10.10.100.72:8080
-          - 10.10.100.70:8080
+          - 172.17.16.161:4194
+          - 172.17.16.162:4194
+          - 172.17.16.163:4194
         relabel_configs:
         - source_labels: [__address__]
           separator: ;
