@@ -1,0 +1,69 @@
+
+
+echo "POST http://erp10.douzone.com/api/CM/AccountService/login" | vegeta attack -body '{"userid" : ymj9391, "password" : 1}' -duration=5s -rate=10 | vegeta report
+
+vegeta attack -rate=10 -duration=5s -targets=targets.txt | vegeta report
+
+echo "POST https://baseurl/some/api" | vegeta attack -header "Authorization: Basic <username-password-encoded>" -header "Cache-Control: no-cache" -body '{
+   "targetId" : 12345678,
+   "key_values" : {
+      "tag_name" : "some_tag"
+   },
+   “profiles”:[ 
+        { 
+            “some_key” : ”some_value”,
+             ...
+            “profileData” : { 
+               “key1” : "value1",
+               “key2” : "value2",
+                ...
+               “customerid” : "12345",
+                ...
+               “key3” : "value3",
+                ...
+            }
+        }
+    ]
+}' -duration=5s -rate=10 | vegeta report
+
+vegeta attack -header="Authorization: Basic <username-password-encoded>" -rate=10 -duration=5s -targets=targets.txt | vegeta report
+
+POST https://baseurl/some/api
+Content-Type: application/json
+@data.json
+
+{
+   "targetId" : 12345678,
+   "key_values" : {
+      "tag_name" : "some_tag"
+   },
+   "profiles":[ 
+        { 
+            "some_key" : "some_value",
+             ...
+            "profileData" : { 
+               "key1" : "value1",
+               "key2" : "value2",
+                ...
+               "customerid" : "1",
+                ...
+               "key3" : "value3",
+                ...
+            }
+        },
+       { 
+            "some_key" : "some_value",
+             ...
+            "profileData" : { 
+               "key1" : "value1",
+               "key2" : "value2",
+                ...
+               "customerid" : "2",
+                ...
+               "key3" : "value3",
+                ...
+            }
+        },
+       ...  
+    ]
+}

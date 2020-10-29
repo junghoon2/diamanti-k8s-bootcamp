@@ -1,0 +1,119 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  creationTimestamp: "2020-10-29T19:25:06Z"
+  generation: 1
+  labels:
+    app: promtail
+    chart: promtail-2.0.0
+    heritage: Tiller
+    release: loki
+  name: loki-promtail
+  namespace: loki-stack
+  resourceVersion: "32051262"
+  selfLink: /apis/extensions/v1beta1/namespaces/loki-stack/daemonsets/loki-promtail
+  uid: 1c8f468c-9abe-422e-8553-f7951dfba2d4
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: promtail
+      release: loki
+  template:
+    metadata:
+      annotations:
+        checksum/config: 2a5d835fd22d173d76f1e9383ec60abb639b835c9f0e3ce0fb85ef3e1cd5848c
+        prometheus.io/port: http-metrics
+        prometheus.io/scrape: "true"
+      creationTimestamp: null
+      labels:
+        app: promtail
+        release: loki
+    spec:
+      affinity: {}
+      containers:
+      - args:
+        - -config.file=/etc/promtail/promtail.yaml
+        - -client.url=http://loki:3100/loki/api/v1/push
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: grafana/promtail:2.0.0
+        imagePullPolicy: IfNotPresent
+        name: promtail
+        ports:
+        - containerPort: 3101
+          name: http-metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /ready
+            port: http-metrics
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsGroup: 0
+          runAsUser: 0
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/promtail
+          name: config
+        - mountPath: /run/promtail
+          name: run
+        - mountPath: /var/lib/docker/containers
+          name: docker
+          readOnly: true
+        - mountPath: /var/log/pods
+          name: pods
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: loki-promtail
+      serviceAccountName: loki-promtail
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: loki-promtail
+        name: config
+      - hostPath:
+          path: /run/promtail
+          type: ""
+        name: run
+      - hostPath:
+          path: /var/lib/docker/containers
+          type: ""
+        name: docker
+      - hostPath:
+          path: /var/log/pods
+          type: ""
+        name: pods
+  templateGeneration: 1
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 3
+  desiredNumberScheduled: 3
+  numberMisscheduled: 0
+  numberReady: 0
+  numberUnavailable: 3
+  observedGeneration: 1
+  updatedNumberScheduled: 3

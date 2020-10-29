@@ -3,7 +3,8 @@ Http 부하 테스트
 . 초 당 connection 에 따라 부하 생성
 . 테스트 결과를 그래프 형태로 변환 가능
 
-https://github.com/tsenart/vegeta
+참조 URL
+. https://github.com/tsenart/vegeta
 
 Vegeta is a versatile HTTP load testing tool built out of a need to drill HTTP services with a constant request rate. It can be used both as a command line utility and a library.
 
@@ -35,3 +36,36 @@ Success       [ratio]                           100.00%
 Status Codes  [code:count]                      200:2500
 Error Set:
 
+실행 방법 참조 URL
+. https://medium.com/@deepshig/starting-with-load-tests-e5e83ed539ac
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/44.HttpLoadTest$ vegeta attack -rate=100 -duration=5s -targets=targets.txt | vegeta report
+Requests      [total, rate, throughput]         500, 100.20, 88.58
+Duration      [total, attack, wait]             5.644s, 4.99s, 654.513ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  285.105ms, 1.009s, 941.441ms, 1.527s, 1.599s, 1.718s, 1.783s
+Bytes In      [total, mean]                     92000, 184.00
+Bytes Out     [total, mean]                     22500, 45.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:500
+Error Set:
+
+spkr@erdia22:~$ echo "POST http://erp10.douzone.com/api/CI/OrganizationStructureConfigurationCOPService/orgcop00400_list_header?USER_FG_CD=&search_text=&paging=true&pagingStart=1000&pagingCount=1000&_=1603700586721" | vegeta attack -header "x-authenticate-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55Q29kZSI6IkdFUlAiLCJncmFudF90eXBlIjoicGFzc3dvcmQiLCJzY29wZSI6WyJTVEdPUkEiXSwidXNlcmlkIjoieW1qOTM5MSIsImp0aSI6IjVmNTk2YzU2LThjODUtNDA0My05OGI4LWJmYjdiNjEyNjRiYyIsImNsaWVudF9pZCI6IlNUR09SQSIsImdyb3VwQ29kZSI6IjQwMDAifQ.B4ueCPV34iRwAQEj7qu7ni8Klws3c5g5NHGeqgQYcn8" -duration=5s -rate=10 |vegeta report
+Requests      [total, rate, throughput]         50, 10.20, 10.04
+Duration      [total, attack, wait]             4.982s, 4.9s, 81.841ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  67.306ms, 118.392ms, 90.106ms, 212.259ms, 234.753ms, 237.614ms, 237.614ms
+Bytes In      [total, mean]                     5100, 102.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:50
+Error Set:
+
+spkr@erdia22:~$ echo "POST http://erp10.douzone.com/api/CI/OrganizationStructureConfigurationCOPService/orgcop00400_list_header?USER_FG_CD=&search_text=&paging=true&pagingStart=1000&pagingCount=1000&_=1603700586721" | vegeta attack -header "x-authenticate-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55Q29kZSI6IkdFUlAiLCJncmFudF90eXBlIjoicGFzc3dvcmQiLCJzY29wZSI6WyJTVEdPUkEiXSwidXNlcmlkIjoieW1qOTM5MSIsImp0aSI6IjVmNTk2YzU2LThjODUtNDA0My05OGI4LWJmYjdiNjEyNjRiYyIsImNsaWVudF9pZCI6IlNUR09SQSIsImdyb3VwQ29kZSI6IjQwMDAifQ.B4ueCPV34iRwAQEj7qu7ni8Klws3c5g5NHGeqgQYcn8" -duration=5s -rate=100 |
+vegeta report
+Requests      [total, rate, throughput]         500, 100.20, 87.39
+Duration      [total, attack, wait]             5.722s, 4.99s, 731.674ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  435.066ms, 902.021ms, 911.13ms, 1.056s, 1.111s, 1.24s, 1.277s
+Bytes In      [total, mean]                     51000, 102.00
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:500
+Error Set:

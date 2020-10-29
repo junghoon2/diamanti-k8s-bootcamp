@@ -33,6 +33,8 @@ spec:
           configMap:
             defaultMode: 420
             name: prometheus-server-conf
-
         - name: prometheus-storage-volume
+          # persistentVolumeClaim:
+          #   claimName: prometheus  ## PVC 이름 지정
           emptyDir: {}
+              
