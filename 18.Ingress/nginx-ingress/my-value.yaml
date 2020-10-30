@@ -126,7 +126,7 @@ controller:
   useIngressClassOnly: false
 
   ## Namespace to watch for Ingress resources. By default the Ingress controller watches all namespaces.
-  watchNamespace: "default"
+  watchNamespace: "ingress"
 
   ## Enable the custom resources.
   enableCustomResources: true
