@@ -37,6 +37,22 @@ NAME                  TYPE                                  DATA   AGE
 app-secret            Opaque                                2      6s
 default-token-pd8cz   kubernetes.io/service-account-token   3      16d
 ```
+- ### Password 확인 방법
+
+```
+YAML 파일 추출 
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/46.argo$ k get secrets argocd-secret -o yaml
+```
+
+```
+decode 실행 
+
+[diamanti@diamanti1 ~]$ echo -n 'bXlzcWw=' | base64 --decode
+mysql
+[diamanti@diamanti1 ~]$ echo -n 'cGFzc3dvcmQ=' | base64 --decode
+password
+```
 
 - ### POD Secret 환경 변수 적용
 ```
