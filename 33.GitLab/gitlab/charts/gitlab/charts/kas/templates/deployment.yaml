@@ -1,0 +1,77 @@
+{{- if .Values.global.kas.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "gitlab.standardLabels" . | nindent 4 }}
+  annotations:
+    {{- include "gitlab.deploymentAnnotations" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+        {{- include "gitlab.podLabels" . | nindent 8 }}
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      {{- range $key, $value := .Values.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+    spec:
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.serviceAccount.enabled .Values.global.serviceAccount.enabled }}
+      serviceAccountName: {{ include "gitlab.serviceAccount.name" . }}
+      automountServiceAccountToken: false
+      {{- end }}
+      containers:
+        {{- include "gitlab.extraContainers" . | nindent 8 }}
+        - name: {{ template "name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{ template "gitlab.imagePullPolicy" . }}
+          args:
+            - "--gitlab-address=http://{{ template "gitlab.workhorse.host" . }}:{{ template "gitlab.workhorse.port" . }}"
+            - "--listen-address=:{{ .Values.service.internalPort }}"
+            - "--listen-websocket=true"
+            - "--authentication-secret-file=/etc/kas/.gitlab_kas_secret"
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+              name: {{ template "name" . }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: init-kas-secrets
+              mountPath: /etc/kas
+              readOnly: true
+            {{- include "gitlab.extraVolumeMounts" . | nindent 12 }}
+      volumes:
+      {{- include "gitlab.extraVolumes" . | nindent 6 }}
+      - name: init-kas-secrets
+        projected:
+          defaultMode: 0440
+          sources:
+            - secret:
+                name: {{ template "gitlab.kas.secret" . }}
+                items:
+                  - key: {{ template "gitlab.kas.key" . }}
+                    path: .gitlab_kas_secret
+{{- end }}
