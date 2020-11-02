@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elastic-cm
+  namespace: elastic
+data:
+  elasticsearch.yml: |
+    # ----------------------------------- Paths ------------------------------------
+    #
+    # Path to directory where to store the data (separate multiple locations by comma):
+    #
+    # path.data: /home/elasticsearch/data
+    # #
+    # # Path to log files:
+    # #
+    # path.logs: /home/elasticsearch/logs
+    path.repo: /home/elasticsearch/backup
+    # ----------------------------------- Memory -----------------------------------
+    #
+    # Lock the memory on startup:
+    #
+    # bootstrap.memory_lock: true
+    #
+    # Make sure that the heap size is set to about half the memory available
+    # on the system and that the owner of the process is allowed to use this
+    # limit.
+    #
+    # Elasticsearch performs poorly when the system is swapping the memory.
+    #
+    http.port: 19204
+    #
+    # For more information, consult the network module documentation.
+    #
+    # --------------------------------- Discovery ----------------------------------
+    #
+    # Pass an initial list of hosts to perform discovery when this node is started:
+    # The default list of hosts is ["127.0.0.1", "[::1]"]
+    #
+    # discovery.seed_hosts: ["10.82.1.31", "10.82.1.45", "10.82.1.49"]
+    #discovery.seed_hosts: ["10.82.1.31"]
+    #
+    # Bootstrap the cluster using an initial set of master-eligible nodes:
+    #
+    # cluster.initial_master_nodes: ["10.82.1.31", "10.82.1.45", "10.82.1.49"]
+    #cluster.initial_master_nodes: ["10.82.1.31"]
+    #
+    # For more information, consult the discovery and cluster formation module documentation.
+    #
+    # ---------------------------------- Gateway -----------------------------------
+    #
+    # Block initial recovery after a full cluster restart until N nodes are started:
+    #
+    #gateway.recover_after_nodes: 3
+    #
+    # For more information, consult the gateway module documentation.
+    #
+    # ---------------------------------- Various -----------------------------------
+    #
+    # Require explicit names when deleting indices:
+    #
+    #action.destructive_requires_name: true

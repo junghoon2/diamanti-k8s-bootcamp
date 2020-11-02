@@ -1,0 +1,8 @@
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+
+RUN set -ex \
+    && mkdir -p /home/elasticsearch \
+    && mkdir -p /home/elasticsearch/backup \
+    && ln -s /usr/share/elasticsearch/data  /home/elasticsearch \
+    && ln -s /usr/share/elasticsearch/logs  /home/elasticsearch 
+

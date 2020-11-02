@@ -3,7 +3,8 @@ kind: StatefulSet
 metadata:
   annotations:
     esMajorVersion: "7"
-  generation: 1
+  creationTimestamp: "2020-11-01T23:38:05Z"
+  generation: 2
   labels:
     app: douzone-master
     chart: elasticsearch
@@ -11,6 +12,9 @@ metadata:
     release: elastic
   name: douzone-master
   namespace: elastic
+  resourceVersion: "34053886"
+  selfLink: /apis/apps/v1/namespaces/elastic/statefulsets/douzone-master
+  uid: e80ba06a-2301-47ec-9256-c6841250a942
 spec:
   podManagementPolicy: Parallel
   replicas: 3
@@ -65,11 +69,14 @@ spec:
           value: "true"
         - name: node.master
           value: "true"
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+        - name: http.port
+          value: "19204"
+        image: erdia22/elastic:7.4.0.1
+        # image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
         imagePullPolicy: IfNotPresent
         name: elasticsearch
         ports:
-        - containerPort: 9200
+        - containerPort: 19204
           name: http
           protocol: TCP
         - containerPort: 9300
@@ -99,7 +106,7 @@ spec:
                   set -- "$@" -u "${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}"
                 fi
 
-                curl --output /dev/null -k "$@" "http://127.0.0.1:9200${path}"
+                curl --output /dev/null -k "$@" "http://127.0.0.1:19204${path}"
               }
 
               if [ -f "${START_FILE}" ]; then
@@ -107,7 +114,7 @@ spec:
                 HTTP_CODE=$(http "/" "-w %{http_code}")
                 RC=$?
                 if [[ ${RC} -ne 0 ]]; then
-                  echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:9200/ failed with RC ${RC}"
+                  echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:19204/ failed with RC ${RC}"
                   exit ${RC}
                 fi
                 # ready if HTTP code 200, 503 is tolerable if ES version is 6.x
@@ -116,7 +123,7 @@ spec:
                 elif [[ ${HTTP_CODE} == "503" && "7" == "6" ]]; then
                   exit 0
                 else
-                  echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:9200/ failed with HTTP code ${HTTP_CODE}"
+                  echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:19204/ failed with HTTP code ${HTTP_CODE}"
                   exit 1
                 fi
 
@@ -153,22 +160,15 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: douzone-master
+        - name: elastic-config
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml  # 반드시 파일 이름까지 포함한다. 
+          subPath: elasticsearch.yml
+      volumes:
+        - name: elastic-config
+          configMap:
+            name: elastic-cm
       dnsPolicy: ClusterFirst
       enableServiceLinks: true
-      # initContainers:
-      # - command:
-      #   - sysctl
-      #   - -w
-      #   - vm.max_map_count=262144
-      #   image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
-      #   imagePullPolicy: IfNotPresent
-      #   name: configure-sysctl
-      #   resources: {}
-      #   securityContext:
-      #     privileged: true
-      #     runAsUser: 0
-      #   terminationMessagePath: /dev/termination-log
-      #   terminationMessagePolicy: File
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext:
@@ -183,9 +183,8 @@ spec:
     spec:
       accessModes:
       - ReadWriteOnce
-      storageClassName: "high"
+      storageClassName: high
       resources:
         requests:
           storage: 30Gi
       volumeMode: Filesystem
-    
