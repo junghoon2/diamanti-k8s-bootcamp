@@ -31,13 +31,13 @@ spec:
           requests:
             memory: 1Gi
         volumeMounts:
-          - name: config-volume
-            mountPath: /etc/grafana/grafana.ini  # 반드시 파일 이름까지 포함한다. 
-            subPath: grafana.ini
-      volumes:
         - name: config-volume
-          configMap:
-            name: grafana-cm
+          mountPath: /etc/grafana/grafana.ini  # 반드시 파일 이름까지 포함한다. 
+          subPath: grafana.ini
+      volumes:
+      - name: config-volume
+        configMap:
+          name: grafana-cm
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

@@ -22,7 +22,7 @@ service:
   externalPort: 80
   internalPort: 8080
 
-hostPort: 8080
+# hostPort: 8080
 
 ingress:
   enabled: false

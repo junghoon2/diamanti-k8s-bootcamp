@@ -4,7 +4,7 @@ metadata:
   name: nginx-web-01
   namespace: test
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: nginx
@@ -13,7 +13,7 @@ spec:
       labels:
         app: nginx
       annotations:    # You must add these two lines under spec-> template -> metadata
-        diamanti.com/endpoint0: '{"network":"web","perfTier":"high"}'
+        diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
     spec:
       containers:
       - name: nginx

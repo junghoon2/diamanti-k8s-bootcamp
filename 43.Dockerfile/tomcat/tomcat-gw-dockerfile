@@ -1,0 +1,9 @@
+FROM tomcat:8.5
+
+RUN set -ex \
+    && mkdir /usr/local/tomcat/webapps/gw
+
+COPY gw.war /usr/local/tomcat/webapps/gw.war
+COPY Images /usr/local/tomcat/webapps/gw/Images
+COPY META-INF /usr/local/tomcat/webapps/gw/META-INF
+COPY WEB-INF /usr/local/tomcat/webapps/gw/WEB-INF
