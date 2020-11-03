@@ -14,7 +14,7 @@
 > * [WSL - Terminal 연동](https://docs.microsoft.com/ko-kr/windows/terminal/)
 > * WSL Git 설치
 
-> * dctl, kubectl, helm Tool 설치(Diamanti Admin Page 우측 상단 Tool Download, Linux 설치)
+### dctl, kubectl, helm Tool 설치 방법 (Diamanti Admin Page 우측 상단 클릭)
 
 ![Tool](./200707DctlTool.png)
 

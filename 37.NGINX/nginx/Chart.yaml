@@ -1,0 +1,21 @@
+annotations:
+  category: Infrastructure
+apiVersion: v1
+appVersion: 1.19.4
+description: Chart for the nginx server
+home: https://github.com/bitnami/charts/tree/master/bitnami/nginx
+icon: https://bitnami.com/assets/stacks/nginx/img/nginx-stack-220x234.png
+keywords:
+- nginx
+- http
+- web
+- www
+- reverse proxy
+maintainers:
+- email: containers@bitnami.com
+  name: Bitnami
+name: nginx
+sources:
+- https://github.com/bitnami/bitnami-docker-nginx
+- http://www.nginx.org
+version: 7.1.5

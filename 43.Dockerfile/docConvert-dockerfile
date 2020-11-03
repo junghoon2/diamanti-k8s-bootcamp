@@ -1,4 +1,5 @@
-FROM centos:7.8.2003
+#FROM centos:7.8.2003
+FROM tomcat:8.5
 
 RUN set -ex \
     && mkdir -p /home/neos/tomcat/webapps/libs \
@@ -8,19 +9,18 @@ RUN set -ex \
     && yum -y install xorg-x11-server-Xvfb \
     && yum -y clean all
 
-WORKDIR /home/neos
-
-COPY hermes-sdk/ /home/neos 
-COPY converting/ /home/upload 
-COPY ImageMagick/ /home/init/config 
+COPY hermes-sdk/ /home/neos/hermes-sdk
+COPY converting/ /home/upload/converting
+COPY ImageMagick/ /home/init/config/ImageMagick 
 
 RUN set -ex \
+    && chmod 755 /home/neos/hermes-sdk/*.sh \
     && ln -s /home/neos/hermes-sdk/tfo/fonts /usr/share/fonts/herm_font \
     && ln -s /home/neos/hermes-sdk/libs /home/upload/libs \
     && ln -s /home/neos/hermes-sdk/libs /home/neos/tomcat/webapps/libs \
-    && yum -y localinstall /home/init/config/ImageMagick/*.rpm \
+    && yum -y localinstall /home/init/config/ImageMagick/*.rpm --skip-broken\
     && yum -y clean all 
 
 CMD ["/home/neos/hermes-sdk/install-hnc.sh"]
 
-ENTRYPOINT ["/home/neos/hermes-sdk/hservice-tfo.sh start"]
+# ENTRYPOINT ["/home/neos/hermes-sdk/service-tfo.sh start"]

@@ -1,0 +1,6 @@
+FROM nginx:1.16.1
+
+RUN set -ex \
+    && mkdir -p /home/upload/klago-ui 
+
+COPY bizCube10Web /home/upload/bizCube10Web
