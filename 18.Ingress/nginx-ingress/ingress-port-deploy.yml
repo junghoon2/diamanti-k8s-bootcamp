@@ -1,0 +1,148 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    meta.helm.sh/release-name: ingress
+    meta.helm.sh/release-namespace: ingress
+  creationTimestamp: "2020-11-03T17:13:10Z"
+  generation: 2
+  labels:
+    app.kubernetes.io/instance: ingress
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx-ingress
+    helm.sh/chart: nginx-ingress-0.6.1
+  name: ingress-nginx-ingress
+  namespace: ingress
+  resourceVersion: "10779422"
+  selfLink: /apis/extensions/v1beta1/namespaces/ingress/deployments/ingress-nginx-ingress
+  uid: 2fa8777c-c165-4016-b229-d75a23e34f05
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: ingress-nginx-ingress
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+        prometheus.io/port: "9113"
+        prometheus.io/scrape: "true"
+      labels:
+        app: ingress-nginx-ingress
+    spec:
+      containers:
+      - args:
+        - -nginx-plus=false
+        - -nginx-reload-timeout=0
+        - -enable-app-protect=false
+        - -nginx-configmaps=$(POD_NAMESPACE)/ingress-nginx-ingress
+        - -default-server-tls-secret=$(POD_NAMESPACE)/ingress-nginx-ingress-default-server-secret
+        - -ingress-class=nginx
+        - -use-ingress-class-only=false
+        - -watch-namespace=ingress
+        - -health-status=false
+        - -health-status-uri=/nginx-health
+        - -nginx-debug=false
+        - -v=1
+        - -nginx-status=true
+        - -nginx-status-port=8082
+        - -nginx-status-allow-cidrs=172.17.0.0/16
+        - -report-ingress-status
+        - -nginx-configmaps=ingress/tcp-services
+        # - -tcp-services-configmap=ingress/tcp-services
+        - -enable-leader-election=true
+        - -leader-election-lock-name=ingress-nginx-ingress-leader-election
+        - -enable-prometheus-metrics=true
+        - -prometheus-metrics-listen-port=9113
+        - -enable-custom-resources=true
+        - -enable-tls-passthrough=false
+        - -enable-snippets=false
+        - -ready-status=true
+        - -ready-status-port=8081
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        image: nginx/nginx-ingress:1.8.1
+        imagePullPolicy: IfNotPresent
+        name: ingress-nginx-ingress
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        - containerPort: 9113
+          name: prometheus
+          protocol: TCP
+        - containerPort: 8081
+          name: readiness-port
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /nginx-ready
+            port: readiness-port
+            scheme: HTTP
+          periodSeconds: 1
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: "1"
+            memory: 4Gi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - ALL
+          runAsUser: 101
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: ingress-nginx-ingress
+      serviceAccountName: ingress-nginx-ingress
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2020-11-03T17:13:14Z"
+    lastUpdateTime: "2020-11-03T17:13:14Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2020-11-03T17:13:10Z"
+    lastUpdateTime: "2020-11-03T17:16:32Z"
+    message: ReplicaSet "ingress-nginx-ingress-684699b6cf" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
