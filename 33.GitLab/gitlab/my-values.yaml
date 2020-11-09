@@ -44,14 +44,14 @@ global:
     allowClusterRoles: true
   ## doc/charts/globals.md#configure-host-settings
   hosts:
-    domain: spkr.io
+    domain: spkr.gitlab.io
     hostSuffix:
     https: true
     externalIP:
     ssh: ~
     gitlab: {}
     minio: {}
-    registry: {}
+    registry: {registry-spkr.gitlab.io}
     tls: {}
     smartcard: {}
 
@@ -138,7 +138,7 @@ global:
 
   ## doc/charts/globals.md#configure-minio-settings
   minio:
-    enabled: true
+    enabled: false
     credentials: {}
       # secret:
 
@@ -914,8 +914,8 @@ gitlab:
 #   webservice:
 #     enabled: false
 ## doc/charts/gitlab/sidekiq
-  sidekiq:
-    enabled: false
+#   sidekiq:
+#     enabled: false
 ## doc/charts/gitlab/gitaly
 #   gitaly:
 ## doc/charts/gitlab/gitlab-shell

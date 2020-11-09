@@ -1,0 +1,61 @@
+# resource limit, podAntiAffinity, local time sync
+# readiness/linveness probe 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"blue", "perfTier":"high"}'
+  name: nginx-tmp
+  # namespace 별도 지정 권고
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  replicas: 2  # 향후 이중화 필요 
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+    # node 중복 방지를 위한 affinity 추가
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - nginx
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - name: nginx
+        image: nginx
+        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        ports:
+        - containerPort: 80
+        # resource 추가 
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        # local host node 시간 동기화
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+        # readiness, liveness probe 추가 권고 
+      # imagePullSecrets:
+      # - name: nexus-secret
+      volumes:
+      - hostPath:
+          path: /etc/localtime
+          type: File
+        name: localtime

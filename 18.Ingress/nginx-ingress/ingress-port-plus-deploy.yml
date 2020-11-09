@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress
+  namespace: ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-ingress
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+    spec:
+      serviceAccount: ingress-nginx-ingress
+      serviceAccountName: ingress-nginx-ingress
+      containers:
+      - image: nginx-plus-ingress:edge
+      # - image: nginx/nginx-ingress:1.8.1
+        imagePullPolicy: Always
+        name: nginx-plus-ingress
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        args:
+          - /nginx-ingress-controller
+          - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
+          # - --default-server-tls-secret=$(POD_NAMESPACE)/ingress-nginx-ingress-default-server-secret
+          # - --enable-tls-passthrough=false
+
