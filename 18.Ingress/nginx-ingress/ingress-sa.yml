@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    meta.helm.sh/release-name: ingress
+    meta.helm.sh/release-namespace: ingress
+  creationTimestamp: "2020-11-09T07:36:39Z"
+  labels:
+    app.kubernetes.io/instance: ingress
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx-ingress
+    helm.sh/chart: nginx-ingress-0.6.1
+  name: ingress-nginx-ingress
+  namespace: ingress
+  resourceVersion: "1318645"
+  selfLink: /api/v1/namespaces/ingress/serviceaccounts/ingress-nginx-ingress
+  uid: b9ed142a-586e-438a-a9e4-3780de57e8f3
+secrets:
+- name: ingress-nginx-ingress-token-tprph

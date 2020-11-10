@@ -9,32 +9,25 @@ expose:
     # images. Refer to https://github.com/goharbor/harbor/issues/5291
     # for the detail.
     enabled: true
-    # The source of the tls certificate. Set it as "auto", "secret" 
-    # or "none" and fill the information in the corresponding section
-    # 1) auto: generate the tls certificate automatically
-    # 2) secret: read the tls certificate from the specified secret.
-    # The tls certificate can be generated manually or by cert manager
-    # 3) none: configure no tls certificate for the ingress. If the default
-    # tls certificate is configured in the ingress controller, choose this option
-    certSource: auto
-    auto:
-      # The common name used to generate the certificate, it's necessary
-      # when the type isn't "ingress"
-      commonName: ""
-    secret:
-      # The name of secret which contains keys named:
-      # "tls.crt" - the certificate
-      # "tls.key" - the private key
-      secretName: ""
-      # The name of secret which contains keys named:
-      # "tls.crt" - the certificate
-      # "tls.key" - the private key
-      # Only needed when the "expose.type" is "ingress".
-      notarySecretName: ""
+    # Fill the name of secret if you want to use your own TLS certificate.
+    # The secret contains keys named:
+    # "tls.crt" - the certificate (required)
+    # "tls.key" - the private key (required)
+    # "ca.crt" - the certificate of CA (optional), this enables the download
+    # link on portal to download the certificate of CA
+    # These files will be generated automatically if the "secretName" is not set
+    secretName: ""
+    # By default, the Notary service will use the same cert and key as
+    # described above. Fill the name of secret if you want to use a
+    # separated one. Only needed when the type is "ingress".
+    notarySecretName: ""
+    # The common name used to generate the certificate, it's necessary
+    # when the type isn't "ingress" and "secretName" is null
+    commonName: ""
   ingress:
     hosts:
-      core: core.harbor.domain
-      notary: notary.harbor.domain
+      core: spkr.harbor.io
+      notary: notary-spkr.harbor.io
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
     # set to `gce` if using the GCE ingress controller
@@ -42,9 +35,10 @@ expose:
     controller: default
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
-      ingress.kubernetes.io/proxy-body-size: "0"
+      # ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.org/client-max-body-size: "100m"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      # nginx.ingress.kubernetes.io/proxy-body-size: "0"
   clusterIP:
     # The name of ClusterIP service
     name: harbor
@@ -105,7 +99,7 @@ expose:
 # the IP address of k8s node
 #
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
-externalURL: https://core.harbor.domain
+externalURL: https://spkr.harbor.io
 
 # The internal TLS used for harbor components secure communicating. In order to enable https
 # in each components tls cert files need to provided in advance.
@@ -187,8 +181,6 @@ persistence:
   enabled: true
   # Setting it to "keep" to avoid removing PVCs during a helm delete
   # operation. Leaving it empty will delete PVCs after the chart deleted
-  # (this does not apply for PVCs that are created for internal database
-  # and redis components, i.e. they are never deleted automatically)
   resourcePolicy: "keep"
   persistentVolumeClaim:
     registry:
@@ -198,19 +190,19 @@ persistence:
       # Specify the "storageClass" used to provision the volume. Or the default
       # StorageClass will be used(the default).
       # Set it to "-" to disable dynamic provisioning
-      storageClass: ""
+      storageClass: "high2m"
       subPath: ""
       accessMode: ReadWriteOnce
       size: 5Gi
     chartmuseum:
       existingClaim: ""
-      storageClass: ""
+      storageClass: "high2m"
       subPath: ""
       accessMode: ReadWriteOnce
       size: 5Gi
     jobservice:
       existingClaim: ""
-      storageClass: ""
+      storageClass: "high2m"
       subPath: ""
       accessMode: ReadWriteOnce
       size: 1Gi
@@ -218,24 +210,24 @@ persistence:
     # be ignored
     database:
       existingClaim: ""
-      storageClass: ""
+      storageClass: "high2m"
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 1Gi
+      size: 10Gi
     # If external Redis is used, the following settings for Redis will
     # be ignored
     redis:
       existingClaim: ""
-      storageClass: ""
+      storageClass: "high2m"
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 1Gi
+      size: 10Gi
     trivy:
       existingClaim: ""
-      storageClass: ""
+      storageClass: "high2m"
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 5Gi
+      size: 10Gi
   # Define which storage backend is used for registry and chartmuseum to store
   # images and charts. Refer to
   # https://github.com/docker/distribution/blob/master/docs/configuration.md#storage
@@ -281,14 +273,10 @@ persistence:
       #encrypt: false
       #keyid: mykeyid
       #secure: true
-      #skipverify: false
       #v4auth: true
       #chunksize: "5242880"
       #rootdirectory: /s3/object/name/prefix
       #storageclass: STANDARD
-      #multipartcopychunksize: "33554432"
-      #multipartcopymaxconcurrency: 100
-      #multipartcopythresholdsize: "33554432"
     swift:
       authurl: https://storage.myprovider.com/v3/auth
       username: username
@@ -339,12 +327,6 @@ logLevel: info
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "Harbor12345"
-
-# The name of the secret which contains key named "ca.crt". Setting this enables the
-# download link on portal to download the certificate of CA when the certificate isn't
-# generated automatically
-caSecretName: ""
-
 # The secret key used for encryption. Must be a string of 16 chars.
 secretKey: "not-a-secure-key"
 
@@ -375,7 +357,7 @@ proxy:
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: v2.1.0
+    tag: v2.0.3
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
@@ -392,14 +374,17 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: v2.1.0
+    tag: v2.0.3
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 4Gi
+      cpu: "1"
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -409,22 +394,26 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: v2.1.0
+    tag: v2.0.3
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
-  ## Startup probe values
-  startupProbe:
-    initialDelaySeconds: 10
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  ## Liveness probe values
+  livenessProbe:
+    initialDelaySeconds: 300
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 4Gi
+      cpu: "1"
   nodeSelector: {}
   tolerations: []
   affinity: {}
   ## Additional deployment annotations
-  podAnnotations: {}
+  podAnnotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
   # Secret is used when core server communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -442,22 +431,26 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: v2.1.0
+    tag: v2.0.3
   replicas: 1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLogger: file
-  # resources:
-  #   requests:
-  #     memory: 256Mi
-  #     cpu: 100m
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 4Gi
+      cpu: "1"
   nodeSelector: {}
   tolerations: []
   affinity: {}
   ## Additional deployment annotations
-  podAnnotations: {}
+  podAnnotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
   # Secret is used when job service communicates with other components.
   # If a secret key is not specified, Helm will generate one.
   # Must be a string of 16 chars.
@@ -469,26 +462,38 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: v2.1.0
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+      tag: v2.0.3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 4Gi
+        cpu: "1"
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: v2.1.0
-
+      tag: v2.0.3
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 4Gi
+        cpu: "1"
     # resources:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
+  # set the service account to be used, default if left empty
+  serviceAccountName: ""
   replicas: 1
   nodeSelector: {}
   tolerations: []
   affinity: {}
   ## Additional deployment annotations
-  podAnnotations: {}
+  podAnnotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
   # Secret is used to secure the upload state from client
   # and registry storage backend.
   # See: https://github.com/docker/distribution/blob/master/docs/configuration.md#http
@@ -524,7 +529,7 @@ chartmuseum:
   absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
-    tag: v2.1.0
+    tag: v2.0.3
   replicas: 1
   # resources:
   #  requests:
@@ -534,7 +539,8 @@ chartmuseum:
   tolerations: []
   affinity: {}
   ## Additional deployment annotations
-  podAnnotations: {}
+  podAnnotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
 
 clair:
   enabled: true
@@ -543,7 +549,7 @@ clair:
   clair:
     image:
       repository: goharbor/clair-photon
-      tag: v2.1.0
+      tag: v2.0.3
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -551,7 +557,7 @@ clair:
   adapter:
     image:
       repository: goharbor/clair-adapter-photon
-      tag: v2.1.0
+      tag: v2.0.3
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -573,7 +579,7 @@ trivy:
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: v2.1.0
+    tag: v2.0.3
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # replicas the number of Pod replicas
@@ -617,9 +623,6 @@ trivy:
     limits:
       cpu: 1
       memory: 1Gi
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
   ## Additional deployment annotations
   podAnnotations: {}
 
@@ -630,7 +633,7 @@ notary:
     serviceAccountName: ""
     image:
       repository: goharbor/notary-server-photon
-      tag: v2.1.0
+      tag: v2.0.3
     replicas: 1
     # resources:
     #  requests:
@@ -641,7 +644,7 @@ notary:
     serviceAccountName: ""
     image:
       repository: goharbor/notary-signer-photon
-      tag: v2.1.0
+      tag: v2.0.3
     replicas: 1
     # resources:
     #  requests:
@@ -651,7 +654,8 @@ notary:
   tolerations: []
   affinity: {}
   ## Additional deployment annotations
-  podAnnotations: {}
+  podAnnotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
   # Fill the name of a kubernetes secret if you want to use your own
   # TLS certificate authority, certificate and private key for notary
   # communications.
@@ -669,7 +673,7 @@ database:
     serviceAccountName: ""
     image:
       repository: goharbor/harbor-db
-      tag: v2.1.0
+      tag: v2.0.3
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -715,7 +719,7 @@ redis:
     serviceAccountName: ""
     image:
       repository: goharbor/redis-photon
-      tag: v2.1.0
+      tag: v2.0.3
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -724,12 +728,8 @@ redis:
     tolerations: []
     affinity: {}
   external:
-    # support redis, redis+sentinel
-    # addr for redis: <host_redis>:<port_redis>
-    # addr for redis+sentinel: <host_sentinel1>:<port_sentinel1>,<host_sentinel2>:<port_sentinel2>,<host_sentinel3>:<port_sentinel3>
-    addr: "192.168.0.2:6379"
-    # The name of the set of Redis instances to monitor, it must be set to support redis+sentinel
-    sentinelMasterSet: ""
+    host: "192.168.0.2"
+    port: "6379"
     # The "coreDatabaseIndex" must be "0" as the library Harbor
     # used doesn't support configuring it
     coreDatabaseIndex: "0"

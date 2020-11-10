@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: ingress
+    meta.helm.sh/release-namespace: harbor
+  creationTimestamp: "2020-11-09T23:25:17Z"
+  labels:
+    app.kubernetes.io/instance: ingress
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx-ingress
+    helm.sh/chart: nginx-ingress-0.6.1
+  name: ingress-nginx-ingress
+  namespace: harbor
+  resourceVersion: "1438788"
+  selfLink: /api/v1/namespaces/harbor/configmaps/ingress-nginx-ingress
+  uid: 95b03762-27e6-4660-aec0-c450b1f96114
+data:
+  proxy-body-size: 10m

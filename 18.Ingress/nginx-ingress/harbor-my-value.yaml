@@ -38,8 +38,7 @@ controller:
     repository: nginx/nginx-ingress
 
     ## The tag of the Ingress controller image.
-    # tag: "1.8.1"
-    tag: "latest"
+    tag: "1.8.1"
 
     ## The pull policy for the Ingress controller image.
     pullPolicy: IfNotPresent
@@ -104,7 +103,6 @@ controller:
 
   ## The affinity of the Ingress controller pods.
   affinity: {}
-    # diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
 
   ## The volumes of the Ingress controller pods.
   volumes: []
@@ -260,7 +258,8 @@ controller:
 
   pod:
     ## The annotations of the Ingress Controller pod.
-    annotations: {}
+    annotations: 
+      diamanti.com/endpoint0: '{"endpointId":"harbor","perfTier":"high"}'
 
   ## The PriorityClass of the ingress controller pods.
   priorityClassName:

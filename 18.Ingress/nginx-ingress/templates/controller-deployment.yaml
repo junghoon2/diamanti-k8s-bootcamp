@@ -150,5 +150,5 @@ spec:
           - -ready-status={{ .Values.controller.readyStatus.enable }}
           - -ready-status-port={{ .Values.controller.readyStatus.port }}
           # - -udp-services-configmap=${POD_NAMESPACE}/jvb-udp-svc
-          - -tcp-services-configmap=${POD_NAMESPACE}/tcp-services
+          # - -tcp-services-configmap=${POD_NAMESPACE}/tcp-services
 {{- end }}
