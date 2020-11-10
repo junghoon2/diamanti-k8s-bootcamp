@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: nfs-pv
+spec:
+ capacity:
+   storage: 20Gi
+ accessModes:
+ - ReadWriteOnce
+ csi:
+    driver: dcx.nfs.csi.diamanti.com
+    volumeHandle: data-id
+    fsType: ext4
+    volumeAttributes:
+      name: nfs-pv
+      type: nfs
+      server: 172.16.122.204 # IP 또는 FQDN 가능 
+      share: "/exports"
+      mountOptions: "nfsvers=3,soft"
+      route: "172.16.122.0/24"

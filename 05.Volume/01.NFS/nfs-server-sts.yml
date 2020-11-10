@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: nfs-server
+  name: nfs-server
+  namespace: nfs
+spec:
+  serviceName: "nfs"
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: nfs-server
+  updateStrategy:
+    type: OnDelete
+  template:
+    metadata:
+      annotations:
+        diamanti.com/endpoint0: '{"network":"host-network","perfTier":"high"}'
+      labels:
+        app: nfs-server
+    spec:
+      containers:
+      - image: gcr.io/google_containers/volume-nfs:0.8
+        imagePullPolicy: IfNotPresent
+        name: nfs-server
+        ports:
+        - containerPort: 2049
+          name: nfs
+          protocol: TCP
+        - containerPort: 20048
+          name: mountd
+          protocol: TCP
+        - containerPort: 111
+          name: rpcbind
+          protocol: TCP
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /exports
+          name: nfs-export
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  volumeClaimTemplates:
+  - metadata:
+      name: nfs-export
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high2m"
+      resources:
+        requests:
+          storage: 100Gi  # SC 지정 없으면 default SC(best-effort) 사용  

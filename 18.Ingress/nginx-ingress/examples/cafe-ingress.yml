@@ -17,5 +17,5 @@ spec:
         path: /tea
       - backend:
           serviceName: coffee-svc
-          servicePort: 80
+          servicePort: 8080
         path: /coffee
