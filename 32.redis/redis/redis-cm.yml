@@ -1,0 +1,49 @@
+apiVersion: v1
+data:
+  master.conf: |-
+    dir /data
+    rename-command FLUSHDB ""
+    rename-command FLUSHALL ""
+  redis.conf: |-
+    # User-supplied configuration:
+    # Enable AOF https://redis.io/topics/persistence#append-only-file
+    appendonly yes
+    # Disable RDB persistence, AOF persistence already enabled.
+    save ""
+    logfile "/data/redis_client.log"
+    dbfilename "dump_client.rdb"
+    repl-ping-slave-period 10
+    repl-timeout 60
+    maxmemory 200mb
+    maxmemory-policy noeviction
+    maxclients 4064
+  replica.conf: |-
+    dir /data
+    slave-read-only yes
+    rename-command FLUSHDB ""
+    rename-command FLUSHALL ""
+  sentinel.conf: |-
+    dir "/tmp"
+    bind 0.0.0.0
+    port 26384
+    sentinel monitor mymaster redis01-master-0.redis01-headless.redis.svc.cluster.local 16384 2
+    sentinel down-after-milliseconds mymaster 6000
+    sentinel failover-timeout mymaster 6000
+    sentinel parallel-syncs mymaster 1
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: redis01
+    meta.helm.sh/release-namespace: redis
+  creationTimestamp: "2020-11-11T07:13:41Z"
+  labels:
+    app: redis
+    app.kubernetes.io/managed-by: Helm
+    chart: redis-11.3.4
+    heritage: Helm
+    release: redis01
+  name: redis01
+  namespace: redis
+  resourceVersion: "12542763"
+  selfLink: /api/v1/namespaces/redis/configmaps/redis01
+  uid: 658c8c8f-27f6-4686-a51f-db10e1d64bee

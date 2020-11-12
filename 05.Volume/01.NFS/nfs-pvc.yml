@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
- name: nfs-pvc
+ name: nfs-ecm-pvc
  namespace: tomcat  # 사용할 POD의 ns 지정 
 spec:
- volumeName: nfs-pv
+ volumeName: nfs-ecm-pv
  storageClassName: ""
  accessModes:
  - ReadWriteOnce

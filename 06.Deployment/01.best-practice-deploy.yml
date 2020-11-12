@@ -1,10 +1,9 @@
 # resource limit, podAntiAffinity, local time sync
 # readiness/linveness probe 
+# network annotations 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    diamanti.com/endpoint0: '{"network":"blue", "perfTier":"high"}'
   name: nginx-tmp
   # namespace 별도 지정 권고
   namespace: default
@@ -19,6 +18,8 @@ spec:
     metadata:
       labels:
         app: nginx
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue", "perfTier":"high"}'
     spec:
     # node 중복 방지를 위한 affinity 추가
       affinity:
