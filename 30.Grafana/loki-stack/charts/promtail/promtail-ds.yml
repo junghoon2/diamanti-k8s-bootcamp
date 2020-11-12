@@ -1,0 +1,124 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: promtail
+    meta.helm.sh/release-namespace: monitoring
+  creationTimestamp: "2020-11-12T16:49:14Z"
+  generation: 1
+  labels:
+    app: promtail
+    app.kubernetes.io/managed-by: Helm
+    chart: promtail-2.0.1
+    heritage: Helm
+    release: promtail
+  name: promtail
+  namespace: monitoring
+  resourceVersion: "1998421"
+  selfLink: /apis/extensions/v1beta1/namespaces/monitoring/daemonsets/promtail
+  uid: 1512f367-e5a7-4be5-bbd3-73cbcef70522
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: promtail
+      release: promtail
+  template:
+    metadata:
+      annotations:
+        checksum/config: 848cdc037d50b775f23f6e91dd8a3b11203141c3ce4f8b2d5284f5708460b2ce
+        prometheus.io/port: http-metrics
+        prometheus.io/scrape: "true"
+      creationTimestamp: null
+      labels:
+        app: promtail
+        release: promtail
+    spec:
+      affinity: {}
+      containers:
+      - args:
+        - -config.file=/etc/promtail/promtail.yaml
+        - -client.url=http://loki:3100/loki/api/v1/push
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: grafana/promtail:2.0.0
+        imagePullPolicy: IfNotPresent
+        name: promtail
+        ports:
+        - containerPort: 3101
+          name: http-metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /ready
+            port: http-metrics
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsGroup: 0
+          runAsUser: 0
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/promtail
+          name: config
+        - mountPath: /run/promtail
+          name: run
+        - mountPath: /var/lib/docker/containers
+          name: docker
+          readOnly: true
+        - mountPath: /var/log/pods
+          name: pods
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: promtail
+      serviceAccountName: promtail
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: promtail
+        name: config
+      # - hostPath:
+      #     path: /run/promtail
+      #     type: ""
+      - emptyDir: {}          
+        name: run
+      - hostPath:
+          path: /var/lib/docker/containers
+          type: ""
+        name: docker
+      - hostPath:
+          path: /var/log/pods
+          type: ""
+        name: pods
+  templateGeneration: 1
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 3
+  desiredNumberScheduled: 3
+  numberMisscheduled: 0
+  numberReady: 0
+  numberUnavailable: 3
+  observedGeneration: 1
+  updatedNumberScheduled: 3

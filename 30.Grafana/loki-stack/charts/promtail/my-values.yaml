@@ -29,7 +29,7 @@ image:
 livenessProbe: {}
 
 loki:
-  serviceName: ""  # Defaults to "${RELEASE}-loki" if not set
+  serviceName: "loki"  # Defaults to "${RELEASE}-loki" if not set
   servicePort: 3100
   serviceScheme: http
   # user: user
@@ -59,8 +59,8 @@ rbac:
   pspEnabled: true
 
 podSecurityPolicy:
-  privileged: true
-  allowPrivilegeEscalation: true
+  privileged: false
+  allowPrivilegeEscalation: false
   volumes:
     - 'secret'
     - 'configMap'

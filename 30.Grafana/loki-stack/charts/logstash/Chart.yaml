@@ -14,4 +14,4 @@ name: logstash
 sources:
 - https://www.docker.elastic.co
 - https://www.elastic.co/guide/en/logstash/current/index.html
-version: 2.4.1
+version: 2.4.2
