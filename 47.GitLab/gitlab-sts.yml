@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       annotations:
-        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+        diamanti.com/endpoint0: '{"network":"green","perfTier":"high"}'
       creationTimestamp: null
       labels:
         app: gitlab
@@ -30,7 +30,7 @@ spec:
       containers:
       - env:
         - name: hostname
-          value: spkr.gitlab.io
+          value: douzone.gitlab.io
         image: gitlab/gitlab-ee:latest
         # imagePullPolicy: Always
         name: gitlab
@@ -41,7 +41,7 @@ spec:
         - containerPort: 443
           name: tls
           protocol: TCP
-        - containerPort: 22
+        - containerPort: 1022
           name: ssh
           protocol: TCP
         resources:
@@ -50,7 +50,7 @@ spec:
             memory: 64Gi
           requests:
             cpu: "1"
-            memory: 16Gi
+            memory: 4Gi
         readinessProbe:
           failureThreshold: 5
           httpGet:
@@ -61,18 +61,18 @@ spec:
           periodSeconds: 20
           successThreshold: 1
           timeoutSeconds: 2
-          initialDelaySeconds: 60
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            # path: /-/liveness
-            path: /-/readiness
-            port: 80
-            scheme: HTTP
-          initialDelaySeconds: 20
-          periodSeconds: 60
-          successThreshold: 1
-          timeoutSeconds: 30
+          initialDelaySeconds: 180 # 초기 시작 5m 정도 많이 소요
+        # livenessProbe:
+        #   failureThreshold: 3
+        #   httpGet:
+        #     # path: /-/liveness
+        #     path: /-/readiness
+        #     port: 80
+        #     scheme: HTTP
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 60
+        #   successThreshold: 1
+        #   timeoutSeconds: 30
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -121,7 +121,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 10Gi
+          storage: 50Gi
       storageClassName: high2m
       volumeMode: Filesystem
     status:
