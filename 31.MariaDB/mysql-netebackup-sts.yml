@@ -46,11 +46,29 @@ spec:
           # mountPath: /etc/my.cnf.d
           mountPath: /etc/my.cnf
           subPath: my.cnf
+      - name: netbackup
+        image: store/veritasnetbackup/client:8.2
+        command:
+        - "/entrypoint.sh"
+        - "-M"
+        - "master"
+        - "-c"
+        - "wordpress-mysql-0"
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-persistent-storage # 공유 volume 이름 지정
+        ports:
+        - containerPort: 1556
+          name: pbx
+          protocol: TCP
+        - containerPort: 13724
+          name: vnetd
+          protocol: TCP
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: mariadb-pvc
       - name: config-volume
         configMap:
-          name: mysql-config01
+          name: mysql-config
           optional: true

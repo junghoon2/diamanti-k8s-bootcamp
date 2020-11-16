@@ -28,11 +28,13 @@ spec:
         app: gitlab
     spec:
       containers:
-      - env:
-        - name: hostname
-          value: douzone.gitlab.io
-        image: gitlab/gitlab-ee:latest
+      - image: gitlab/gitlab-ee:latest
         # imagePullPolicy: Always
+        # env:
+        # - name: external_url
+        #   value: 'https://gitlab.spkr.io'
+        # - name: registry_external_url
+        #   value: 'https://gitlab.spkr.io:5050'
         name: gitlab
         ports:
         - containerPort: 80
@@ -78,6 +80,9 @@ spec:
         volumeMounts:
         - mountPath: /etc/gitlab
           name: gitlab-config
+        # - mountPath: /etc/gitlab/gitlab.rb
+        #   subPath: gitlab.rb
+        #   name: gitlab-conf-cm
         - mountPath: /var/log/gitlab
           name: gitlab-logs
         - mountPath: /var/opt/gitlab
@@ -86,6 +91,10 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
+      # volumes:
+      #   - name: gitlab-conf-cm
+      #     configMap:
+      #         name: gitlab-conf
   volumeClaimTemplates:
   - metadata:
       creationTimestamp: null

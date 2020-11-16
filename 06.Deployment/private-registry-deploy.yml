@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: private-registry
+  labels:
+    app: tomcat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tomcat # POD label과 일치
+  template:    
+    metadata:
+      labels:
+        app: tomcat # Selector label과 일치
+    spec:
+      containers:
+      - name: private-registry
+        image: gitlab.spkr.io:5050/jerry/spk01/nginx-dz:1.0
+      imagePullSecrets: 
+      - name: regcred

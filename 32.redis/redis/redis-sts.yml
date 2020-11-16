@@ -1,0 +1,275 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: redis
+    meta.helm.sh/release-namespace: redis
+  creationTimestamp: "2020-11-11T22:51:44Z"
+  generation: 1
+  labels:
+    app: redis
+    app.kubernetes.io/managed-by: Helm
+    chart: redis-11.3.4
+    heritage: Helm
+    release: redis
+  name: redis-node
+  namespace: redis
+  resourceVersion: "12978102"
+  selfLink: /apis/apps/v1/namespaces/redis/statefulsets/redis-node
+  uid: 763e1e7d-89d6-4117-bd7a-34904c19a675
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: redis
+      release: redis
+      role: node
+  serviceName: redis-headless
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: a371f01ade4e07dfb83770fd305d188e20e59ad7ef3706359c8314b98c4fcd31
+        checksum/health: e67c0e0f0bb4f7c9b9de7d931587c501c7c15b80ced81ec31c40028b42a6d3b5
+        checksum/secret: 1ec5b8962fb3018b522b26d09bfb1048c9ee1291fc8399a2997336535ffa4bf7
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+        prometheus.io/port: "9121"
+        prometheus.io/scrape: "true"
+      creationTimestamp: null
+      labels:
+        app: redis
+        chart: redis-11.3.4
+        release: redis
+        role: node
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - redis
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - command:
+        - /bin/bash
+        - -c
+        - /opt/bitnami/scripts/start-scripts/start-node.sh
+        env:
+        - name: REDIS_MASTER_PORT_NUMBER
+          value: "16384"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: redis
+        - name: REDIS_MASTER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: redis
+        - name: REDIS_TLS_ENABLED
+          value: "no"
+        - name: REDIS_PORT
+          value: "16384"
+        - name: REDIS_DATA_DIR
+          value: /data
+        image: docker.io/bitnami/redis:6.0.9-debian-10-r0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_liveness_local.sh 5
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: redis
+        ports:
+        - containerPort: 16384
+          name: redis
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_readiness_local.sh 5
+          failureThreshold: 5
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: "4"
+            memory: 16Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        securityContext:
+          runAsUser: 1001
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/bitnami/scripts/start-scripts
+          name: start-scripts
+        - mountPath: /health
+          name: health
+        - mountPath: /data
+          name: redis-data
+        - mountPath: /opt/bitnami/redis/mounted-etc
+          name: config
+        - mountPath: /opt/bitnami/redis/etc
+          name: redis-tmp-conf
+      - command:
+        - /bin/bash
+        - -c
+        - /opt/bitnami/scripts/start-scripts/start-sentinel.sh
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: redis
+        - name: REDIS_SENTINEL_TLS_ENABLED
+          value: "no"
+        - name: REDIS_SENTINEL_PORT
+          value: "26384"
+        image: docker.io/bitnami/redis-sentinel:6.0.8-debian-10-r55
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_sentinel.sh 5
+          failureThreshold: 5
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: sentinel
+        ports:
+        - containerPort: 26384
+          name: redis-sentinel
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_sentinel.sh 5
+          failureThreshold: 5
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: "4"
+            memory: 16Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        securityContext:
+          runAsUser: 1001
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/bitnami/scripts/start-scripts
+          name: start-scripts
+        - mountPath: /health
+          name: health
+        - mountPath: /data
+          name: redis-data
+        - mountPath: /opt/bitnami/redis-sentinel/mounted-etc
+          name: config
+        - mountPath: /opt/bitnami/redis-sentinel/etc
+          name: sentinel-tmp-conf
+      - command:
+        - /bin/bash
+        - -c
+        - |
+          if [[ -f '/secrets/redis-password' ]]; then
+          export REDIS_PASSWORD=$(cat /secrets/redis-password)
+          fi
+          redis_exporter
+        env:
+        - name: REDIS_ALIAS
+          value: redis
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: redis-password
+              name: redis
+        image: docker.io/bitnami/redis-exporter:1.12.1-debian-10-r11
+        imagePullPolicy: IfNotPresent
+        name: metrics
+        ports:
+        - containerPort: 9121
+          name: metrics
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1001
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 493
+          name: redis-scripts
+        name: start-scripts
+      - configMap:
+          defaultMode: 493
+          name: redis-health
+        name: health
+      - configMap:
+          defaultMode: 420
+          name: redis
+        name: config
+      - emptyDir: {}
+        name: sentinel-tmp-conf
+      - emptyDir: {}
+        name: redis-tmp-conf
+  updateStrategy:
+    type: OnDelete
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      labels:
+        app: redis
+        component: slave
+        heritage: Helm
+        release: redis
+      name: redis-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+status:
+  collisionCount: 0
+  currentReplicas: 3
+  currentRevision: redis-node-78674d6778
+  observedGeneration: 1
+  readyReplicas: 3
+  replicas: 3
+  updateRevision: redis-node-78674d6778
+  updatedReplicas: 3

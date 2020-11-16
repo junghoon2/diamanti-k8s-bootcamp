@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: "0"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    meta.helm.sh/release-name: harbor
+    meta.helm.sh/release-namespace: harbor
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.org/client-max-body-size: 100m
+  creationTimestamp: "2020-11-10T00:59:30Z"
+  generation: 1
+  labels:
+    app: harbor
+    app.kubernetes.io/managed-by: Helm
+    chart: harbor
+    heritage: Helm
+    release: harbor
+  name: harbor-harbor-ingress-notary
+  namespace: harbor
+  resourceVersion: "2413390"
+  selfLink: /apis/extensions/v1beta1/namespaces/harbor/ingresses/harbor-harbor-ingress-notary
+  uid: ef241a1d-83bc-4581-8358-ba52454bff27
+spec:
+  rules:
+  - host: notary-spkr.harbor.io
+    http:
+      paths:
+      - backend:
+          serviceName: harbor-harbor-notary-server
+          servicePort: 4443
+        path: /
+  tls:
+  - hosts:
+    - notary-spkr.harbor.io
+    secretName: harbor-harbor-ingress
+status:
+  loadBalancer:
+    ingress:
+    - ip: 172.17.16.162
