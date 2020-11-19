@@ -1,0 +1,132 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: "2020-10-27T18:36:30Z"
+    labels:
+      app.kubernetes.io/component: kafka-broker
+      app.kubernetes.io/instance: my-kafka
+      app.kubernetes.io/managed-by: Tiller
+      app.kubernetes.io/name: kafka
+      helm.sh/chart: kafka-0.21.2
+    name: my-kafka
+    namespace: kafka
+    resourceVersion: "8902316"
+    selfLink: /api/v1/namespaces/kafka/services/my-kafka
+    uid: b46f474d-2877-4374-948b-a58f812d206f
+  spec:
+    clusterIP: 10.0.0.172
+    ports:
+    - name: broker
+      port: 9092
+      protocol: TCP
+      targetPort: kafka
+    selector:
+      app.kubernetes.io/component: kafka-broker
+      app.kubernetes.io/instance: my-kafka
+      app.kubernetes.io/name: kafka
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    creationTimestamp: "2020-10-27T18:36:30Z"
+    labels:
+      app.kubernetes.io/component: kafka-broker
+      app.kubernetes.io/instance: my-kafka
+      app.kubernetes.io/managed-by: Tiller
+      app.kubernetes.io/name: kafka
+      helm.sh/chart: kafka-0.21.2
+    name: my-kafka-headless
+    namespace: kafka
+    resourceVersion: "8902318"
+    selfLink: /api/v1/namespaces/kafka/services/my-kafka-headless
+    uid: bf5dd83a-84a0-4ac1-afd8-f8620443f75a
+  spec:
+    clusterIP: None
+    ports:
+    - name: broker
+      port: 9092
+      protocol: TCP
+      targetPort: 9092
+    selector:
+      app.kubernetes.io/component: kafka-broker
+      app.kubernetes.io/instance: my-kafka
+      app.kubernetes.io/name: kafka
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: "2020-10-27T18:36:30Z"
+    labels:
+      app: zookeeper
+      chart: zookeeper-2.1.0
+      heritage: Tiller
+      release: my-kafka
+    name: my-kafka-zookeeper
+    namespace: kafka
+    resourceVersion: "8902313"
+    selfLink: /api/v1/namespaces/kafka/services/my-kafka-zookeeper
+    uid: 4c6c71ec-66c8-4328-a0be-909e54a4cbf4
+  spec:
+    clusterIP: 10.0.0.31
+    ports:
+    - name: client
+      port: 2181
+      protocol: TCP
+      targetPort: client
+    selector:
+      app: zookeeper
+      release: my-kafka
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: "2020-10-27T18:36:30Z"
+    labels:
+      app: zookeeper
+      chart: zookeeper-2.1.0
+      heritage: Tiller
+      release: my-kafka
+    name: my-kafka-zookeeper-headless
+    namespace: kafka
+    resourceVersion: "8902309"
+    selfLink: /api/v1/namespaces/kafka/services/my-kafka-zookeeper-headless
+    uid: 7c68cb79-7bdf-4328-8089-f3ac35171c2c
+  spec:
+    clusterIP: None
+    ports:
+    - name: client
+      port: 2181
+      protocol: TCP
+      targetPort: client
+    - name: election
+      port: 3888
+      protocol: TCP
+      targetPort: election
+    - name: server
+      port: 2888
+      protocol: TCP
+      targetPort: server
+    selector:
+      app: zookeeper
+      release: my-kafka
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

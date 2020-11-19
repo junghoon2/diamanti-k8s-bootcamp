@@ -1,17 +1,21 @@
+{{- $replicaCount := int .Values.replicaCount }}
+{{- if gt $replicaCount 1 }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: {{ template "zookeeper.fullname" . }}
-  labels:
-    app: {{ template "zookeeper.name" . }}
-    chart: {{ template "zookeeper.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    component: server
+  namespace: {{ template "zookeeper.namespace" . }}
+  labels: {{- include "zookeeper.labels" . | nindent 4 }}
+    app.kubernetes.io/component: zookeeper
+    {{- if .Values.commonLabels }}
+    {{- include "zookeeper.tplValue" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "zookeeper.tplValue" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
 spec:
   selector:
-    matchLabels:
-      app: {{ template "zookeeper.name" . }}
-      release: {{ .Release.Name }}
-      component: server
-{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+    matchLabels: {{- include "zookeeper.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: zookeeper
+  {{- toYaml .Values.podDisruptionBudget | nindent 2 }}
+{{- end }}

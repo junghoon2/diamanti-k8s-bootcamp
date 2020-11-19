@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-cm
+  namespace: kafka
+data:
+  # KAFKA_BROKER_ID: 1001
+  KAFKA_LISTENERS: PLAINTEXT://:9092,SASL_PLAINTEXT://:9093
+  # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://172.17.19.73:9092,SASL_PLAINTEXT://172.17.19.73:9093
+  # KAFKA_ZOOKEEPER_CONNECT: zookeeper-0.zookeeper-headless:2181,zookeeper-1.zookeeper-headlesszoo2:2181,zookeeper-2.zookeeper-headless:2181/ccs
+  KAFKA_SASL_ENABLED_MECHANISMS: SCRAM-SHA-512
+  KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: SCRAM-SHA-512
+  KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SASL_PLAINTEXT
+  KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.auth.SimpleAclAuthorizer
+  KAFKA_SUPER_USERS: User:admin
+  KAFKA_ZOOKEEPER_SET_ACL: 'false'
+  KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 3000
+  KAFKA_OPTS: -Djava.security.auth.login.config=/auth/kafka_jaas.conf -javaagent:/prometheus/jmx_prometheus_javaagent.jar=7100:/prometheus/kafka-2_0_0.yml
+  KAFKA_HEAP_OPTS: -Xms6g -Xmx6g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80
+

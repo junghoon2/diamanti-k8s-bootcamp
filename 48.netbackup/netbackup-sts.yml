@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{"diamanti.com/endpoint0":"{\"network\":\"red\",\"perfTier\":\"high\"}"},"labels":{"app":"wordpress"},"name":"wordpress-mysql","namespace":"test-db"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"wordpress","tier":"mysql"}},"serviceName":"wordpress-db","template":{"metadata":{"labels":{"app":"wordpress","tier":"mysql"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"mysql-pass"}}}],"image":"mysql:5.6","name":"mysql","ports":[{"containerPort":3306,"name":"mysql"}],"resources":{"limits":{"cpu":"34","memory":"64Gi"},"requests":{"cpu":"34","memory":"64Gi"}},"volumeMounts":[{"mountPath":"/var/lib/mysql","name":"mysql-persistent-storage"},{"mountPath":"/etc/my.cnf","name":"config-volume","subPath":"my.cnf"}]},{"command":["/entrypoint.sh","-M","master","-c","netbackup-0"],"image":"store/veritasnetbackup/client:8.2","name":"netbackup","ports":[{"containerPort":1556,"name":"pbx","protocol":"TCP"},{"containerPort":13724,"name":"vnetd","protocol":"TCP"}],"volumeMounts":[{"mountPath":"/var/lib/mysql","name":"mysql-persistent-storage"}]}],"volumes":[{"name":"mysql-persistent-storage","persistentVolumeClaim":{"claimName":"mariadb-pvc"}},{"configMap":{"name":"mysql-config","optional":true},"name":"config-volume"}]}}}}
+  creationTimestamp: "2020-11-16T05:34:44Z"
+  generation: 1
+  labels:
+    app: wordpress
+  name: wordpress-mysql
+  namespace: test-db
+  resourceVersion: "3108044"
+  selfLink: /apis/apps/v1/namespaces/test-db/statefulsets/wordpress-mysql
+  uid: 31093517-a3c8-402a-9540-1f012b4b3741
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: mysql
+  serviceName: wordpress-db
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: wordpress
+        tier: mysql
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue", "perfTier":"high"}'
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysql-pass
+        image: mysql:5.6
+        imagePullPolicy: IfNotPresent
+        name: mysql
+        ports:
+        - containerPort: 3306
+          name: mysql
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "34"
+            memory: 64Gi
+          requests:
+            cpu: "34"
+            memory: 64Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-persistent-storage
+        - mountPath: /etc/my.cnf
+          name: config-volume
+          subPath: my.cnf
+      - command:
+        - /entrypoint.sh
+        - -M
+        - master
+        - -c
+        - netbackup-0
+        image: store/veritasnetbackup/client:8.2
+        imagePullPolicy: IfNotPresent
+        name: netbackup
+        ports:
+        - containerPort: 1556
+          name: pbx
+          protocol: TCP
+        - containerPort: 13724
+          name: vnetd
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-persistent-storage
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: mysql-config
+          optional: true
+        name: config-volume
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: 50Gi  # SC 지정 없으면 default SC(best-effort) 사용  

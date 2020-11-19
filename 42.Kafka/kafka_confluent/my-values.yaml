@@ -17,14 +17,14 @@ imagePullPolicy: "IfNotPresent"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-resources:
-  limits:
-    cpu: 4
-    memory: 64Gi
-  requests:
-    cpu: 1
-    memory: 4Gi
-kafkaHeapOptions: "-Xmx16G -Xms16G"
+resources: {}
+  # limits:
+  #   cpu: 200m
+  #   memory: 1536Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 1024Mi
+kafkaHeapOptions: "-Xmx1G -Xms1G"
 
 ## Optional Container Security context
 securityContext: {}
@@ -72,31 +72,31 @@ logSubPath: "logs"
 ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ## By default we don't set affinity
-affinity:
+affinity: {}
 ## Alternatively, this typical example defines:
 ## antiAffinity (to keep Kafka pods on separate pods)
 ## and affinity (to encourage Kafka pods to be collocated with Zookeeper pods)
 # affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-    - labelSelector:
-        matchExpressions:
-        - key: app
-          operator: In
-          values:
-          - kafka
-      topologyKey: "kubernetes.io/hostname"
-  podAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-     - weight: 50
-       podAffinityTerm:
-         labelSelector:
-           matchExpressions:
-           - key: app
-             operator: In
-             values:
-               - zookeeper
-         topologyKey: "kubernetes.io/hostname"
+#   podAntiAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#     - labelSelector:
+#         matchExpressions:
+#         - key: app
+#           operator: In
+#           values:
+#           - kafka
+#       topologyKey: "kubernetes.io/hostname"
+#   podAffinity:
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#      - weight: 50
+#        podAffinityTerm:
+#          labelSelector:
+#            matchExpressions:
+#            - key: app
+#              operator: In
+#              values:
+#                - zookeeper
+#          topologyKey: "kubernetes.io/hostname"
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -163,8 +163,7 @@ external:
     imagePullPolicy: "IfNotPresent"
 
 # Annotation to be added to Kafka pods
-podAnnotations:
-  diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+podAnnotations: {}
 
 # Labels to be added to Kafka pods
 podLabels: {}
@@ -235,7 +234,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  storageClass: high
+  # storageClass:
 
 jmx:
   ## Rules to apply to the Prometheus JMX Exporter.  Note while lots of stats have been cleaned and exposed,
@@ -308,7 +307,7 @@ prometheus:
 
   ## Prometheus Kafka Exporter: exposes complimentary metrics to JMX Exporter
   kafka:
-    enabled: true
+    enabled: false
 
     ## The image to use for the metrics collector
     image: danielqsj/kafka-exporter
@@ -347,21 +346,21 @@ prometheus:
     ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
     ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
     ## By default we don't set affinity
-    affinity:
+    affinity: {}
     ## Alternatively, this typical example defines:
     ## affinity (to encourage Kafka Exporter pods to be collocated with Kafka pods)
     # affinity:
-      podAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-         - weight: 50
-           podAffinityTerm:
-             labelSelector:
-               matchExpressions:
-               - key: app
-                 operator: In
-                 values:
-                   - kafka
-             topologyKey: "kubernetes.io/hostname"
+    #   podAffinity:
+    #     preferredDuringSchedulingIgnoredDuringExecution:
+    #      - weight: 50
+    #        podAffinityTerm:
+    #          labelSelector:
+    #            matchExpressions:
+    #            - key: app
+    #              operator: In
+    #              values:
+    #                - kafka
+    #          topologyKey: "kubernetes.io/hostname"
 
     ## Node labels for pod assignment
     ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -503,10 +502,10 @@ zookeeper:
   ## Pod scheduling preferences (by default keep pods within a release on separate nodes).
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ## By default we don't set affinity:
-  affinity:  # Criteria by which pod label-values influence scheduling for zookeeper pods.
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: "kubernetes.io/hostname"
-        labelSelector:
-          matchLabels:
-            release: zookeeper
+  affinity: {}  # Criteria by which pod label-values influence scheduling for zookeeper pods.
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - topologyKey: "kubernetes.io/hostname"
+  #       labelSelector:
+  #         matchLabels:
+  #           release: zookeeper

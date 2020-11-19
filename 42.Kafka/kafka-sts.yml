@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/component: kafka-broker
+    app.kubernetes.io/instance: my-kafka
+    app.kubernetes.io/name: kafka
+  name: kafka
+  namespace: kafka
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kafka-broker
+      app.kubernetes.io/instance: my-kafka
+      app.kubernetes.io/name: kafka
+  serviceName: my-kafka-headless
+  template:
+    metadata:
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+      labels:
+        app.kubernetes.io/component: kafka-broker
+        app.kubernetes.io/instance: my-kafka
+        app.kubernetes.io/name: kafka
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - zookeeper
+              topologyKey: kubernetes.io/hostname
+            weight: 50
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - kafka
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - command:
+        - sh
+        - -exc
+        - "./startup.sh"
+          # unset KAFKA_PORT && \
+          # export KAFKA_BROKER_ID=${POD_NAME##*-} && \
+          # export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092 && \
+          # exec /etc/confluent/docker/run
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: KAFKA_BROKER_ID
+          value: ${POD_NAME##*-}
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: PLAINTEXT://${POD_IP}:9092, SASL_PLAINTEXT://${POD_IP}:9093 
+        - name: KAFKA_HEAP_OPTS
+          value: -Xmx16G -Xms16G
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "3"
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zookeeper:2181
+        - name: KAFKA_LOG_DIRS
+          value: /opt/kafka/data/logs
+        - name: KAFKA_JMX_PORT
+          value: "5555"
+        image: erdia22/kafka
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -ec
+            - /usr/bin/jps | /bin/grep -q SupportedKafka
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: kafka-broker
+        ports:
+        - containerPort: 9092
+          name: kafka
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: kafka
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "4"
+            memory: 64Gi
+          requests:
+            cpu: "1"
+            memory: 4Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/kafka/data
+          name: datadir
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 60
+  updateStrategy:
+    type: OnDelete
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      name: datadir
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+      storageClassName: high
+      volumeMode: Filesystem

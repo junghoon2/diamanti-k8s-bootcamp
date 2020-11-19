@@ -1,0 +1,164 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  creationTimestamp: "2020-10-27T18:36:30Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/component: kafka-broker
+    app.kubernetes.io/instance: my-kafka
+    app.kubernetes.io/managed-by: Tiller
+    app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-0.21.2
+  name: my-kafka
+  namespace: kafka
+  resourceVersion: "13966719"
+  selfLink: /apis/apps/v1/namespaces/kafka/statefulsets/my-kafka
+  uid: 7dd941e3-e97a-4922-a3a3-656b79ca5b68
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kafka-broker
+      app.kubernetes.io/instance: my-kafka
+      app.kubernetes.io/name: kafka
+  serviceName: my-kafka-headless
+  template:
+    metadata:
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: kafka-broker
+        app.kubernetes.io/instance: my-kafka
+        app.kubernetes.io/managed-by: Tiller
+        app.kubernetes.io/name: kafka
+        helm.sh/chart: kafka-0.21.2
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - zookeeper
+              topologyKey: kubernetes.io/hostname
+            weight: 50
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - kafka
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - command:
+        - sh
+        - -exc
+        - |
+          unset KAFKA_PORT && \
+          export KAFKA_BROKER_ID=${POD_NAME##*-} && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092 && \
+          exec /etc/confluent/docker/run
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: KAFKA_HEAP_OPTS
+          value: -Xmx16G -Xms16G
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "3"
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: my-kafka-zookeeper:2181
+        - name: KAFKA_LOG_DIRS
+          value: /opt/kafka/data/logs
+        - name: KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE
+          value: "false"
+        - name: KAFKA_JMX_PORT
+          value: "5555"
+        image: confluentinc/cp-kafka:5.0.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -ec
+            - /usr/bin/jps | /bin/grep -q SupportedKafka
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: kafka-broker
+        ports:
+        - containerPort: 9092
+          name: kafka
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: kafka
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "4"
+            memory: 64Gi
+          requests:
+            cpu: "1"
+            memory: 4Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/kafka/data
+          name: datadir
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 60
+  updateStrategy:
+    type: OnDelete
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      name: datadir
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: high
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+status:
+  collisionCount: 0
+  currentReplicas: 3
+  currentRevision: my-kafka-86c4498986
+  observedGeneration: 1
+  readyReplicas: 3
+  replicas: 3
+  updateRevision: my-kafka-86c4498986
+  updatedReplicas: 3

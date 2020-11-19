@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
- name: nfs-ecm-pvc
- namespace: tomcat  # 사용할 POD의 ns 지정 
+ name: nfs-biz-pvc
+ namespace: bizcube-test  # 사용할 POD의 ns 지정 
 spec:
- volumeName: nfs-ecm-pv
+ volumeName: nfs-biz-pv
  storageClassName: ""
  accessModes:
- - ReadWriteOnce
+ - ReadWriteMany
  resources:
    requests:
-     storage: 20Gi
+     storage: 100Gi
