@@ -113,7 +113,7 @@ podManagementPolicy: Parallel
 
 ## Number of ZooKeeper nodes
 ##
-replicaCount: 1
+replicaCount: 3
 
 ## Basic time unit in milliseconds used by ZooKeeper for heartbeats
 ##
@@ -266,7 +266,7 @@ persistence:
   # existingClaim:
 
   enabled: true
-  # storageClass: "-"
+  storageClass: "high"
   accessModes:
     - ReadWriteOnce
   size: 8Gi
@@ -296,7 +296,8 @@ podLabels: {}
 
 ## Annotations
 ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-podAnnotations: {}
+podAnnotations:
+  diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
 
 ## Name of the priority class to be used by zookeeper pods, priority class needs to be created beforehand
 ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
@@ -316,9 +317,12 @@ affinity: {}
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
+  limits: 
+    cpu: "4"
+    memory: 8Gi
   requests:
-    memory: 256Mi
-    cpu: 250m
+    cpu: "1"
+    memory: 2Gi
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -359,7 +363,7 @@ networkPolicy:
 ## Zookeeper Prometheus Exporter configuration
 ##
 metrics:
-  enabled: false
+  enabled: true
 
   ## Zookeeper Prometheus Exporter container port
   ##
