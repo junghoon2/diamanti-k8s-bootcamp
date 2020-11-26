@@ -1,0 +1,300 @@
+# resource limit, podAntiAffinity, local time sync
+# readiness/linveness probe 
+# network annotations 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: felice
+  # namespace 별도 지정 권고
+  namespace: kafka
+  labels:
+    app: felice
+spec:
+  replicas: 1  # 향후 이중화 필요 
+  selector:
+    matchLabels:
+      app: felice
+  template:
+    metadata:
+      labels:
+        app: felice
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue", "perfTier":"high"}'
+    spec:
+    # node 중복 방지를 위한 affinity 추가
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - felice
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - name: felice-lag
+        image: erdia22/burrow-docker:latest
+        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        # resource 추가 
+        env:
+        - name: WAIT_HOST
+          value: localhost:2181
+        - name: WAIT_BEFORE_HOSTS
+          value: "3"
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /burrow/admin
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /burrow/admin
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        # # local host node 시간 동기화
+        volumeMounts:
+        - name: burrow-conf
+          mountPath: /etc/burrow/burrow.toml
+          subPath: burrow.toml
+        - mountPath: /etc/localtime
+          name: localtime
+
+      - name: felice-zoo
+        image: erdia22/zookeeper-docker:3.6.2
+        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        # resource 추가 
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        livenessProbe:
+          exec:
+            command:
+            - /bin/zkCli.sh
+            - version
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /monitor/health
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        # # local host node 시간 동기화
+        volumeMounts:
+        - name: zoo-conf
+          mountPath: /conf/zoo.cfg
+          subPath: zoo.cfg
+        - mountPath: /etc/localtime
+          name: localtime
+
+      - name: felice-front
+        image: erdia22/client:1.0.0
+        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        # resource 추가 
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /monitor/health
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /monitor/health
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        # local host node 시간 동기화
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+
+      - name: felice-back
+        image: erdia22/api_server:develop-1.0.0
+        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        ports:
+        - containerPort: 8989
+          # name: http
+          # protocol: TCP
+        - containerPort: 7000
+          # name: http
+          # protocol: TCP
+        # resource 추가 
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /monitor/health
+            port: 7000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /monitor/health
+            port: 7000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        # local host node 시간 동기화
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+
+      - name: felice-board
+        image: erdia22/grafana-docker:latest
+        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        ports:
+        - containerPort: 3000
+        # resource 추가 
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        # local host node 시간 동기화
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+
+      - name: felice-mon
+        image: erdia22/prometheus-docker:latest
+        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        ports:
+        - containerPort: 9090
+        # resource 추가 
+        env:
+        - name: PROMETHEUS_STORAGE_TSDB_RETENTION_TIME
+          value: 60d
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /-/healthy
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /-/healthy
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        # local host node 시간 동기화
+        volumeMounts:
+        - name: prome-conf
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: prometheus.yml
+        - mountPath: /etc/localtime
+          name: localtime
+      # imagePullSecrets:
+      # - name: nexus-secret
+      volumes:
+      - name: zoo-conf
+        configMap:
+          name: felice-cm
+      - name: burrow-conf
+        configMap:
+          name: felice-cm
+      - name: prome-conf
+        configMap:
+          name: felice-cm
+      - hostPath:
+          path: /etc/localtime
+          type: File
+        name: localtime
