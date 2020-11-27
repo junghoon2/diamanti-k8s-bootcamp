@@ -40,6 +40,13 @@ default-token-pd8cz   kubernetes.io/service-account-token   3      16d
 - ### Password 확인 방법
 
 ```
+1줄로 확인
+
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/42.Kafka/kafka-bitnami$ kubectl get secret loki-grafana -o jsonpath="{.data.admin-password}" | base64 --decode
+LNfIBAURsIesq729Dfh8vpwSywEeMsCkDLCCX1hO
+```
+
+```
 YAML 파일 추출 
 
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/46.argo$ k get secrets argocd-secret -o yaml

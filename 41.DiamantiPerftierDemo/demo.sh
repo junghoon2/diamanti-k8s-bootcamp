@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# 5분 정도 소요 
+
 dctl login -u admin -p Diamanti1!
 read enter
 
@@ -24,7 +27,7 @@ echo "dctl perf-tier list"
 dctl perf-tier list
 read enter
 
-echo "Performance test using fio & iperf"
+echo "Performance test using fio & iperf, create 3ea POD each 3ea perf tier for 3 nodes"
 $(dirname ${BASH_SOURCE})/create-iperf-fio.sh dia01 dia02 dia03 blue
 read enter
 
@@ -36,7 +39,6 @@ kubectl get pods -o wide
 
 sleep 3
 dctl cluster status
-
 
 # echo "dctl cluster status"
 

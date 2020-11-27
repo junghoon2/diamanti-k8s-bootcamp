@@ -50,28 +50,28 @@ data:
     # class-name="kafka"
     # cluster="maas"
     # servers=[ "172.17.19.4:9092", "172.17.19.5:9092", "172.17.19.9:9092" ]
-  zoo.cfg: |
-    # data
-    dataDir=/data
+  # zoo.cfg: |
+  #   # data
+  #   dataDir=/data
 
-    tickTime=2000
-    #initLimit=5
-    #syncLimit=2
-    #autopurge.snapRetainCount=3
-    #autopurge.purgeInterval=0
-    #maxClientCnxns=60
-    #standaloneEnabled=true
-    clientPort=2181
+  #   tickTime=2000
+  #   #initLimit=5
+  #   #syncLimit=2
+  #   #autopurge.snapRetainCount=3
+  #   #autopurge.purgeInterval=0
+  #   #maxClientCnxns=60
+  #   #standaloneEnabled=true
+  #   clientPort=2181
 
-    # no ensemble
+  #   # no ensemble
 
-    # metric
-    metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider
-    metricsProvider.httpPort=7000
-    metricsProvider.exportJvmInfo=true
+  #   # metric
+  #   metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider
+  #   metricsProvider.httpPort=7000
+  #   metricsProvider.exportJvmInfo=true
 
-    # 4lw
-    4lw.commands.whitelist=*
+  #   # 4lw
+  #   4lw.commands.whitelist=*
   prometheus.yml: |
     global:
       scrape_interval:     15s # By default, scrape targets every 15 seconds.
@@ -125,7 +125,7 @@ data:
       - job_name: 'felice-zoo'
         scrape_interval: 5s
         static_configs:
-          - targets: ['localhost:7000']
+          - targets: ['localhost:7100']
 
       #### CLUSTER 1 : douzone ####
       ## ZooKeeper
@@ -228,5 +228,3 @@ data:
       #     - targets: ['172.17.19.9:9200']
       #       labels:
       #         instance: 3
-
-

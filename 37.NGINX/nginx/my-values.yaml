@@ -232,7 +232,7 @@ containerSecurityContext:
 ## Configures the ports NGINX listens on
 ##
 containerPorts:
-  http: 80
+  http: 8080
   # https: 8443
 
 ## NGINX containers' resource requests and limits

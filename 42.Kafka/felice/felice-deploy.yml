@@ -34,6 +34,11 @@ spec:
                   - felice
               topologyKey: kubernetes.io/hostname
             weight: 100
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "felice-back"
+        - "burrow"
       containers:
       - name: felice-lag
         image: erdia22/burrow-docker:latest
@@ -80,8 +85,8 @@ spec:
           name: localtime
 
       - name: felice-zoo
-        image: erdia22/zookeeper-docker:3.6.2
-        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        image: erdia22/zookeeper-docker
+        imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
         # resource 추가 
         resources:
           limits:
@@ -112,9 +117,9 @@ spec:
           failureThreshold: 3
         # # local host node 시간 동기화
         volumeMounts:
-        - name: zoo-conf
-          mountPath: /conf/zoo.cfg
-          subPath: zoo.cfg
+        # - name: zoo-conf
+        #   mountPath: /conf/zoo.cfg
+        #   subPath: zoo.cfg
         - mountPath: /etc/localtime
           name: localtime
 
@@ -157,7 +162,6 @@ spec:
         volumeMounts:
         - mountPath: /etc/localtime
           name: localtime
-
       - name: felice-back
         image: erdia22/api_server:develop-1.0.0
         # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
@@ -176,26 +180,26 @@ spec:
           requests:
             cpu: "1"
             memory: 1Gi
-        livenessProbe:
-          httpGet:
-            path: /monitor/health
-            port: 7000
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 1
-          successThreshold: 1
-          failureThreshold: 5
-        readinessProbe:
-          httpGet:
-            path: /monitor/health
-            port: 7000
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 1
-          successThreshold: 1
-          failureThreshold: 3
+        # livenessProbe:
+        #   httpGet:
+        #     path: /monitor/health
+        #     port: 7000
+        #     scheme: HTTP
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
+        #   timeoutSeconds: 1
+        #   successThreshold: 1
+        #   failureThreshold: 5
+        # readinessProbe:
+        #   httpGet:
+        #     path: /monitor/health
+        #     port: 7000
+        #     scheme: HTTP
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        #   timeoutSeconds: 1
+        #   successThreshold: 1
+        #   failureThreshold: 3
         # local host node 시간 동기화
         volumeMounts:
         - mountPath: /etc/localtime
@@ -285,9 +289,9 @@ spec:
       # imagePullSecrets:
       # - name: nexus-secret
       volumes:
-      - name: zoo-conf
-        configMap:
-          name: felice-cm
+      # - name: zoo-conf
+      #   configMap:
+      #     name: felice-cm
       - name: burrow-conf
         configMap:
           name: felice-cm

@@ -22,8 +22,7 @@ spec:
   template:
     metadata:
       annotations:
-        diamanti.com/endpoint0: '{"network":"green","perfTier":"high"}'
-      creationTimestamp: null
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
       labels:
         app: gitlab
     spec:
@@ -56,25 +55,25 @@ spec:
         readinessProbe:
           failureThreshold: 5
           httpGet:
-            # path: /-/readiness
-            path: /
+            path: /-/readiness
+            # path: /users/sign_in
             port: 80
             scheme: HTTP
           periodSeconds: 20
           successThreshold: 1
           timeoutSeconds: 2
-          initialDelaySeconds: 180 # 초기 시작 5m 정도 많이 소요
-        # livenessProbe:
-        #   failureThreshold: 3
-        #   httpGet:
-        #     # path: /-/liveness
-        #     path: /-/readiness
-        #     port: 80
-        #     scheme: HTTP
-        #   initialDelaySeconds: 20
-        #   periodSeconds: 60
-        #   successThreshold: 1
-        #   timeoutSeconds: 30
+          initialDelaySeconds: 180 # 초기 시작 3m 정도 많이 소요
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /-/liveness
+            # path: /users/sign_in
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 30
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -97,7 +96,6 @@ spec:
       #         name: gitlab-conf
   volumeClaimTemplates:
   - metadata:
-      creationTimestamp: null
       name: gitlab-config
     spec:
       accessModes:
@@ -110,7 +108,6 @@ spec:
     status:
       phase: Pending
   - metadata:
-      creationTimestamp: null
       name: gitlab-logs
     spec:
       accessModes:
@@ -123,7 +120,6 @@ spec:
     status:
       phase: Pending
   - metadata:
-      creationTimestamp: null
       name: gitlab-data
     spec:
       accessModes:
