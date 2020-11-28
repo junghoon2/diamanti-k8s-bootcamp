@@ -46,15 +46,16 @@ spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/42.Kafka/kafka-bitnami$ kubectl get 
 LNfIBAURsIesq729Dfh8vpwSywEeMsCkDLCCX1hO
 ```
 
+
 ```
 YAML 파일 추출 
 
 spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/46.argo$ k get secrets argocd-secret -o yaml
 ```
 
-```
 decode 실행 
 
+```
 [diamanti@diamanti1 ~]$ echo -n 'bXlzcWw=' | base64 --decode
 mysql
 [diamanti@diamanti1 ~]$ echo -n 'cGFzc3dvcmQ=' | base64 --decode

@@ -69,6 +69,15 @@ NAME               READY   UP-TO-DATE   AVAILABLE   AGE   LABELS
 nginx-deployment   1/1     1            1           15m   app=web
 ```
 
+전체 label 정보 조회 
+```
+spkr@erdia22:~/02.k8s/diamanti-k8s-bootcamp/42.Kafka/kafka-bitnami$ kubectl get pods --show-labels -A
+NAMESPACE             NAME                                                     READY   STATUS      RESTARTS   AGE     LABELS
+argocd                argocd-application-controller-d9dc84865-tjc9f            1/1     Running     3          10d     app.kubernetes.io/name=argocd-application-controller,pod-template-hash=d9dc84865
+argocd                argocd-dex-server-7c764db67f-zz52s                       1/1     Running     0          10d     app.kubernetes.io/name=argocd-dex-server,pod-template-hash=7c764db67f
+argocd                argocd-redis-8486557ddf-46hbx                            1/1     Running     0          10d     app.kubernetes.io/name=argocd-redis,pod-template-hash=8486557ddf
+```
+
 동일하게 Node 등 다른 Kubernetes Object Label 정보도 동일 명령어로 확인 가능
 - 향후 Node Affinity Scheduling에 사용
 ```
