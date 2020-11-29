@@ -13,7 +13,7 @@ fluent-bit:
   enabled: false
 
 grafana:
-  enabled: true
+  enabled: false
   sidecar:
     datasources:
       enabled: true

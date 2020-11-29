@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-helm
+spec:
+  destination:
+    namespace: nginx
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: 37.NGINX/nginx
+    repoURL: https://github.com/junghoon2/diamanti-k8s-bootcamp.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+      - values-prod.yaml
+  syncPolicy:
+    automated: {}
+    prune: true

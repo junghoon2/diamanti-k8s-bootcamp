@@ -26,7 +26,15 @@ image:
   # pullSecrets:
   #   - myRegistryKeySecretName
 
-livenessProbe: {}
+livenessProbe:
+  failureThreshold: 5
+  httpGet:
+    path: /ready
+    port: http-metrics
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 
 loki:
   serviceName: ""  # Defaults to "${RELEASE}-loki" if not set
@@ -50,6 +58,7 @@ podLabels: {}
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "http-metrics"
+  diamanti.com/endpoint0: '{"network":"green","perfTier":"high"}'
 
 ## Assign a PriorityClassName to pods if set
 # priorityClassName:
@@ -93,13 +102,13 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 
-resources: {}
-#  limits:
-#    cpu: 200m
-#    memory: 128Mi
-#  requests:
-#    cpu: 100m
-#    memory: 128Mi
+resources:
+  limits:
+    cpu: "4"
+    memory: 32Gi
+  requests:
+    cpu: "1"
+    memory: 4Gi
 
 # Custom scrape_configs to override the default ones in the configmap
 scrapeConfigs: []
@@ -185,7 +194,7 @@ config:
     sync_period: 10s
 
 serviceMonitor:
-  enabled: false
+  enabled: true
   interval: ""
   additionalLabels: {}
   annotations: {}
@@ -196,7 +205,7 @@ env: []
 
 # enable and configure if using the syslog scrape config
 syslogService:
-  enabled: false
+  enabled: true
   type: ClusterIP
   port: 1514
   # externalIPs: []

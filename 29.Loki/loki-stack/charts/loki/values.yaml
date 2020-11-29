@@ -126,8 +126,8 @@ persistence:
   enabled: true
   accessModes:
   - ReadWriteOnce
-  size: 10Gi
-  storageClassName: "high"
+  size: 100Gi
+  storageClassName: "high2m"
   annotations: {}
   # selector:
   #   matchLabels:
@@ -142,6 +142,7 @@ podLabels: {}
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "http-metrics"
+  diamanti.com/endpoint0: '{"network":"green","perfTier":"high"}'
 
 podManagementPolicy: OrderedReady
 
@@ -160,13 +161,13 @@ readinessProbe:
 
 replicas: 1
 
-resources: {}
-# limits:
-#   cpu: 200m
-#   memory: 256Mi
-# requests:
-#   cpu: 100m
-#   memory: 128Mi
+resources:
+  limits:
+    cpu: "4"
+    memory: 32Gi
+  requests:
+    cpu: "1"
+    memory: 4Gi
 
 securityContext:
   fsGroup: 10001
