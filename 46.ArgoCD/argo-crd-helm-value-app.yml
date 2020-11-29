@@ -13,7 +13,7 @@ spec:
     targetRevision: HEAD
     helm:
       valueFiles:
-      - values-prod.yaml
+      - my-values.yaml
   syncPolicy:
     automated: {}
     prune: true

@@ -1929,6 +1929,9 @@ prometheus:
     ## The scrape configuraiton example below will find master nodes, provided they have the name .*mst.*, relabel the
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
+
+    # Diamanti Scrape 추가
+
     additionalScrapeConfigs:
     - job_name: cAdvisor-exporter
       honor_timestamps: true
