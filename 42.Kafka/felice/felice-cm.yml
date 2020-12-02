@@ -12,7 +12,7 @@ data:
     address=":8000"
 
     [zookeeper]
-    servers=[ "localhost:2181" ]
+    servers=[ "127.0.0.1:2181" ]
     timeout=6
     root-path="/felice/burrow"
 
@@ -28,7 +28,7 @@ data:
 
     [cluster.douzone]
     class-name="kafka"
-    servers=[ "my-kafka-0.my-kafka.kafka:9093", "my-kafka-1.my-kafka.kafka:9093", "my-kafka-2.my-kafka.kafka:9093" ]
+    servers=[ "my-kafka-0.my-kafka-headless:9093", "my-kafka-1.my-kafka-headless:9093", "my-kafka-2.my-kafka-headless:9093" ]
     client-profile="douzone"
     topic-refresh=60
     offset-refresh=5
@@ -36,7 +36,7 @@ data:
     [consumer.douzone]
     class-name="kafka"
     cluster="douzone"
-    servers=[ "my-kafka-0.my-kafka.kafka:9093", "my-kafka-1.my-kafka.kafka:9093", "my-kafka-2.my-kafka.kafka:9093"]
+    servers=[ "my-kafka-0.my-kafka-headless:9093", "my-kafka-1.my-kafka-headless:9093", "my-kafka-2.my-kafka-headless:9093"]
     client-profile="douzone"
 
     ### cluster : maas ###
@@ -160,13 +160,13 @@ data:
       - job_name: 'douzone-kafka'
         scrape_interval: 5s
         static_configs:
-          - targets: ['my-kafka-0.my-kafka.kafka:5556']
+          - targets: ['my-kafka-0.my-kafka-headless:5556']
             labels:
               instance: 1
-          - targets: ['my-kafka-1.my-kafka.kafka:5556']
+          - targets: ['my-kafka-1.my-kafka-headless:5556']
             labels:
               instance: 2
-          - targets: ['my-kafka-2.my-kafka.kafka:5556']
+          - targets: ['my-kafka-2.my-kafka-headless:5556']
             labels:
               instance: 3
 

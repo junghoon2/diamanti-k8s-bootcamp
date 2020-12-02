@@ -1,0 +1,56 @@
+# resource limit, podAntiAffinity, local time sync
+# readiness/linveness probe 
+# network annotations 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: felice-kafka
+  # namespace 별도 지정 권고
+  namespace: kafka
+  labels:
+    app: felice-kafka
+spec:
+  replicas: 1  # 향후 이중화 필요 
+  selector:
+    matchLabels:
+      app: felice-kafka
+  template:
+    metadata:
+      labels:
+        app: felice-kafka
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue", "perfTier":"high"}'
+    spec:
+    # node 중복 방지를 위한 affinity 추가
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - felice-kafka
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - name: felice-kafka
+        image: erdia22/kafka
+        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        # resource 추가 
+        resources:
+          limits:
+            cpu: "4"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+      volumes:
+      - hostPath:
+          path: /etc/localtime
+          type: File
+        name: localtime
