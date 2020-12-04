@@ -1,0 +1,2 @@
+spkr@erdia22:~/12.Privatek8sCode/11.PJT/03.dz-army/17.ArgoCD$ argocd repo add https://10.60.0.50/jerry/dz-army.git --username jerry --password {} --insecure-skip-server-verification
+repository 'https://10.60.0.50/jerry/dz-army.git' added

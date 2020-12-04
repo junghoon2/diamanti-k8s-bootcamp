@@ -39,6 +39,7 @@ spec:
         hostnames:
         - "felice-back"
         - "burrow"
+        - "felice-mon"
       containers:
       - name: felice-lag
         image: erdia22/burrow-docker:latest
@@ -97,7 +98,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/zkCli.sh
+            - ./bin/zkCli.sh
             - version
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -105,10 +106,10 @@ spec:
           successThreshold: 1
           failureThreshold: 5
         readinessProbe:
-          httpGet:
-            path: /monitor/health
-            port: 80
-            scheme: HTTP
+          exec:
+            command:
+            - ./bin/zkCli.sh
+            - version
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 1
@@ -161,8 +162,9 @@ spec:
         - mountPath: /etc/localtime
           name: localtime
       - name: felice-back
+        # image: 172.17.19.54:4567/kafka_controller/api_server:develop-1.0.0
         image: erdia22/api_server:develop-1.0.0
-        # imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
+        imagePullPolicy: Always  # 향후 운영 시 IfNotPresent 변경
         ports:
         - containerPort: 8989
           # name: http

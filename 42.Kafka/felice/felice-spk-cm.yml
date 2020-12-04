@@ -101,7 +101,7 @@ data:
         # Override the global default and scrape targets from this job every 5 seconds.
         scrape_interval: 5s
         static_configs:
-          - targets: ['felice-mon:9090']
+          - targets: ['localhost:9090']
 
       #### FELICE BACKEND ####
       - job_name: 'felice-back'
@@ -171,18 +171,18 @@ data:
               instance: 3
 
       ## Kafka_node
-      - job_name: 'douzone-kafka_node'
-        scrape_interval: 5s
-        static_configs:
-          - targets: ['172.16.121.128:9200']
-            labels:
-              instance: 2
-          - targets: ['172.16.121.129:9200']
-            labels:
-              instance: 3
-          - targets: ['172.16.121.130:9200']
-            labels:
-              instance: 1
+      # - job_name: 'douzone-kafka_node'
+      #   scrape_interval: 5s
+      #   static_configs:
+      #     - targets: ['172.16.121.128:9200']
+      #       labels:
+      #         instance: 2
+      #     - targets: ['172.16.121.129:9200']
+      #       labels:
+      #         instance: 3
+      #     - targets: ['172.16.121.130:9200']
+      #       labels:
+      #         instance: 1
 
       ## Schema-Registry      
       # - job_name: 'douzone-schema_registry'

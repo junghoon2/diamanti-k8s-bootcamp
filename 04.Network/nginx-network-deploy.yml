@@ -13,7 +13,7 @@ spec:
       labels:
         app: nginx
       annotations:    # You must add these two lines under spec-> template -> metadata
-        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+        diamanti.com/endpoint0: '{"network":"green","perfTier":"high"}'
     spec:
       containers:
       - name: nginx
