@@ -104,7 +104,8 @@ downloadDashboards:
   resources: {}
 
 ## Pod Annotations
-# podAnnotations: {}
+podAnnotations:
+  diamanti.com/endpoint0: '{"endpointId":"grafana","perfTier":"high"}'
 
 ## Pod Labels
 # podLabels: {}
@@ -227,8 +228,8 @@ extraContainerVolumes: []
 ##
 persistence:
   type: pvc
-  enabled: false
-  # storageClassName: default
+  enabled: true
+  storageClassName: high
   accessModes:
     - ReadWriteOnce
   size: 10Gi
@@ -266,7 +267,7 @@ initChownData:
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
-# adminPassword: strongpassword
+adminPassword: admin
 
 # Use an existing secret for the admin user.
 admin:

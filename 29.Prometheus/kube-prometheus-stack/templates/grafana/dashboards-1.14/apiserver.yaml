@@ -159,9 +159,8 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "decimals": 3,
-                        "description": "How much error budget is left looking at our 0.990% availability guarantees?",
+                        "description": "How much error budget is left looking at our 0.990% availability gurantees?",
                         "fill": 10,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -356,7 +355,6 @@ data:
                         "datasource": "$datasource",
                         "description": "How many read requests (LIST,GET) per second do the apiservers get by code?",
                         "fill": 10,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -465,7 +463,6 @@ data:
                         "datasource": "$datasource",
                         "description": "How many percent of read requests (LIST,GET) per second are returned with errors (5xx)?",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -559,7 +556,6 @@ data:
                         "datasource": "$datasource",
                         "description": "How many seconds is the 99th percentile for reading (LIST|GET) a given resource?",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -752,7 +748,6 @@ data:
                         "datasource": "$datasource",
                         "description": "How many write requests (POST|PUT|PATCH|DELETE) per second do the apiservers get by code?",
                         "fill": 10,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -861,7 +856,6 @@ data:
                         "datasource": "$datasource",
                         "description": "How many percent of write requests (POST|PUT|PATCH|DELETE) per second are returned with errors (5xx)?",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -955,7 +949,6 @@ data:
                         "datasource": "$datasource",
                         "description": "How many seconds is the 99th percentile for writing (POST|PUT|PATCH|DELETE) a given resource?",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -1061,7 +1054,6 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -1154,7 +1146,6 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -1247,7 +1238,6 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -1353,7 +1343,6 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -1446,7 +1435,6 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
@@ -1539,7 +1527,6 @@ data:
                         "dashes": false,
                         "datasource": "$datasource",
                         "fill": 1,
-                        "fillGradient": 0,
                         "gridPos": {
 
                         },
