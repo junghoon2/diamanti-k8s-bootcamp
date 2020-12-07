@@ -104,8 +104,8 @@ downloadDashboards:
   resources: {}
 
 ## Pod Annotations
-podAnnotations:
-  diamanti.com/endpoint0: '{"endpointId":"grafana","perfTier":"high"}'
+podAnnotations: {}
+  # diamanti.com/endpoint0: '{"endpointId":"grafana","perfTier":"high"}'
 
 ## Pod Labels
 # podLabels: {}
@@ -120,7 +120,7 @@ podPortName: grafana
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
   targetPort: 3000
     # targetPort: 4181 To be used with a proxy extraContainer
@@ -132,7 +132,7 @@ serviceMonitor:
   ## If true, a ServiceMonitor CRD is created for a prometheus operator
   ## https://github.com/coreos/prometheus-operator
   ##
-  enabled: false
+  enabled: true
   path: /metrics
   #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
   labels: {}
@@ -229,7 +229,7 @@ extraContainerVolumes: []
 persistence:
   type: pvc
   enabled: true
-  storageClassName: high
+  storageClassName: default-storageclass
   accessModes:
     - ReadWriteOnce
   size: 10Gi
