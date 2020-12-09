@@ -1,0 +1,18 @@
+KafkaClient {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="user"
+   password="123456";
+   };
+KafkaServer {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="admin"
+   password="42ixLgGr46"
+   user_admin="42ixLgGr46"
+   user_user="123456";
+   org.apache.kafka.common.security.scram.ScramLoginModule required;
+   };
+Client {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="zookeeperUser"
+   password="zookeeperPassword";
+   };

@@ -1,0 +1,286 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: my-kafka
+    meta.helm.sh/release-namespace: kafka
+  creationTimestamp: "2020-12-03T23:32:47Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/component: kafka
+    app.kubernetes.io/instance: my-kafka
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-12.1.0
+  name: my-kafka
+  namespace: kafka
+  resourceVersion: "6865384"
+  selfLink: /apis/apps/v1/namespaces/kafka/statefulsets/my-kafka
+  uid: 756569f6-c199-464d-98fe-c718655cd625
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kafka
+      app.kubernetes.io/instance: my-kafka
+      app.kubernetes.io/name: kafka
+  serviceName: my-kafka-headless
+  template:
+    metadata:
+      annotations:
+        checksum/jmx-configuration: 747bbe431fb320d5dd707423e509454e67aaa8308d4956a20d68995adc46cdf9
+        checksum/secret: 44efe378e15ce899a86c4491cfb0d4d8d6fb03937ce1966e219905888c1029f8
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: kafka
+        app.kubernetes.io/instance: my-kafka
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: kafka
+        helm.sh/chart: kafka-12.1.0
+    spec:
+      containers:
+      - command:
+        - /scripts/setup.sh
+        env:
+        - name: BITNAMI_DEBUG
+          value: "false"
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+          value: my-kafka-zookeeper
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: INTERNAL
+        - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+          value: INTERNAL:SASL_PLAINTEXT,CLIENT:SASL_PLAINTEXT
+        - name: KAFKA_CFG_SASL_ENABLED_MECHANISMS
+          # value: PLAIN,SCRAM-SHA-256,SCRAM-SHA-512
+          value: SCRAM-SHA-512
+        - name: KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL
+          # value: PLAIN
+          value: SCRAM-SHA-512
+        - name: KAFKA_CFG_LISTENERS
+          value: INTERNAL://:9093,CLIENT://:9092
+        - name: KAFKA_CFG_ADVERTISED_LISTENERS
+          value: INTERNAL://$(MY_POD_NAME).my-kafka-headless.kafka.svc.cluster.local:9093,CLIENT://$(MY_POD_NAME).my-kafka-headless.kafka.svc.cluster.local:9092
+        - name: ALLOW_PLAINTEXT_LISTENER
+          value: "no"
+        - name: KAFKA_OPTS
+          value: -Djava.security.auth.login.config=/opt/bitnami/kafka/config/kafka_jaas.conf
+        - name: KAFKA_CLIENT_USERS
+          value: user
+        - name: KAFKA_CLIENT_PASSWORDS
+          valueFrom:
+            secretKeyRef:
+              key: client-passwords
+              name: my-kafka-jaas
+        - name: KAFKA_ZOOKEEPER_PROTOCOL
+          value: SASL
+        - name: KAFKA_ZOOKEEPER_USER
+          value: zookeeperUser
+        - name: KAFKA_ZOOKEEPER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: zookeeper-password
+              name: my-kafka-jaas
+        - name: KAFKA_INTER_BROKER_USER
+          value: admin
+        - name: KAFKA_INTER_BROKER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: inter-broker-password
+              name: my-kafka-jaas
+        - name: JMX_PORT
+          value: "5555"
+        - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
+          value: "false"
+        - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+          value: "false"
+        - name: KAFKA_HEAP_OPTS
+          value: -Xms6g -Xmx6g -XX:MetaspaceSize=96m -XX:+UseG1GC -XX:MaxGCPauseMillis=20
+            -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50
+            -XX:MaxMetaspaceFreeRatio=80
+        - name: KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES
+          value: "10000"
+        - name: KAFKA_CFG_LOG_FLUSH_INTERVAL_MS
+          value: "1000"
+        - name: KAFKA_CFG_LOG_RETENTION_BYTES
+          value: "1073741824"
+        - name: KAFKA_CFG_LOG_RETENTION_CHECK_INTERVALS_MS
+          value: "300000"
+        - name: KAFKA_CFG_LOG_RETENTION_HOURS
+          value: "168"
+        - name: KAFKA_CFG_MESSAGE_MAX_BYTES
+          value: "1000012"
+        - name: KAFKA_CFG_LOG_SEGMENT_BYTES
+          value: "1073741824"
+        - name: KAFKA_CFG_LOG_DIRS
+          value: /bitnami/kafka/data
+        - name: KAFKA_CFG_DEFAULT_REPLICATION_FACTOR
+          value: "3"
+        - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "3"
+        - name: KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+          value: "3"
+        - name: KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR
+          value: "3"
+        - name: KAFKA_CFG_NUM_IO_THREADS
+          value: "8"
+        - name: KAFKA_CFG_NUM_NETWORK_THREADS
+          value: "3"
+        - name: KAFKA_CFG_NUM_PARTITIONS
+          value: "1"
+        - name: KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR
+          value: "1"
+        - name: KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES
+          value: "102400"
+        - name: KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES
+          value: "104857600"
+        - name: KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES
+          value: "102400"
+        - name: KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS
+          value: "6000"
+        image: docker.io/bitnami/kafka:2.6.0-debian-10-r78
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: kafka-client
+          timeoutSeconds: 5
+        name: kafka
+        ports:
+        - containerPort: 9092
+          name: kafka-client
+          protocol: TCP
+        - containerPort: 9093
+          name: kafka-internal
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: kafka-client
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "8"
+            memory: 32Gi
+          requests:
+            cpu: "2"
+            memory: 8Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        # - mountPath: /opt/bitnami/kafka/config/kafka_jaas.conf
+        #   name: jaas
+          # subPath: kafka_jaas.conf
+        - mountPath: /bitnami/kafka
+          name: data
+        - mountPath: /opt/bitnami/kafka/logs
+          name: logs
+        - mountPath: /scripts/setup.sh
+          name: scripts
+          subPath: setup.sh
+      - command:
+        - java
+        - -XX:+UnlockExperimentalVMOptions
+        - -XX:+UseCGroupMemoryLimitForHeap
+        - -XX:MaxRAMFraction=1
+        - -XshowSettings:vm
+        - -jar
+        - jmx_prometheus_httpserver.jar
+        - "5556"
+        - /etc/jmx-kafka/jmx-kafka-prometheus.yml
+        image: docker.io/bitnami/jmx-exporter:0.14.0-debian-10-r64
+        imagePullPolicy: IfNotPresent
+        name: jmx-exporter
+        ports:
+        - containerPort: 5556
+          name: metrics
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/jmx-kafka
+          name: jmx-config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+      serviceAccount: my-kafka
+      serviceAccountName: my-kafka
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 493
+          name: my-kafka-scripts
+        name: scripts
+      - configMap:
+          defaultMode: 420
+          name: my-kafka-jmx-configuration
+        name: jmx-config
+      # - hostPath:
+      #     path: /home/diamanti/kafka_jaas.conf
+      #     type: File
+      #   name: jaas
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 200Gi
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+  - metadata:
+      creationTimestamp: null
+      name: logs
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+  # - metadata:
+  #     name: jaas
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     storageClassName: "high"
+  #     resources:
+  #       requests:
+  #         storage: 1Gi  # SC 지정 없으면 default SC(best-effort) 사용  
+status:
+  collisionCount: 0
+  currentReplicas: 3
+  currentRevision: my-kafka-845d79c98f
+  observedGeneration: 1
+  readyReplicas: 3
+  replicas: 3
+  updateRevision: my-kafka-845d79c98f
+  updatedReplicas: 3
