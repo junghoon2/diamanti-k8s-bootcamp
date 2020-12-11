@@ -204,6 +204,8 @@ spec:
         volumeMounts:
         - mountPath: /etc/localtime
           name: localtime
+        - mountPath: /felice-api/data
+          name: felice-back-data
 
       - name: felice-board
         image: erdia22/grafana-docker:latest
@@ -302,3 +304,4 @@ spec:
           path: /etc/localtime
           type: File
         name: localtime
+      - 

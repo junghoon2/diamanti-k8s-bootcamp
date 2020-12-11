@@ -1,0 +1,61 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: wordpress-mysql
+  namespace: mariadb
+  annotations:
+    diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
+  labels:
+    app: wordpress
+spec:
+  serviceName: wordpress-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: mysql
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: mysql
+    spec:
+      containers:
+      # - image: mysql:5.6
+      - image: mariadb
+        name: mysql
+        resources:
+          requests:
+            cpu: "1"
+            memory: 4Gi
+          limits:
+            cpu: "4"
+            memory: 64Gi
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+        # - name: config-volume
+        #   # mountPath: /etc/my.cnf.d
+        #   mountPath: /etc/my.cnf
+        #   subPath: my.cnf
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app: mariadb
+      name: mysql-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: high

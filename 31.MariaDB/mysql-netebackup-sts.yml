@@ -3,8 +3,8 @@ kind: StatefulSet
 metadata:
   name: wordpress-mysql
   namespace: test-db
-  annotations:
-    diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'  # network 이름 지정
+  # annotations:
+  #   diamanti.com/endpoint0: '{"network":"red","perfTier":"high"}'  # network 이름 지정
   labels:
     app: wordpress
 spec:
