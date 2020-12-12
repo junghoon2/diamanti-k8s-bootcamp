@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   annotations:
-    diamanti.com/endpoint0: '{"network":"web","perfTier":"high"}'
+    diamanti.com/endpoint0: '{"network":"default","perfTier":"high"}'
   name: busybox
 spec:
   containers:
@@ -18,4 +18,4 @@ spec:
   volumes:
   - name: snap-pvc
     persistentVolumeClaim:
-      claimName: snap-pvc02  ## PVC 이름 지정
+      claimName: csi-pvc-filesystem-lcv  ## PVC 이름 지정

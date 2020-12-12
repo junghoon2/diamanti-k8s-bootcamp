@@ -94,6 +94,8 @@ Loaded plugins: fastestmirror, ovl
 ### FIO 설정 파일
 
 소스 코드 : [FIO 예시 파일](./randread.fio)
+: 60초 동안, 16개 작업 실행
+
 ```
 vi randread.fio
 
@@ -113,6 +115,8 @@ rwmixread=100
 rwmixwrite=0
 [read]
 ```
+미리 /data/testfile 파일을 만들어준다.. 
+
 
 ### 부하 생성 및 부하 테스트 결과 예시
 ### 예제 randread.fio 파일 Copy

@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "snapshot-restore.fullname" . }}
+{{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+{{- end }}
+  labels:
+    app: {{ include "snapshot-restore.name" . }}
+    chart: {{ include "snapshot-restore.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  backoffLimit: 5
+  template:
+    metadata:
+      labels:
+        app: {{ include "snapshot-restore.name" . }}
+        release: {{ .Release.Name }}
+    annotations:
+      diamanti.com/endpoint: none
+    spec:
+      ttlSecondsAfterFinished: 30
+      restartPolicy: Never
+      containers:
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["rsync"]
+          args:
+            - "-avzP"
+            - "--delete"
+            - "/src/"
+            - "/dst"
+          name: {{ .Chart.Name }}
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - mountPath: /src
+            name: src-vol
+          - mountPath: /dst
+            name: dest-vol
+      volumes:
+      - name: src-vol
+        persistentVolumeClaim:
+          claimName: {{ .Values.snapshotVolumeConfig.name }}
+      - name: dest-vol
+        persistentVolumeClaim:
+          claimName: {{ .Values.destVolumeConfig.name }}

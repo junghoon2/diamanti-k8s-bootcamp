@@ -1,0 +1,23 @@
+# Default values for snapshot-restore.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: default
+
+image:
+  repository: diamanti/rsync 
+  tag: 7.5.1804
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+destVolumeConfig:
+  name: date-pvc
+
+snapshotVolumeConfig: 
+  name: snapshotted-pvc
+  snapshotName: default-date-pvc-snapshot-1561412795 
+  storageClass: snapshot-promoter
+  size: 20G
+
