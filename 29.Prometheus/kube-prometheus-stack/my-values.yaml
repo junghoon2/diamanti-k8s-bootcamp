@@ -37,7 +37,7 @@ defaultRules:
     kubeApiserverAvailability: true
     kubeApiserverError: true
     kubeApiserverSlos: true
-    kubelet: true
+    kubelet: false
     kubePrometheusGeneral: true
     kubePrometheusNodeAlerting: true
     kubePrometheusNodeRecording: true
@@ -507,7 +507,7 @@ alertmanager:
 ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
 ##
 grafana:
-  enabled: true
+  enabled: false
   namespaceOverride: ""
 
   ## Deploy default dashboards.

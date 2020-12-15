@@ -1,0 +1,22 @@
+---
+# spinnaker-service-account.yml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: spektra-service-account
+ namespace: default
+# spinnaker-clusterrolebinding.yml
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+ name: spektra-admin
+roleRef:
+ apiGroup: rbac.authorization.k8s.io
+ kind: ClusterRole
+ name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: spektra-service-account
+  namespace: default
+---

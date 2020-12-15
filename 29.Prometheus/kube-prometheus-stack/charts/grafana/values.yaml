@@ -229,7 +229,8 @@ extraContainerVolumes: []
 persistence:
   type: pvc
   enabled: true
-  storageClassName: default-storageclass
+  # storageClassName: default-storageclass
+  storageClassName: high
   accessModes:
     - ReadWriteOnce
   size: 10Gi
@@ -267,7 +268,7 @@ initChownData:
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
-adminPassword: admin
+adminPassword: Diamanti1!
 
 # Use an existing secret for the admin user.
 admin:
