@@ -1,0 +1,20 @@
+---
+apiVersion: snapshot.storage.k8s.io/v1alpha1
+kind: VolumeSnapshot
+metadata:
+ name: vol01-pvc-snapshot
+spec:
+ snapshotClassName: csi-snapshotclass
+ source:
+   name: emqx-data01-emqx-0
+   kind: PersistentVolumeClaim
+---
+apiVersion: snapshot.storage.k8s.io/v1alpha1
+kind: VolumeSnapshot
+metadata:
+ name: vol02-pvc-snapshot
+spec:
+ snapshotClassName: csi-snapshotclass
+ source:
+   name: redis-data-redis-node-0
+   kind: PersistentVolumeClaim
