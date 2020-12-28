@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "kafka.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "kafka.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "kafka.fullname" . }}-hs
+  replicas: {{ .Values.replicaCount }}
+  updateStrategy:
+    type: RollingUpdate 
+  podManagementPolicy: OrderedReady 
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kafka.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "kafka.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      #### KAFKA ####
+      - name: {{ .Chart.Name }}
+        securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.imagename}}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 9092  
+          name: client
+        - containerPort: 7000
+          name: prometheus
+        readinessProbe:
+          tcpSocket:
+            port: 9092
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        livenessProbe:
+          tcpSocket:
+            port: 9092
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- with .Values.env }}
+        env:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        # command:
+        # - /docker-entrypoint.sh
+        volumeMounts:
+        - name: {{ include "kafka.fullname" . }}-logdir
+          mountPath: /data 
+      #### NODE-EXPORTER ####
+      - name: {{ .Chart.Name }}-nodexporter
+        securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "prom/node-exporter:latest"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 9100  
+          name: prometheus
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      # {{- with .Values.affinity }}
+      # affinity:
+      #   {{- toYaml . | nindent 8 }}
+      # {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                    - {{ include "kafka.fullname" . }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ include "kafka.fullname" . }}-logdir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: {{ .Values.storage }}

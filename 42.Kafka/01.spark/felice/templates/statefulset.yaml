@@ -1,0 +1,281 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "felice.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "felice.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "felice.fullname" . }}-hs
+  replicas: 1 #{{ .Values.replicaCount }}
+  updateStrategy:
+    type: RollingUpdate 
+  podManagementPolicy: OrderedReady 
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "felice.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "felice.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      hostAliases:
+        - hostnames:
+          - felice-mon
+          - felice-board
+          - felice-back
+          - felice-front
+          - felice-zoo
+          - felice-lag
+          ip: "127.0.0.1"
+      containers:
+      #### felice-mon ####
+      - name: {{ .Chart.Name }}-mon
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.registry }}/prometheus-docker:2.23.0"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.containerPorts.feliceMon.service }}
+          name: felice-mon
+        readinessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceMon.monitor }}
+            path: /-/healthy
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceMon.monitor }}
+            path: /-/healthy
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        # command:
+        args:
+          - "--web.listen-address=:{{ .Values.containerPorts.feliceMon.service }}"
+          - "--web.enable-lifecycle"
+        env:
+          - name: PROMETHEUS_STORAGE_TSDB_RETENTION_TIME
+            value: 60d
+        volumeMounts:
+        - name: {{ include "felice.fullname" . }}-monitoring-tsdb
+          mountPath: /prometheus
+        - name: {{ include "felice.fullname" . }}-rulesdir
+          mountPath: /opt/felice/rules
+          readOnly: true
+        - name: monitoring-config
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: prometheus.yml
+        - name: monitoring-targets
+          mountPath: /etc/prometheus/targets
+      #### FELICE-BOARD ####
+      - name: {{ .Chart.Name }}-board
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.registry }}/grafana-docker:7.3.6"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.containerPorts.feliceBoard.service }} 
+          name: felice-board
+        readinessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceBoard.monitor }}
+            path: /api/health
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceBoard.monitor }}
+            path: /api/health
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        # env:
+      #### FELICE-BACK ####
+      - name: {{ .Chart.Name }}-back
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.registry }}/api_server:develop-1.0.0"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.containerPorts.feliceBack.service }}
+          name: felice-back
+        readinessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceBack.monitor }}
+            path: /monitor/health
+          initialDelaySeconds: 30
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceBack.monitor }}
+            path: /monitor/health
+          initialDelaySeconds: 30
+          timeoutSeconds: 2
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        # env:
+        volumeMounts:
+        - name: {{ include "felice.fullname" . }}-rulesdir
+          mountPath: /felice-api/prom-rules
+        - name: {{ include "felice.fullname" . }}-datadir
+          mountPath: /felice-api/data
+      #### FELICE-FRONT ####
+      - name: {{ .Chart.Name }}-front
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.registry }}/client:1.0.0"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.containerPorts.feliceFront.service }}
+          name: felice-front
+        readinessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceFront.monitor }}
+            path: /monitor/health
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceFront.monitor }}
+            path: /monitor/health
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        # env:
+      #### FELICE-ZOO ####
+      - name: {{ .Chart.Name }}-zoo
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.registry }}/zookeeper-docker:3.6.2"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.containerPorts.feliceZoo.service }}
+          name: felice-zoo
+        readinessProbe:
+          exec:
+            command:
+            - bash
+            - -c
+            - '[[ "$(echo ruok | nc localhost {{ .Values.containerPorts.feliceZoo.service }})" == "imok" ]] || exit 1'
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          exec:
+            command:
+            - bash
+            - -c
+            - '[[ "$(echo ruok | nc localhost 2181)" == "imok" ]] || exit 1'
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        env:
+          - name: ZOO_METRICS_PROVIDER__HTTP_PORT
+            value: "{{ .Values.containerPorts.feliceZoo.monitor }}"
+      #### FELICE-LAG ####
+      - name: {{ .Chart.Name }}-lag
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.registry }}/burrow-docker:latest"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.containerPorts.feliceLag.service }}
+          name: felice-lag
+        readinessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceLag.monitor }}
+            path: /burrow/admin
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            port: {{ .Values.containerPorts.feliceLag.monitor }}
+            path: /burrow/admin
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        env:
+        - name: WAIT_HOSTS
+          value: felice-zoo:{{ .Values.containerPorts.feliceZoo.service }}
+        - name: WAIT_BEFORE
+          value: "2"
+        - name: WAIT_AFTER
+          value: "1"
+        - name: BURROW_TOML
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "felice.fullname" . }}-config
+              key: burrow.toml       
+      volumes:
+        - name: monitoring-config
+          configMap:
+            name: {{ include "felice.fullname" . }}-config
+        - name: monitoring-targets
+          configMap:
+            name: {{ include "felice.fullname" . }}-monitoring-targets
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      # {{- with .Values.affinity }}
+      # affinity:
+      #   {{- toYaml . | nindent 8 }}
+      # {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                    - {{ include "felice.fullname" . }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      # volumes:
+      #   - name: burrow-toml-volume
+      #     configMap:
+      #       name: {{ include "felice.fullname" . }}-burrow
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ include "felice.fullname" . }}-monitoring-tsdb
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: {{ .Values.storage.tsdb }}
+  - metadata:
+      name: {{ include "felice.fullname" . }}-rulesdir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: {{ .Values.storage.rulesdir }}
+  - metadata:
+      name: {{ include "felice.fullname" . }}-datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: {{ .Values.storage.datadir }}
+  

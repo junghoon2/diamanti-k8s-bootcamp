@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "felice.fullname" . }}-config
+data:
+  burrow.toml: |
+    [logging]
+    level="info"
+
+    [httpserver.default]
+    address=":{{ .Values.containerPorts.feliceLag.service }}"
+
+    [zookeeper]
+    servers=[ "felice-zoo:{{ .Values.containerPorts.feliceZoo.service }}" ]
+    timeout=6
+    root-path="/felice/burrow"
+
+    ##########
+    ### GENERATED MONITORING TARGETS ###
+    {{ range $target := .Values.monitoringTragets }}
+    ### cluster : {{ $target.name }} ###
+    [client-profile.{{ $target.name }}]
+    kafka-version="2.6.0"
+
+    [cluster.{{ $target.name }}]
+    class-name="kafka"
+    servers=[ "{{ $target.kafka.releaseName }}-hs.{{ $target.suffix }}:9092" ]
+    client-profile="{{ $target.name }}"
+    topic-refresh=60
+    offset-refresh=5
+
+    [consumer.{{ $target.name }}]
+    class-name="kafka"
+    cluster="{{ $target.name }}"
+    servers=[ "{{ $target.kafka.releaseName }}-hs.{{ $target.suffix }}:9092" ]
+    client-profile="{{ $target.name }}"
+
+    {{ end }}
+    
+
+  prometheus.yml: |
+    global:
+      scrape_interval:     15s # By default, scrape targets every 15 seconds.
+
+      external_labels:
+        monitor: 'felice-monitor'
+
+    rule_files:
+      - "/opt/felice/rules/*.yml"
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+          - targets:
+            - felice-back:{{ .Values.containerPorts.feliceBack.service }}
+        - api_version: v2
+        - path_prefix: /api/v2
+
+    # A scrape configuration containing exactly one endpoint to scrape:
+    # Here it's Prometheus itself.
+    scrape_configs:
+      #### INTERNAL PROMETHEUS ####
+      - job_name: 'felice-mon'
+        # Override the global default and scrape targets from this job every 5 seconds.
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['felice-mon:{{ .Values.containerPorts.feliceMon.service }}']
+
+      #### FELICE BACKEND ####
+      - job_name: 'felice-back'
+        scrape_interval: 5s
+        metrics_path: /monitor/metrics
+        static_configs:
+          - targets: ['felice-back:{{ .Values.containerPorts.feliceBack.monitor }}']
+
+      #### FELICE FRONT ####
+
+      #### BURROW ####
+      - job_name: 'consumer-lag'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['felice-lag:{{ .Values.containerPorts.feliceLag.monitor }}']
+            labels:
+              instance: 'burrow'
+
+      #### INTERNAL ZooKeeper for burrow ####
+      - job_name: 'felice-zoo'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['felice-zoo:{{ .Values.containerPorts.feliceZoo.monitor }}']
+
+      ##########
+      ### GENERATED MONITORING TARGETS ###
+      {{ range $target := .Values.monitoringTragets }}
+      # #### CLUSTER : {{ $target.name }} ####
+      ## ZooKeeper
+      - job_name: "{{$target.name}}-{{ $target.zookeeper.releaseName }}"
+        scrape_interval: 5s
+        file_sd_configs:
+          - files:
+            - "targets/{{ $target.zookeeper.releaseName }}.yaml"
+      ## Zookeeper Node
+      - job_name: "{{$target.name}}-{{ $target.zookeeper.releaseName }}_node"
+        scrape_interval: 5s
+        file_sd_configs:
+          - files:
+            - "targets/{{ $target.zookeeper.releaseName }}_node.yaml"
+
+      ## Kafka
+      - job_name: "{{$target.name}}-{{ $target.kafka.releaseName }}"
+        scrape_interval: 5s
+        file_sd_configs:
+          - files:
+            - "targets/{{ $target.kafka.releaseName }}.yaml"
+      ## Kafka Node
+      - job_name: "{{$target.name}}-{{ $target.kafka.releaseName }}_node"
+        scrape_interval: 5s
+        file_sd_configs:
+          - files:
+            - "targets/{{ $target.kafka.releaseName }}_node.yaml"
+    
+      {{ end }}
+
+
+---
+# felice-mon : /etc/prometheus/targets
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "felice.fullname" . }}-monitoring-targets
+data:
+  {{ range $target := .Values.monitoringTragets }}
+  ### zookeeper
+  {{ $prefix := $target.zookeeper.releaseName }}
+  {{ $prefix }}.yaml: |
+    {{ range $i := until ( atoi $target.zookeeper.servers ) }}
+      - targets:
+        - "{{ $prefix }}-{{ $i }}.{{ $prefix }}-hs.{{ $target.suffix }}:{{ $target.zookeeper.port }}"
+        labels:
+          instance: "{{ add $i 1 }}"
+    {{ end }}
+  
+  ### zookeeper_node
+  {{ $prefix }}_node.yaml: |
+    {{ range $i := until ( atoi $target.zookeeper.servers ) }}
+      - targets:
+        - "{{ $prefix }}-{{ $i }}.{{ $prefix }}-hs.{{ $target.suffix }}:{{ $target.zookeeper.nodePort }}"
+        labels:
+          instance: "{{ add $i 1 }}"
+    {{ end }}
+  
+  ### kafka
+  {{ $prefix := $target.kafka.releaseName }}
+  {{ $prefix }}.yaml: |
+    {{ range $i := until ( atoi $target.kafka.servers ) }}
+      - targets:
+        - "{{ $prefix }}-{{ $i }}.{{ $prefix }}-hs.{{ $target.suffix }}:{{ $target.kafka.port }}"
+        labels:
+          instance: "{{ add $i 1 }}"
+    {{ end }}
+  
+  ###kafka_node
+  {{ $prefix }}_node.yaml: |
+    {{ range $i := until ( atoi $target.kafka.servers ) }}
+      - targets:
+        - "{{ $prefix }}-{{ $i }}.{{ $prefix }}-hs.{{ $target.suffix }}:{{ $target.kafka.nodePort }}"
+        labels:
+          instance: "{{ add $i 1 }}"
+    {{ end }}
+  
+  {{ end }}

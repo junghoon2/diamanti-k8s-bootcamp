@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "zookeeper.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "zookeeper.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "zookeeper.fullname" . }}-hs
+  replicas: {{ .Values.replicaCount }}
+  updateStrategy:
+    type: RollingUpdate 
+  podManagementPolicy: OrderedReady 
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "zookeeper.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "zookeeper.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      #### ZOOKEEPER ####
+      - name: {{ .Chart.Name }}
+        securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.imagename }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 2181  
+          name: client
+        - containerPort: 2888 
+          name: server
+        - containerPort: 3888 
+          name: leader-election
+        - containerPort: 7000
+          name: prometheus
+        readinessProbe:
+          exec:
+            command:
+            - bash
+            - -c
+            - '[[ "$(echo ruok | nc localhost 2181)" == "imok" ]] || exit 1'
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        livenessProbe:
+          exec:
+            command:
+            - bash
+            - -c
+            - '[[ "$(echo ruok | nc localhost 2181)" == "imok" ]] || exit 1'
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        env:
+          - name: K8S_REPLICAS
+            value: "{{ .Values.replicaCount }}"
+          {{- with .Values.env }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        # command:
+        # - /docker-entrypoint.sh
+        volumeMounts:
+        - name: {{ include "zookeeper.fullname" . }}-datadir
+          mountPath: /data  # TODO Parameterize
+      #### NODE-EXPORTER ####
+      - name: {{ .Chart.Name }}-nodexporter
+        securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "prom/node-exporter:latest"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 9100  
+          name: prometheus
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      # {{- with .Values.affinity }}
+      # affinity:
+      #   {{- toYaml . | nindent 8 }}
+      # {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                    - {{ include "zookeeper.fullname" . }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ include "zookeeper.fullname" . }}-datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: {{ .Values.storage }}

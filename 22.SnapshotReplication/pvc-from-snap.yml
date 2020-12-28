@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: csi-pvc-filesystem-lcv
+  name: mqtt-lcv
   annotations:
-    snapshot.alpha.kubernetes.io/snapshot: csi-pvc-filesystem-snapshot
+    snapshot.alpha.kubernetes.io/snapshot: vol-mqtt-snapshot
 spec:
-#  storageClassName: csi-sc-static
+        #storageClassName: high
   storageClassName: snapshot-promoter
 #  dataSource:
 #    name: csi-pvc-filesystem-snapshot
@@ -15,6 +15,6 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
 
     

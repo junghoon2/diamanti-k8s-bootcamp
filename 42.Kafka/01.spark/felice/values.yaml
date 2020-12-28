@@ -1,0 +1,121 @@
+# Default values for felice.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# replicaCount: 1
+
+image:
+  registry: swoogi
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+  # - name: spark-gitlab
+nameOverride: ""
+fullnameOverride: ""
+
+## for monitoring config
+monitoringTragets:
+  - name: "douzon"
+    suffix: "kafka.svc.cluster.local"
+    zookeeper:
+      releaseName: "zookeeper"
+      servers: "3"
+      port: "7000"
+      nodePort: "9100"
+    kafka:
+      releaseName: "kafka"
+      servers: "3"
+      port: "7000"
+      nodePort: "9100"
+
+storage:
+  tsdb: "10Gi"
+  rulesdir: "1Gi"
+  datadir: "5Gi"
+
+## container ports!!
+containerPorts:
+  feliceMon:
+    service: 9090
+    monitor: 9090
+  feliceBoard:
+    service: 3000
+    monitor: 3000
+  feliceBack:
+    service: 8989
+    monitor: 7000
+  feliceFront:
+    service: 80
+    monitor: 80
+  feliceZoo:
+    service: 2181
+    monitor: 7100
+  feliceLag:
+    service: 8000
+    monitor: 8000
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 4
+    memory: 128Gi
+  requests:
+    cpu: 1
+    memory: 4Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

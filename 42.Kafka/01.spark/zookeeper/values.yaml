@@ -1,0 +1,94 @@
+# Default values for zookeeper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# replicas must be in odd number and 3 or 5 is the best.
+# not needed more than 5
+replicaCount: 3
+
+image:
+  registry: swoogi
+  imagename: zookeeper-docker
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "3.6.2"
+
+imagePullSecrets: []
+  # - name: spark-gitlab
+nameOverride: ""
+fullnameOverride: ""
+
+## additional evironment variables
+env: []
+  # - name: K8S_TEST
+  #   value: "this is test value"
+
+## storage for data
+storage: "10Gi"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+  ####### FROM k8s-zookeeper example
+  # runAsUser: 1000
+  # fsGroup: 1000
+
+service:
+  type: ClusterIP
+  port: 2181
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: #{}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  requests:
+    cpu: 0.5
+    memory: 1Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

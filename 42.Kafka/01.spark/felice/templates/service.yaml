@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "felice.fullname" . }}-cs
+  labels:
+    {{- include "felice.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: felice-front
+    port: {{ .Values.containerPorts.feliceFront.service }} 
+  - name: felice-mon
+    port: {{ .Values.containerPorts.feliceMon.service }}
+  - name: felice-board
+    port: {{ .Values.containerPorts.feliceBoard.service }}
+  selector:
+    {{- include "felice.selectorLabels" . | nindent 4 }}

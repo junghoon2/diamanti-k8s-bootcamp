@@ -1,0 +1,95 @@
+# Default values for kafka.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+
+image:
+  registry: swoogi
+  imagename: kafka-docker
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "2.6.0"
+
+imagePullSecrets: []
+  # - name: spark-gitlab
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+## additional evironment variables
+env: #[]
+  - name: KAFKA_ZOOKEEPER_CONNECT
+    value: "zookeeper-cs:2181/douzon"
+  - name: JMX_PROMETHEUS_ENABLE
+    value: "true"
+  - name: JMX_PROMETHEUS_PORT
+    value: "7000"
+  - name: KAFKA_LOG_DIRS
+    value: "/data/log"
+
+## kafka logdir storage
+storage: "100Gi"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 9092
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: #{}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 4
+    memory: 128Gi
+  requests:
+    cpu: 1
+    memory: 1Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
