@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: snap-pvc
+  name: date-pvc
 #  namespace: diamanti-system
 spec:
   accessModes:
@@ -9,4 +9,4 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: "high2m"  ## SC 지정
+  storageClassName: "high"  ## SC 지정

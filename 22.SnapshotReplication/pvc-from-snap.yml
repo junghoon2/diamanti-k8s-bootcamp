@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mqtt-lcv
+  name: date-lcv
   annotations:
-    snapshot.alpha.kubernetes.io/snapshot: vol-mqtt-snapshot
+    snapshot.alpha.kubernetes.io/snapshot: date-snapshot-1609724419
 spec:
-        #storageClassName: high
-  storageClassName: snapshot-promoter
+  storageClassName: high
 #  dataSource:
 #    name: csi-pvc-filesystem-snapshot
 #    kind: VolumeSnapshot

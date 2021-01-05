@@ -20,12 +20,12 @@ spec:
         command:
         - "/bin/sh"
         - "-c"
-        # - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
-        - sleep inf
+        - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
+        # - sleep inf
         volumeMounts:
         - name: date
           mountPath: /data
       volumes:
       - name: date
         persistentVolumeClaim:
-          claimName: mqtt-lcv  ## PVC 이름 지정
+          claimName: date-pvc  ## PVC 이름 지정
