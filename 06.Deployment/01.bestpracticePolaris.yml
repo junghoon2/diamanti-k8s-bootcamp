@@ -36,7 +36,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: polaris
         app.kubernetes.io/instance: polaris

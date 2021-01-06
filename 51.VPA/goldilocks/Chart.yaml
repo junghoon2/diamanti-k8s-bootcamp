@@ -1,0 +1,25 @@
+apiVersion: v2
+appVersion: v3.0.0
+dependencies:
+- condition: vpa.enabled
+  name: vpa
+  repository: https://charts.fairwinds.com/stable
+  version: 0.1.1
+- condition: metrics-server.enabled
+  name: metrics-server
+  repository: https://charts.bitnami.com/bitnami
+  version: 4.3.1
+description: |
+  A Helm chart for running Fairwinds Goldilocks. See https://github.com/FairwindsOps/goldilocks
+icon: https://raw.githubusercontent.com/FairwindsOps/charts/master/stable/goldilocks/icon.png
+keywords:
+- goldilocks
+- resources
+- kubernetes
+maintainers:
+- name: sudermanjr
+- name: lucasreed
+name: goldilocks
+sources:
+- https://github.com/FairwindsOps/goldilocks
+version: 3.1.0
