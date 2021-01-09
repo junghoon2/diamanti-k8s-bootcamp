@@ -1,0 +1,3 @@
+[submodule "52.LocalPathProvisioner/local-path-provisioner"]
+	path = 52.LocalPathProvisioner/local-path-provisioner
+	url = https://github.com/rancher/local-path-provisioner.git
