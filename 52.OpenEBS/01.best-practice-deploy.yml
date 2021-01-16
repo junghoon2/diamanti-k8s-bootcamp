@@ -52,7 +52,7 @@ spec:
         volumeMounts:
         - mountPath: /etc/localtime
           name: localtime
-        - name: volv
+        - name: localpv
           mountPath: /data
         # readiness, liveness probe 추가 권고 
       # imagePullSecrets:
@@ -62,6 +62,6 @@ spec:
           path: /etc/localtime
           type: File
         name: localtime
-      - name: volv
+      - name: localpv
         persistentVolumeClaim:
           claimName: local-hostpath-pvc
