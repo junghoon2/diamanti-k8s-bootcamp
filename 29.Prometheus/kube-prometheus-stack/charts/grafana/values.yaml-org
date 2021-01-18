@@ -53,7 +53,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 7.2.1
+  tag: 7.3.5
   sha: ""
   pullPolicy: IfNotPresent
 
@@ -76,6 +76,8 @@ securityContext:
   runAsGroup: 472
   fsGroup: 472
 
+containerSecurityContext:
+  {}
 
 extraConfigmapMounts: []
   # - name: certs-configmap
@@ -104,8 +106,7 @@ downloadDashboards:
   resources: {}
 
 ## Pod Annotations
-podAnnotations: {}
-  # diamanti.com/endpoint0: '{"endpointId":"grafana","perfTier":"high"}'
+# podAnnotations: {}
 
 ## Pod Labels
 # podLabels: {}
@@ -120,7 +121,7 @@ podPortName: grafana
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
   targetPort: 3000
     # targetPort: 4181 To be used with a proxy extraContainer
@@ -132,11 +133,13 @@ serviceMonitor:
   ## If true, a ServiceMonitor CRD is created for a prometheus operator
   ## https://github.com/coreos/prometheus-operator
   ##
-  enabled: true
+  enabled: false
   path: /metrics
   #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
   labels: {}
   interval: 1m
+  scheme: http
+  tlsConfig: {}
   scrapeTimeout: 30s
   relabelings: []
 
@@ -154,6 +157,9 @@ hostAliases: []
 
 ingress:
   enabled: false
+  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+  # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+  # ingressClassName: nginx
   # Values can be templated
   annotations: {}
     # kubernetes.io/ingress.class: nginx
@@ -228,15 +234,15 @@ extraContainerVolumes: []
 ##
 persistence:
   type: pvc
-  enabled: true
-  # storageClassName: default-storageclass
-  storageClassName: openebs-hostpath
+  enabled: false
+  # storageClassName: default
   accessModes:
     - ReadWriteOnce
   size: 10Gi
   # annotations: {}
   finalizers:
     - kubernetes.io/pvc-protection
+  # selectorLabels: {}
   # subPath: ""
   # existingClaim:
 
@@ -268,7 +274,7 @@ initChownData:
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
-adminPassword: Diamanti1!
+# adminPassword: strongpassword
 
 # Use an existing secret for the admin user.
 admin:
@@ -350,6 +356,18 @@ extraSecretMounts: []
   #           audience: sts.amazonaws.com
   #           expirationSeconds: 86400
   #           path: token
+  #
+  # for CSI e.g. Azure Key Vault use the following
+  # - name: secrets-store-inline
+  #  mountPath: /run/secrets
+  #  readOnly: true
+  #  csi:
+  #    driver: secrets-store.csi.k8s.io
+  #    readOnly: true
+  #    volumeAttributes:
+  #      secretProviderClass: "akv-grafana-spc"
+  #    nodePublishSecretRef:                       # Only required when using service principal mode
+  #       name: grafana-akv-creds                  # Only required when using service principal mode
 
 ## Additional grafana server volume mounts
 # Defines additional volume mounts.
@@ -618,7 +636,8 @@ imageRenderer:
     # image-renderer ImagePullPolicy
     pullPolicy: Always
   # extra environment variables
-  env: {}
+  env:
+    HTTP_HOST: "0.0.0.0"
     # RENDERING_ARGS: --disable-gpu,--window-size=1280x758
     # RENDERING_MODE: clustered
   # image-renderer deployment securityContext
@@ -632,6 +651,7 @@ imageRenderer:
     portName: 'http'
     # image-renderer service port used by both service and deployment
     port: 8081
+    targetPort: 8081
   # name of the image-renderer port on the pod
   podPortName: http
   # number of image-renderer replica sets to keep
