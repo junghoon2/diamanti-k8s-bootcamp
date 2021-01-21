@@ -1,12 +1,12 @@
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
-  name: busybox-vpa
+  name: argocd-repo-vpa
+  namespace:  argocd
 spec:
   targetRef:
     apiVersion: "apps/v1"
     kind:       Deployment
-    name:       busybox
-    namespace:  test
+    name:       argocd-repo-server
   updatePolicy:
     updateMode: "Auto"

@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "felice.labels" . | nindent 4 }}
 spec:
-  type: NodePort
-  clusterIP: None
+  type: LoadBalancer
+  # clusterIP: None
   ports:
   - name: felice-front
     port: {{ .Values.containerPorts.feliceFront.service }} 
