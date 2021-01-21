@@ -258,7 +258,7 @@ spec:
       name: {{ include "felice.fullname" . }}-monitoring-tsdb
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "high"
+      storageClassName: "openebs-hostpath"
       resources:
         requests:
           storage: {{ .Values.storage.tsdb }}
@@ -266,7 +266,7 @@ spec:
       name: {{ include "felice.fullname" . }}-rulesdir
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "high"
+      storageClassName: "openebs-hostpath"
       resources:
         requests:
           storage: {{ .Values.storage.rulesdir }}
@@ -274,7 +274,7 @@ spec:
       name: {{ include "felice.fullname" . }}-datadir
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "high"
+      storageClassName: "openebs-hostpath"
       resources:
         requests:
           storage: {{ .Values.storage.datadir }}

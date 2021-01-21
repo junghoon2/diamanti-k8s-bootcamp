@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: date-pvc-mirror
+  namespace: default
+  labels:
+    app: date-mirror
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: date-mirror
+  template:    
+    metadata:
+      labels:
+        app: date-mirror
+    spec:
+    # node 중복 방지를 위한 affinity 추가
+      affinity:
+        podAntiAffinity: ## POD 할당되지 않은 Node로 Scheduling
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: date-mirror  ## Key 선택
+                operator: In
+                values:
+                - redis
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: date-pod
+        image: busybox
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
+        volumeMounts:  # Volume을 POD에 어디에 마운트 할 것인지
+        - name: date-vol  # Volume 이름
+          mountPath: /data  # Mount 이름 
+      volumes:  # 어떤 Volume을 사용할 것인지
+      - name: date-vol
+        persistentVolumeClaim:
+          claimName: local-hostpath-pvc  ## PVC 이름 지정

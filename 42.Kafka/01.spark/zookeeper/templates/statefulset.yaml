@@ -108,7 +108,7 @@ spec:
       name: {{ include "zookeeper.fullname" . }}-datadir
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "high"
+      storageClassName: "openebs-hostpath"
       resources:
         requests:
           storage: {{ .Values.storage }}

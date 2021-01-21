@@ -1,3 +1,5 @@
+# SC 지정 
+
 image:
   repository: grafana/loki
   tag: 2.0.0
@@ -127,7 +129,7 @@ persistence:
   accessModes:
   - ReadWriteOnce
   size: 100Gi
-  storageClassName: "high2m"
+  storageClassName: "openebs-hostpath"
   annotations: {}
   # selector:
   #   matchLabels:
@@ -142,7 +144,7 @@ podLabels: {}
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "http-metrics"
-  diamanti.com/endpoint0: '{"network":"green","perfTier":"high"}'
+  # diamanti.com/endpoint0: '{"network":"green","perfTier":"high"}'
 
 podManagementPolicy: OrderedReady
 

@@ -1,3 +1,5 @@
+# Servcie type nodeport 변경
+
 # Default values for felice.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -79,7 +81,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
 
 ingress:
@@ -102,7 +104,7 @@ resources:
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
     cpu: 4
-    memory: 128Gi
+    memory: 32Gi
   requests:
     cpu: 1
     memory: 4Gi
