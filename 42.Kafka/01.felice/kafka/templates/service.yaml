@@ -8,8 +8,6 @@ spec:
   ports:
   - port: 9092 
     name: client
-  - port: 7000
-    name: prometheus
   clusterIP: None
   selector:
     {{- include "kafka.selectorLabels" . | nindent 4 }}

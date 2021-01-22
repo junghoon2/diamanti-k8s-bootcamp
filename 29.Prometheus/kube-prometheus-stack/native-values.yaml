@@ -283,7 +283,7 @@ alertmanager:
 
     ## Port for Alertmanager Service to listen on
     ##
-    port: 9093
+    port: 80
     ## To be used with a proxy extraContainer port
     ##
     targetPort: 9093
@@ -1514,7 +1514,7 @@ prometheus:
 
     ## Port for Prometheus Service to listen on
     ##
-    port: 9090
+    port: 80
 
     ## To be used with a proxy extraContainer port
     targetPort: 9090

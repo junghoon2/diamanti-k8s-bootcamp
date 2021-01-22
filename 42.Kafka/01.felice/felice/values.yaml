@@ -1,5 +1,3 @@
-# Servcie type nodeport 변경
-
 # Default values for felice.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -7,56 +5,45 @@
 # replicaCount: 1
 
 image:
+  # registry: 172.17.19.54:4567/kafka_controller
   registry: swoogi
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-imagePullSecrets: []
-  # - name: spark-gitlab
+# imagePullSecrets: #[]
+#   - name: spark-gitlab
 nameOverride: ""
 fullnameOverride: ""
 
-## for monitoring config
-monitoringTragets:
-  - name: "douzon"
-    suffix: "kafka.svc.cluster.local"
+## for monitoring cluster config
+monitoringClusters:
+  - name: "douzone"
     zookeeper:
-      releaseName: "zookeeper"
+      # domainSuffix: "default.svc.cluster.local"     # if zookeeper is installed on other namespace
+      helmReleaseName: "zookeeper"
       servers: "3"
-      port: "7000"
-      nodePort: "9100"
+      metricsProviderHttpPort: "7000"  ##METRICS_PROVIDER__HTTP_PORT
+      nodeExporterPort: "9100"
     kafka:
-      releaseName: "kafka"
+      # domainSuffix: "default.svc.cluster.local"     # if kafka is installed on other namespace
+      helmReleaseName: "kafka"
       servers: "3"
-      port: "7000"
-      nodePort: "9100"
+      jmxExporterPort: "9404"
+      nodeExporterPort: "9100"
+  - name: "kafka270"
+    kafka:
+      helmReleaseName: "kafka270"
+      servers: "3"
+      jmxExporterPort: "9404"
+      nodeExporterPort: "9100"
 
+# storage request
 storage:
   tsdb: "10Gi"
   rulesdir: "1Gi"
   datadir: "5Gi"
-
-## container ports!!
-containerPorts:
-  feliceMon:
-    service: 9090
-    monitor: 9090
-  feliceBoard:
-    service: 3000
-    monitor: 3000
-  feliceBack:
-    service: 8989
-    monitor: 7000
-  feliceFront:
-    service: 80
-    monitor: 80
-  feliceZoo:
-    service: 2181
-    monitor: 7100
-  feliceLag:
-    service: 8000
-    monitor: 8000
+storageClass: "openebs-hostpath"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -81,7 +68,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: NodePort
+  type: ClusterIP
   port: 80
 
 ingress:
@@ -97,22 +84,22 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: 
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 2
-    memory: 4Gi
+    cpu: "1"
+    memory: 2Gi
   requests:
     cpu: 100m
-    memory: 1Gi
+    memory: 128Mi
 
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 4
+  maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 

@@ -28,7 +28,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-      #### KAFKA ####
+      #### KAFKA CONTAINER ####
       - name: {{ .Chart.Name }}
         securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -37,8 +37,7 @@ spec:
         ports:
         - containerPort: 9092  
           name: client
-        - containerPort: 7000
-          name: prometheus
+          protocol: TCP
         readinessProbe:
           tcpSocket:
             port: 9092
@@ -51,24 +50,28 @@ spec:
           timeoutSeconds: 2
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
-        {{- with .Values.env }}
         env:
+          - name: KAFKA_ZOOKEEPER_CONNECT
+            value: {{ .Values.configs.zookeeperConnect }}
+          - name: KAFKA_LOG_DIRS   ## fix for block storage!!
+            value: /data/kafka
+          {{- with .Values.configs.optional }}
           {{- toYaml . | nindent 10 }}
-        {{- end }}
-        # command:
-        # - /docker-entrypoint.sh
+          {{- end }}
         volumeMounts:
         - name: {{ include "kafka.fullname" . }}-logdir
           mountPath: /data 
-      #### NODE-EXPORTER ####
+      #### NODE-EXPORTER CONTAINER ####
+      {{- if .Values.configs.nodeExporter }}
       - name: {{ .Chart.Name }}-nodexporter
         securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
         image: "prom/node-exporter:latest"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: 9100  
+        - containerPort: {{ .Values.configs.nodeExporter.port }}  
           name: prometheus
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -96,7 +99,7 @@ spec:
       name: {{ include "kafka.fullname" . }}-logdir
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "openebs-hostpath"
+      storageClassName: {{ .Values.configs.volume.storageClass }}
       resources:
         requests:
-          storage: {{ .Values.storage }}
+          storage: {{ .Values.configs.volume.storage }}

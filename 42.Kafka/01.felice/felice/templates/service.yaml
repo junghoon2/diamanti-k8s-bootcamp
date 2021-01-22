@@ -6,13 +6,12 @@ metadata:
     {{- include "felice.labels" . | nindent 4 }}
 spec:
   type: LoadBalancer
-  # clusterIP: None
   ports:
   - name: felice-front
-    port: {{ .Values.containerPorts.feliceFront.service }} 
+    port: 80
   - name: felice-mon
-    port: {{ .Values.containerPorts.feliceMon.service }}
+    port: 9090
   - name: felice-board
-    port: {{ .Values.containerPorts.feliceBoard.service }}
+    port: 3000
   selector:
     {{- include "felice.selectorLabels" . | nindent 4 }}

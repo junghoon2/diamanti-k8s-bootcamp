@@ -6,15 +6,30 @@ replicaCount: 3
 
 image:
   registry: swoogi
+  # registry: 172.17.19.54:4567/kafka_controller/kafka-docker
   imagename: kafka-docker
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "2.6.0"
 
-imagePullSecrets: []
-  # - name: spark-gitlab
+# imagePullSecrets: #[]
+#   - name: spark-gitlab
 nameOverride: ""
 fullnameOverride: ""
+
+##### CONFIGURATIONS
+configs:
+  zookeeperConnect: "zookeeper-cs:2181/douzone"
+  nodeExporter: #{}
+    port: "9100"
+  volume:
+    storage: "100Gi"
+    storageClass: ""
+  optional: #[]
+    - name: JMX_PROMETHEUS_ENABLE
+      value: "true"
+    - name: JMX_PROMETHEUS_PORT
+      value: "9404"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -24,20 +39,6 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
-
-## additional evironment variables
-env: #[]
-  - name: KAFKA_ZOOKEEPER_CONNECT
-    value: "zookeeper-cs:2181/douzon"
-  - name: JMX_PROMETHEUS_ENABLE
-    value: "true"
-  - name: JMX_PROMETHEUS_PORT
-    value: "7000"
-  - name: KAFKA_LOG_DIRS
-    value: "/data/log"
-
-## kafka logdir storage
-storage: "100Gi"
 
 podAnnotations: {}
 
@@ -78,7 +79,7 @@ resources: #{}
     cpu: 4
     memory: 32Gi
   requests:
-    cpu: 1
+    cpu: 0.5
     memory: 1Gi
 
 autoscaling:

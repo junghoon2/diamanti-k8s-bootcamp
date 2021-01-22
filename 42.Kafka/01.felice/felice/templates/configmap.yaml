@@ -3,42 +3,56 @@ kind: ConfigMap
 metadata:
   name: {{ include "felice.fullname" . }}-config
 data:
-  burrow.toml: |
+  burrow.toml: |+
     [logging]
-    level="info"
+    level='info'
 
     [httpserver.default]
-    address=":{{ .Values.containerPorts.feliceLag.service }}"
+    address=':8000'
 
     [zookeeper]
-    servers=[ "felice-zoo:{{ .Values.containerPorts.feliceZoo.service }}" ]
+    servers=[ 'felice-zoo:2181' ]
     timeout=6
-    root-path="/felice/burrow"
+    root-path='/felice/burrow'
+
+    [storage.felice]
+    class-name='inmemory'
+    expire-group=86400
+    min-distance=1
 
     ##########
-    ### GENERATED MONITORING TARGETS ###
-    {{ range $target := .Values.monitoringTragets }}
-    ### cluster : {{ $target.name }} ###
-    [client-profile.{{ $target.name }}]
-    kafka-version="2.6.0"
+    ### GENERATED MONITORING CLUSTER TARGETS ###
+    {{- range $cluster := .Values.monitoringClusters }}
+    {{- with $cluster.kafka }}
+    ### cluster : {{ $cluster.name }} ###
+    [client-profile.{{ $cluster.name }}]
+    kafka-version='2.6.0'
 
-    [cluster.{{ $target.name }}]
-    class-name="kafka"
-    servers=[ "{{ $target.kafka.releaseName }}-hs.{{ $target.suffix }}:9092" ]
-    client-profile="{{ $target.name }}"
+    [cluster.{{ $cluster.name }}]
+    class-name='kafka'
+    {{- if $cluster.kafka.domainSuffix }}
+    servers=[ '{{ $cluster.kafka.helmReleaseName }}-hs.{{ $cluster.kafka.domainSuffix }}:9092' ]
+    {{- else }}
+    servers=[ '{{ $cluster.kafka.helmReleaseName }}-hs:9092' ]
+    {{- end }}
+    client-profile='{{ $cluster.name }}'
     topic-refresh=60
     offset-refresh=5
 
-    [consumer.{{ $target.name }}]
-    class-name="kafka"
-    cluster="{{ $target.name }}"
-    servers=[ "{{ $target.kafka.releaseName }}-hs.{{ $target.suffix }}:9092" ]
-    client-profile="{{ $target.name }}"
+    [consumer.{{ $cluster.name }}]
+    class-name='kafka'
+    cluster='{{ $cluster.name }}'
+    {{- if $cluster.kafka.domainSuffix }}
+    servers=[ '{{ $cluster.kafka.helmReleaseName }}-hs.{{ $cluster.kafka.domainSuffix }}:9092' ]
+    {{- else }}
+    servers=[ '{{ $cluster.kafka.helmReleaseName }}-hs:9092' ]
+    {{- end }}
+    client-profile='{{ $cluster.name }}'
+    {{- end }}
+    {{- end }}
+    ########## END OF CONFIG ##########
 
-    {{ end }}
-    
-
-  prometheus.yml: |
+  prometheus.yml: |+
     global:
       scrape_interval:     15s # By default, scrape targets every 15 seconds.
 
@@ -46,81 +60,87 @@ data:
         monitor: 'felice-monitor'
 
     rule_files:
-      - "/opt/felice/rules/*.yml"
+      - '/opt/felice/rules/*.yml'
 
     alerting:
       alertmanagers:
         - static_configs:
           - targets:
-            - felice-back:{{ .Values.containerPorts.feliceBack.service }}
+            - felice-back:8989
         - api_version: v2
         - path_prefix: /api/v2
 
-    # A scrape configuration containing exactly one endpoint to scrape:
-    # Here it's Prometheus itself.
+    #### INTERNAL SERVICES ####
     scrape_configs:
-      #### INTERNAL PROMETHEUS ####
+      #### FELICE MON : PROMETHEUS ####
       - job_name: 'felice-mon'
         # Override the global default and scrape targets from this job every 5 seconds.
         scrape_interval: 5s
         static_configs:
-          - targets: ['felice-mon:{{ .Values.containerPorts.feliceMon.service }}']
+          - targets: ['felice-mon:9090']
+
+      #### FELICE BOARD : GRAFANA ####
 
       #### FELICE BACKEND ####
       - job_name: 'felice-back'
         scrape_interval: 5s
         metrics_path: /monitor/metrics
         static_configs:
-          - targets: ['felice-back:{{ .Values.containerPorts.feliceBack.monitor }}']
+          - targets: ['felice-back:7100']
 
       #### FELICE FRONT ####
 
-      #### BURROW ####
-      - job_name: 'consumer-lag'
-        scrape_interval: 5s
-        static_configs:
-          - targets: ['felice-lag:{{ .Values.containerPorts.feliceLag.monitor }}']
-            labels:
-              instance: 'burrow'
-
-      #### INTERNAL ZooKeeper for burrow ####
+      #### FELICE ZOO : ZOOKEEPER for burrow ####
       - job_name: 'felice-zoo'
         scrape_interval: 5s
         static_configs:
-          - targets: ['felice-zoo:{{ .Values.containerPorts.feliceZoo.monitor }}']
+          - targets: ['felice-zoo:7000']
+
+      #### FELICE LAG : BURROW ####
+      - job_name: 'consumer-lag'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['felice-lag:8000']
+            labels:
+              instance: 'burrow'
 
       ##########
-      ### GENERATED MONITORING TARGETS ###
-      {{ range $target := .Values.monitoringTragets }}
-      # #### CLUSTER : {{ $target.name }} ####
+      ### GENERATED MONITORING CLUSTER TARGETS ###
+      {{- range $cluster := .Values.monitoringClusters }}
+      # #### CLUSTER : {{ $cluster.name }} ####
+      {{- with $cluster.zookeeper }}
       ## ZooKeeper
-      - job_name: "{{$target.name}}-{{ $target.zookeeper.releaseName }}"
+      - job_name: '{{ $cluster.name }}-zookeeper'
         scrape_interval: 5s
         file_sd_configs:
           - files:
-            - "targets/{{ $target.zookeeper.releaseName }}.yaml"
+            - 'targets/{{ $cluster.name }}-zookeeper.yaml'
+            
       ## Zookeeper Node
-      - job_name: "{{$target.name}}-{{ $target.zookeeper.releaseName }}_node"
+      - job_name: '{{ $cluster.name }}-zookeeper_node'
         scrape_interval: 5s
         file_sd_configs:
           - files:
-            - "targets/{{ $target.zookeeper.releaseName }}_node.yaml"
+            - 'targets/{{ $cluster.name }}-zookeeper_node.yaml'
+      {{- end }}
 
+      {{- with $cluster.kafka }}
       ## Kafka
-      - job_name: "{{$target.name}}-{{ $target.kafka.releaseName }}"
+      - job_name: '{{ $cluster.name }}-kafka'
         scrape_interval: 5s
         file_sd_configs:
           - files:
-            - "targets/{{ $target.kafka.releaseName }}.yaml"
-      ## Kafka Node
-      - job_name: "{{$target.name}}-{{ $target.kafka.releaseName }}_node"
-        scrape_interval: 5s
-        file_sd_configs:
-          - files:
-            - "targets/{{ $target.kafka.releaseName }}_node.yaml"
-    
-      {{ end }}
+            - 'targets/{{ $cluster.name }}-kafka.yaml'
 
+      ## Kafka Node
+      - job_name: '{{ $cluster.name }}-kafka_node'
+        scrape_interval: 5s
+        file_sd_configs:
+          - files:
+            - 'targets/{{ $cluster.name }}-kafka_node.yaml'
+      {{- end }}
+      {{- end }}
+      ########## END OF CONFIG ##########
 
 ---
 # felice-mon : /etc/prometheus/targets
@@ -129,43 +149,63 @@ kind: ConfigMap
 metadata:
   name: {{ include "felice.fullname" . }}-monitoring-targets
 data:
-  {{ range $target := .Values.monitoringTragets }}
+  {{- range $cluster := .Values.monitoringClusters }}
+  {{- with $cluster.zookeeper }}
+  ##### ZOOKEEPER TARGET CONFIG FILES #####
   ### zookeeper
-  {{ $prefix := $target.zookeeper.releaseName }}
-  {{ $prefix }}.yaml: |
-    {{ range $i := until ( atoi $target.zookeeper.servers ) }}
+  {{ $cluster.name }}-zookeeper.yaml: |+
+    {{- range $i := until ( atoi $cluster.zookeeper.servers ) }}
       - targets:
-        - "{{ $prefix }}-{{ $i }}.{{ $prefix }}-hs.{{ $target.suffix }}:{{ $target.zookeeper.port }}"
+        {{- if $cluster.zookeeper.domainSuffix }}
+        - '{{ $cluster.zookeeper.helmReleaseName }}-{{ $i }}.{{ $cluster.zookeeper.helmReleaseName }}-hs.{{ $cluster.zookeeper.domainSuffix }}:{{ $cluster.zookeeper.metricsProviderHttpPort }}'
+        {{- else }}
+        - '{{ $cluster.zookeeper.helmReleaseName }}-{{ $i }}.{{ $cluster.zookeeper.helmReleaseName }}-hs:{{ $cluster.zookeeper.metricsProviderHttpPort }}'
+        {{- end }}
         labels:
-          instance: "{{ add $i 1 }}"
-    {{ end }}
+          instance: '{{ add $i 1 }}'
+    {{- end }}
   
   ### zookeeper_node
-  {{ $prefix }}_node.yaml: |
-    {{ range $i := until ( atoi $target.zookeeper.servers ) }}
+  {{ $cluster.name }}-zookeeper_node.yaml: |+
+    {{- range $i := until ( atoi $cluster.zookeeper.servers ) }}
       - targets:
-        - "{{ $prefix }}-{{ $i }}.{{ $prefix }}-hs.{{ $target.suffix }}:{{ $target.zookeeper.nodePort }}"
+        {{- if $cluster.zookeeper.domainSuffix }}
+        - '{{ $cluster.zookeeper.helmReleaseName }}-{{ $i }}.{{ $cluster.zookeeper.helmReleaseName }}-hs.{{ $cluster.zookeeper.domainSuffix }}:{{ $cluster.zookeeper.nodeExporterPort }}'
+        {{- else }}
+        - '{{ $cluster.zookeeper.helmReleaseName }}-{{ $i }}.{{ $cluster.zookeeper.helmReleaseName }}-hs:{{ $cluster.zookeeper.nodeExporterPort }}'
+        {{- end }}
         labels:
-          instance: "{{ add $i 1 }}"
-    {{ end }}
-  
+          instance: '{{ add $i 1 }}'
+    {{- end }}
+    {{- end }}
+
+  {{- with $cluster.kafka }}
+  ##### KAFKA TARGET CONFIG FILES #####
   ### kafka
-  {{ $prefix := $target.kafka.releaseName }}
-  {{ $prefix }}.yaml: |
-    {{ range $i := until ( atoi $target.kafka.servers ) }}
+  {{ $cluster.name }}-kafka.yaml: |+
+    {{- range $i := until ( atoi $cluster.kafka.servers ) }}
       - targets:
-        - "{{ $prefix }}-{{ $i }}.{{ $prefix }}-hs.{{ $target.suffix }}:{{ $target.kafka.port }}"
+        {{- if $cluster.kafka.domainSuffix }}
+        - '{{ $cluster.kafka.helmReleaseName }}-{{ $i }}.{{ $cluster.kafka.helmReleaseName }}-hs.{{ $cluster.kafka.domainSuffix }}:{{ $cluster.kafka.jmxExporterPort }}'
+        {{- else }}
+        - '{{ $cluster.kafka.helmReleaseName }}-{{ $i }}.{{ $cluster.kafka.helmReleaseName }}-hs:{{ $cluster.kafka.jmxExporterPort }}'
+        {{- end }}
         labels:
-          instance: "{{ add $i 1 }}"
-    {{ end }}
+          instance: '{{ add $i 1 }}'
+    {{- end }}
   
-  ###kafka_node
-  {{ $prefix }}_node.yaml: |
-    {{ range $i := until ( atoi $target.kafka.servers ) }}
+  ### kafka_node
+  {{ $cluster.name }}-kafka_node.yaml: |+
+    {{ range $i := until ( atoi $cluster.kafka.servers ) }}
       - targets:
-        - "{{ $prefix }}-{{ $i }}.{{ $prefix }}-hs.{{ $target.suffix }}:{{ $target.kafka.nodePort }}"
+        {{- if $cluster.kafka.domainSuffix }}
+        - '{{ $cluster.kafka.helmReleaseName }}-{{ $i }}.{{ $cluster.kafka.helmReleaseName }}-hs.{{ $cluster.kafka.domainSuffix }}:{{ $cluster.kafka.nodeExporterPort }}'
+        {{- else }}
+        - '{{ $cluster.kafka.helmReleaseName }}-{{ $i }}.{{ $cluster.kafka.helmReleaseName }}-hs:{{ $cluster.kafka.nodeExporterPort }}'
+        {{- end }}
         labels:
-          instance: "{{ add $i 1 }}"
+          instance: '{{ add $i 1 }}'
+    {{ end }}
     {{ end }}
   
   {{ end }}

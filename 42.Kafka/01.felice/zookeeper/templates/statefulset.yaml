@@ -28,7 +28,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-      #### ZOOKEEPER ####
+      #### ZOOKEEPER CONTAINER ####
       - name: {{ .Chart.Name }}
         securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -64,23 +64,23 @@ spec:
         env:
           - name: K8S_REPLICAS
             value: "{{ .Values.replicaCount }}"
-          {{- with .Values.env }}
+          {{- with .Values.configs.optional }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
-        # command:
-        # - /docker-entrypoint.sh
         volumeMounts:
         - name: {{ include "zookeeper.fullname" . }}-datadir
-          mountPath: /data  # TODO Parameterize
-      #### NODE-EXPORTER ####
+          mountPath: /data
+      #### NODE-EXPORTER CONTAINER ####
+      {{- if .Values.configs.nodeExporter }}
       - name: {{ .Chart.Name }}-nodexporter
         securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
         image: "prom/node-exporter:latest"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: 9100  
+        - containerPort: {{ .Values.configs.nodeExporter.port }}  
           name: prometheus
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -108,7 +108,7 @@ spec:
       name: {{ include "zookeeper.fullname" . }}-datadir
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "openebs-hostpath"
+      storageClassName: {{ .Values.configs.volume.stroageClass }}
       resources:
         requests:
-          storage: {{ .Values.storage }}
+          storage: {{ .Values.configs.volume.storage }}

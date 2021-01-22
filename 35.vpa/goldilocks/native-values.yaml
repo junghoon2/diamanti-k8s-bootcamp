@@ -60,7 +60,7 @@ dashboard:
   replicaCount: 1
   service:
     # dashboard.service.type -- The type of the dashboard service
-    type: ClusterIP
+    type: LoadBalancer
     # dashboard.service.port -- The port to run the dashboard service on
     port: 80
   # dashboard.logVerbosity -- Dashboard log verbosity. Can be set from 1-10 with 10 being extremely verbose

@@ -19,7 +19,7 @@
   - KAFKA_ZOOKEEPER_CONNECT : 카프카가 연결할 ZooKeeper 서버.
     spark-zookeeper helm chart로 구축한 경우에는 cluster 서비스로 지정해도 된다.
   - JMX_PROMETHEUS_ENABLE : 모니터링을 위한 exporter 활성화
-  - JMX_PROMETHEUS_PORT : 모니터링 포트 (기본 값은 7100)
+  - JMX_PROMETHEUS_PORT : 모니터링 포트 (기본 값은 9404)
 - storage
   퍼시스턴트 볼륨 크기
 - resources

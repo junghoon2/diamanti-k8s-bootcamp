@@ -7,7 +7,7 @@ spec:
     matchLabels:
       {{- include "felice.selectorLabels" . | nindent 6 }}
   serviceName: {{ include "felice.fullname" . }}-hs
-  replicas: 1 #{{ .Values.replicaCount }}
+  replicas: 1 
   updateStrategy:
     type: RollingUpdate 
   podManagementPolicy: OrderedReady 
@@ -44,17 +44,17 @@ spec:
         image: "{{ .Values.image.registry }}/prometheus-docker:2.23.0"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.containerPorts.feliceMon.service }}
+        - containerPort: 9090
           name: felice-mon
         readinessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceMon.monitor }}
+            port: 9090
             path: /-/healthy
           initialDelaySeconds: 5
           timeoutSeconds: 2
         livenessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceMon.monitor }}
+            port: 9090
             path: /-/healthy
           initialDelaySeconds: 5
           timeoutSeconds: 2
@@ -62,7 +62,6 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         # command:
         args:
-          - "--web.listen-address=:{{ .Values.containerPorts.feliceMon.service }}"
           - "--web.enable-lifecycle"
         env:
           - name: PROMETHEUS_STORAGE_TSDB_RETENTION_TIME
@@ -85,17 +84,17 @@ spec:
         image: "{{ .Values.image.registry }}/grafana-docker:7.3.6"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.containerPorts.feliceBoard.service }} 
+        - containerPort: 3000
           name: felice-board
         readinessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceBoard.monitor }}
+            port: 3000
             path: /api/health
           initialDelaySeconds: 5
           timeoutSeconds: 2
         livenessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceBoard.monitor }}
+            port: 3000
             path: /api/health
           initialDelaySeconds: 5
           timeoutSeconds: 2
@@ -109,17 +108,17 @@ spec:
         image: "{{ .Values.image.registry }}/api_server:develop-1.0.0"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.containerPorts.feliceBack.service }}
+        - containerPort: 8989
           name: felice-back
         readinessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceBack.monitor }}
+            port: 7100
             path: /monitor/health
           initialDelaySeconds: 30
           timeoutSeconds: 2
         livenessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceBack.monitor }}
+            port: 7100
             path: /monitor/health
           initialDelaySeconds: 30
           timeoutSeconds: 2
@@ -138,17 +137,17 @@ spec:
         image: "{{ .Values.image.registry }}/client:1.0.0"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.containerPorts.feliceFront.service }}
+        - containerPort: 80
           name: felice-front
         readinessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceFront.monitor }}
+            port: 80
             path: /monitor/health
           initialDelaySeconds: 5
           timeoutSeconds: 2
         livenessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceFront.monitor }}
+            port: 80
             path: /monitor/health
           initialDelaySeconds: 5
           timeoutSeconds: 2
@@ -162,14 +161,14 @@ spec:
         image: "{{ .Values.image.registry }}/zookeeper-docker:3.6.2"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.containerPorts.feliceZoo.service }}
+        - containerPort: 2181
           name: felice-zoo
         readinessProbe:
           exec:
             command:
             - bash
             - -c
-            - '[[ "$(echo ruok | nc localhost {{ .Values.containerPorts.feliceZoo.service }})" == "imok" ]] || exit 1'
+            - '[[ "$(echo ruok | nc localhost 2181)" == "imok" ]] || exit 1'
           initialDelaySeconds: 5
           timeoutSeconds: 2
         livenessProbe:
@@ -182,9 +181,9 @@ spec:
           timeoutSeconds: 2
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
-        env:
-          - name: ZOO_METRICS_PROVIDER__HTTP_PORT
-            value: "{{ .Values.containerPorts.feliceZoo.monitor }}"
+        # env:
+        #   - name: ZOO_METRICS_PROVIDER__HTTP_PORT
+        #     value: "7100"
       #### FELICE-LAG ####
       - name: {{ .Chart.Name }}-lag
         securityContext:
@@ -192,17 +191,17 @@ spec:
         image: "{{ .Values.image.registry }}/burrow-docker:latest"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.containerPorts.feliceLag.service }}
+        - containerPort: 8000
           name: felice-lag
         readinessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceLag.monitor }}
+            port: 8000
             path: /burrow/admin
           initialDelaySeconds: 5
           timeoutSeconds: 2
         livenessProbe:
           httpGet:
-            port: {{ .Values.containerPorts.feliceLag.monitor }}
+            port: 8000
             path: /burrow/admin
           initialDelaySeconds: 5
           timeoutSeconds: 2
@@ -210,7 +209,7 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         env:
         - name: WAIT_HOSTS
-          value: felice-zoo:{{ .Values.containerPorts.feliceZoo.service }}
+          value: felice-zoo:2181
         - name: WAIT_BEFORE
           value: "2"
         - name: WAIT_AFTER
@@ -258,7 +257,7 @@ spec:
       name: {{ include "felice.fullname" . }}-monitoring-tsdb
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "openebs-hostpath"
+      storageClassName: {{ .Values.storageClass }}
       resources:
         requests:
           storage: {{ .Values.storage.tsdb }}
@@ -266,7 +265,7 @@ spec:
       name: {{ include "felice.fullname" . }}-rulesdir
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "openebs-hostpath"
+      storageClassName: {{ .Values.storageClass }}
       resources:
         requests:
           storage: {{ .Values.storage.rulesdir }}
@@ -274,7 +273,7 @@ spec:
       name: {{ include "felice.fullname" . }}-datadir
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "openebs-hostpath"
+      storageClassName: {{ .Values.storageClass }}
       resources:
         requests:
           storage: {{ .Values.storage.datadir }}

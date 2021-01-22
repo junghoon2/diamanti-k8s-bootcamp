@@ -7,24 +7,27 @@
 replicaCount: 3
 
 image:
+  # repository: 172.17.19.54:4567/kafka_controller/zookeeper-docker
+  # registry: 172.17.19.54:4567/kafka_controller
   registry: swoogi
   imagename: zookeeper-docker
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "3.6.2"
 
-imagePullSecrets: []
-  # - name: spark-gitlab
+# imagePullSecrets: #[]
+#   - name: spark-gitlab
 nameOverride: ""
 fullnameOverride: ""
 
-## additional evironment variables
-env: []
-  # - name: K8S_TEST
-  #   value: "this is test value"
-
-## storage for data
-storage: "10Gi"
+##### CONFIGURATION
+configs:
+  nodeExporter: #{}
+    port: "9100"
+  volume:
+    storage: "10Gi"
+    stroageClass: ""
+  optional: []
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -74,11 +77,11 @@ resources: #{}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 4
-    memory: 16Gi
+    cpu: 2
+    memory: 2Gi
   requests:
-    cpu: 1
-    memory: 4Gi
+    cpu: 0.5
+    memory: 1Gi
 
 autoscaling:
   enabled: false
