@@ -1,0 +1,152 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: diamanti-prometheus-cadvisor
+  labels:
+    diamanti.com/app: prometheus-scraper
+    release: prometheus-operator
+spec:
+  endpoints:
+  - interval: 30s
+    port: cadvisor
+  namespaceSelector:
+    matchNames:
+    - diamanti-system
+  selector:
+    matchLabels:
+      name: collectd-svc
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: diamanti-prometheus-node
+  labels:
+    diamanti.com/app: prometheus-scraper
+    release: prometheus-operator
+spec:
+  endpoints:
+  - interval: 30s
+    port: node-exporter-tcp
+    metricRelabelings:
+    - sourceLabels: [ __name__ ]
+      regex: promhttp_metric_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: node_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: process_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: http_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: go_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_board_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_dec_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_ecc_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_enc_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_low_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_mem(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_pcie_replay(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_power_violation(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_reliability_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_retired_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_sm_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_sync_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_thermal_violation(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: dcgm_xid_errors(.*)
+      action: drop
+    relabelings:
+    - sourceLabels: [ __address__ ]
+      targetLabel: source
+      action: replace
+      regex: '(.*):.*'
+      replacement: '${1}'
+  namespaceSelector:
+    matchNames:
+    - diamanti-system
+  selector:
+    matchLabels:
+      name: collectd-svc
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: diamanti-prometheus-collectd
+  labels:
+    diamanti.com/app: prometheus-scraper
+    release: prometheus-operator
+spec:
+  endpoints:
+  - interval: 30s
+    port: collectd-exporter-tcp
+    relabelings:
+    - sourceLabels: [__address__]
+      separator: ;
+      regex: (.*):.*
+      targetLabel: source
+      replacement: ${1}
+      action: replace
+    metricRelabelings:
+    - sourceLabels: [ __name__ ]
+      regex: scrape_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: collectd_interface_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: collectd_load(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: collectd_disk_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: collectd_ipmi(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: process_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: http_(.*)
+      action: drop
+    - sourceLabels: [ __name__ ]
+      regex: go_(.*)
+      action: drop
+  namespaceSelector:
+    matchNames:
+    - diamanti-system
+  selector:
+    matchLabels:
+      name: collectd-svc

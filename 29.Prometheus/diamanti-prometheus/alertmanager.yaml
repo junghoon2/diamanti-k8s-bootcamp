@@ -1,0 +1,17 @@
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['job']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  receiver: 'gmail'
+receivers:
+- name: 'gmail'
+  email_configs:
+  - to: user1@gmail.com
+    from: user2@gmail.com
+    smarthost: smtp.gmail.com:587
+    auth_username: "user2@gmail.com"
+    auth_identity: "user2@gmail.com"
+    auth_password: "password"

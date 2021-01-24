@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    meta.helm.sh/release-name: prometheus-operator
+  labels:
+    app: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    chart: kube-prometheus-stack-10.1.0
+    heritage: Helm
+    release: prometheus-operator
+  name: prometheus-operator-cpu.rules
+spec:
+  groups:
+  - name: cpu-rule
+    rules:
+    - alert: cpuUsagehigh
+      expr: sum(collectd_cpu_percent) > 1
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "collectd high cpu usage"
