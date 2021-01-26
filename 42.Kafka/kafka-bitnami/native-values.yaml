@@ -367,7 +367,7 @@ podLabels: {}
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations:
-  diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
+  # diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
 ## Name of the priority class to be used by kafka pods, priority class needs to be created beforehand
 ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 priorityClassName: ""
@@ -413,11 +413,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits: 
-    cpu: "8"
+    cpu: "4"
     memory: 32Gi
   requests:
-    cpu: "2"
-    memory: 8Gi
+    cpu: "1"
+    memory: 2Gi
 
 ## Kafka containers' liveness and readiness probes. Evaluated as a template.
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
@@ -603,7 +603,7 @@ persistence:
   ## If undefined (the default) or set to null, no storageClassName spec is
   ## set, choosing the default provisioner.
   ##
-  storageClass: "high"
+  storageClass: "openebs-hostpath"
   ## PV Access Mode
   ##
   accessModes:
@@ -635,7 +635,7 @@ logPersistence:
   ##
   ## PV Access Mode
   ##
-  storageClass: "high"
+  storageClass: "openebs-hostpath"
   accessModes:
     - ReadWriteOnce
   ## PVC size
@@ -756,12 +756,12 @@ metrics:
       # choice for the user. This also increases chances charts run on environments with little
       # resources, such as Minikube. If you do want to specify resources, uncomment the following
       # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      limits: {}
-      #   cpu: 100m
-      #   memory: 128Mi
-      requests: {}
-      #   cpu: 100m
-      #   memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
 
     ## Service configuration
     ##
@@ -831,12 +831,12 @@ metrics:
       # choice for the user. This also increases chances charts run on environments with little
       # resources, such as Minikube. If you do want to specify resources, uncomment the following
       # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      limits: {}
-      #   cpu: 100m
-      #   memory: 128Mi
-      requests: {}
-      #   cpu: 100m
-      #   memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests: 
+        cpu: 100m
+        memory: 128Mi
 
     ## Service configuration
     ##

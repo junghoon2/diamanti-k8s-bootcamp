@@ -89,6 +89,7 @@ volumePermissions:
 #   mountPath: /certs/truststore
 #   readOnly: true
 
+
 ## StatefulSet controller supports automated updates. There are two valid update strategies: RollingUpdate and OnDelete
 ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
 ##
@@ -131,6 +132,10 @@ syncLimit: 5
 ##
 maxClientCnxns: 60
 
+## Maximum session timeout in milliseconds that the server will allow the client to negotiate. Defaults to 20 times the tickTime.
+##
+maxSessionTimeout: 40000
+
 ## A list of comma separated Four Letter Words commands to use
 ##
 fourlwCommandsWhitelist: srvr, mntr, ruok
@@ -150,10 +155,6 @@ autopurge:
   ## The time interval in hours for which the purge task has to be triggered. Set to a positive integer (1 and above) to enable the auto purging.
   ##
   purgeInterval: 0
-
-## Maximum session timeout in milliseconds that the server will allow the client to negotiate. Defaults to 20 times the tickTime.
-##
-maxSessionTimeout: 40000
 
 auth:
   ## Use existing secret (ignores previous password)
@@ -215,9 +216,9 @@ service:
   electionPort: 3888
   publishNotReadyAddresses: true
   tls:
-    client_enable: false
-    quorum_enable: false
-    disable_base_client_port: false
+    client_enable: true
+    quorum_enable: true
+    disable_base_client_port: true
 
     client_port: 3181
 
@@ -259,13 +260,13 @@ securityContext:
 ##   GKE, AWS & OpenStack)
 ##
 persistence:
+  enabled: true
   ## A manually managed Persistent Volume and Claim
   ## If defined, PVC must be created manually before volume will be bound
   ## The value is evaluated as a template
   ##
   # existingClaim:
 
-  enabled: true
   storageClass: "openebs-hostpath"
   accessModes:
     - ReadWriteOnce
@@ -278,7 +279,6 @@ persistence:
     ## The value is evaluated as a template
     ##
     # existingClaim:
-
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -296,8 +296,7 @@ podLabels: {}
 
 ## Annotations
 ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-podAnnotations:
-  # diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
+podAnnotations: {}
 
 ## Name of the priority class to be used by zookeeper pods, priority class needs to be created beforehand
 ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
@@ -323,6 +322,7 @@ resources:
   limits:
     memory: 4Gi
     cpu: "2"
+
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -351,19 +351,19 @@ readinessProbe:
 networkPolicy:
   ## Specifies whether a NetworkPolicy should be created
   ##
-  enabled: false
+  enabled: true
 
   ## The Policy model to apply. When set to false, only pods with the correct
   ## client label will have network access to the port Redis is listening
   ## on. When true, zookeeper accept connections from any source
   ## (with the correct destination port).
   ##
-  # allowExternal: true
+  allowExternal: true
 
 ## Zookeeper Prometheus Exporter configuration
 ##
 metrics:
-  enabled: true
+  enabled: false
 
   ## Zookeeper Prometheus Exporter container port
   ##
