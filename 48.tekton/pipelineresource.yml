@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: git-app-repo
+spec:
+  type: git
+  params:
+  - name: url
+    value: https://172.17.16.182/jerry/admin.git
+  - name: revision
+    value: master
+  - sslVerify: false
