@@ -1,0 +1,46 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: build-docker-image-from-git-source-task-run
+spec:
+  serviceAccountName: tutorial-service
+  taskRef:
+    name: build-docker-image-from-git-source
+  params:
+    - name: pathToDockerFile
+      value: Dockerfile
+    # - name: pathToContext
+    #   value: $(resources.inputs.docker-source.path)/examples/microservices/leeroy-web #configure: may change according to your source
+  resources:
+    inputs:
+      - name: docker-source
+        resourceRef:
+          name: git-app-repo
+    outputs:
+      - name: builtImage
+        resourceRef:
+          name: jerry-image
+
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: build-image-taskrun
+spec:
+  serviceAccountName: tutorial-service
+  taskRef:
+    name: build-image
+  inputs:
+    resources:
+      - name: hello1
+        resourceRef:
+          name: git-hello1
+    params:
+      - name: pathToDockerFile
+        value: deployment/Dockerfile
+      - name: pathToContext
+        value: /workspace/hello1
+  outputs:
+    resources:
+      - name: builtImage
+        resourceRef:
+          name: image-hello1

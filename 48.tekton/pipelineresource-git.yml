@@ -9,4 +9,4 @@ spec:
     value: https://172.17.16.182/jerry/admin.git
   - name: revision
     value: master
-  - sslVerify: false
+  # - sslVerify: false
