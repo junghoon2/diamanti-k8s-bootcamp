@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: image-hello1
+  namespace: tekton
+spec:
+  type: image
+  params:
+    - name: url
+      value: gitlab.spkr.io:5050/jerry/admin/hello1:0.1  # 이미지 tag 포함한 이미지 이름. repo 이름이 아니다.
+      # value: erdia22/hello1:0.0.2  # 이미지 tag 포함한 이미지 이름. repo 이름이 아니다.

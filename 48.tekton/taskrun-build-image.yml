@@ -10,14 +10,19 @@ spec:
     resources:
       - name: hello1
         resourceRef:
-          name: git-app-repo
+          name: git-hello1
     params:
       - name: pathToDockerFile
-        value: tomcat-board.dockerfile
+        value: deployment/Dockerfile
       - name: pathToContext
         value: /workspace/hello1
   outputs:
+    # hostAliases:
+    # - ip: "172.17.16.182"
+    #   hostnames:
+    #   - "gitlab.spkr.io"
+
     resources:
       - name: builtImage
         resourceRef:
-          name: jerry-image
+          name: image-hello1

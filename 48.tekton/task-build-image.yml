@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
   name: build-image
-  # namespace: tekton
+  namespace: tekton
 spec:
   inputs:
     resources:
@@ -24,7 +24,7 @@ spec:
         type: image
   steps:
     - name: build-and-push
-      image: gcr.io/kaniko-project/executor:v0.14.0
+      image: gcr.io/kaniko-project/executor:latest
       # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
       env:
         - name: "DOCKER_CONFIG"
@@ -34,4 +34,4 @@ spec:
       args:
         - --dockerfile=$(inputs.params.pathToDockerFile)
         - --destination=$(outputs.resources.builtImage.url)
-        - --context=$(inputs.params.pathToContext
+        - --context=$(inputs.params.pathToContext)

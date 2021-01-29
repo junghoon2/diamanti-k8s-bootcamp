@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: git-hello1
+  namespace: tekton
+spec:
+  type: git
+  params:
+    - name: revision
+      value: master
+    - name: url
+      value: https://gitlab.com/happycloudpak/hello1
