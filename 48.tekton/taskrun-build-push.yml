@@ -1,23 +1,24 @@
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  name: build-image-taskrun
+  name: build-push
+  namespace: tekton
 spec:
-  serviceAccountName: tutorial-service
+  serviceAccountName: cluster-sa
   taskRef:
-    name: build-image
-  inputs:
-    resources:
-      - name: hello1
+    name: build-push
+  params:
+  - name: pathToDockerFile
+    value: tomcat-board.dockerfile
+    # value: Dockerfile
+  - name: pathToContext
+    value: $(resources.inputs.git-source.path)/src
+  resources:
+    inputs:
+      - name: git-source
         resourceRef:
-          name: git-app-repo
-    params:
-      - name: pathToDockerFile
-        value: tomcat-board.dockerfile
-      - name: pathToContext
-        value: /workspace/hello1
-  outputs:
-    resources:
-      - name: builtImage
+          name: jerry-git
+    outputs:
+      - name: image-repo
         resourceRef:
-          name: jerry-image
+          name: board-image

@@ -1,9 +1,10 @@
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
 metadata:
-  name: jerry-image
+  name: board-image
 spec:
   type: image
   params:
     - name: url
-      value: 172.17.16.182:5050/jerry/admin #configure: replace with where the image should go: perhaps your local registry or Dockerhub with a secret and configured service account
+      value: 172.17.16.182:5050/jerry/admin/tomcat-board #configure: replace with where the image should go: perhaps your local registry or Dockerhub with a secret and configured service account
+      # value: erdia22/tomcat-test:1.0

@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nginx-pv
+  labels:
+    name: nginx-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 20Gi
+  csi:
+    driver: dcx.nfs.csi.diamanti.com
+    volumeHandle: data-id
+    volumeAttributes:
+      name: nginx-vol
+      type: nfs
+      server: 172.17.28.101
+      share: "/mnt/nfs_test"
+      network: data  # host network 이름 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-pvc
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: ""
+  volumeName: nginx-pv
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  annotations:
+    diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: IfNotPresent
+    name: nginx
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    volumeMounts:
+      - mountPath: /var/www
+        name: nginx-vol
+  volumes:
+  - name: nginx-vol
+    persistentVolumeClaim:
+      claimName: nginx-pvc

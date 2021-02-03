@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: build-push-deploy
+spec:
+  serviceAccountName: cluster-sa
+  pipelineRef:
+    name: build-push-deploy
+  resources:
+    - name: git-source
+      resourceRef:
+        name: jerry-git
+    - name: image-repo
+      resourceRef:
+        name: board-image

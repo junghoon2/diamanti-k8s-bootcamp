@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: date-pvc-mirror
-  namespace: gitlab
+  name: date-pod
+  namespace: default
   labels:
     app: date-mirror
 spec:
@@ -18,19 +18,18 @@ spec:
       containers:
       - name: date-pod
         image: busybox
-        command:
-        - "/bin/sh"
-        - "-c"
-        - "sleep inf"
-
         # command:
         # - "/bin/sh"
         # - "-c"
-        # - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
+        # - "sleep inf"
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
         volumeMounts:  # Volume을 POD에 어디에 마운트 할 것인지
         - name: date-vol  # Volume 이름
           mountPath: /data  # Mount 이름 
       volumes:  # 어떤 Volume을 사용할 것인지
       - name: date-vol
         persistentVolumeClaim:
-          claimName: gitlab-config-gitlab-0  ## PVC 이름 지정
+          claimName: test-pvc   ## PVC 이름 지정

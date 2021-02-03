@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: pipeline-with-parameters
+spec:
+  params:
+    - name: context
+      type: string
+      description: Path to context
+      default: /some/where/or/other
+  tasks:
+    - name: task-1
+      taskRef:
+        name: build
+      params:
+        - name: pathToDockerFile
+          value: Dockerfile
+        - name: pathToContext
+          value: "${params.context}"
+    - name: task-2
+      taskRef:
+        name: build-push
+      runAfter:
+        - source-to-image
+      params:
+        - name: pathToDockerFile
+          value: Dockerfile
+        - name: pathToContext
+          value: "${params.context}"

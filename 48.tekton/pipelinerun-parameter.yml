@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: pipelinerun-with-parameters
+spec:
+  serviceAccountName: pipeline-account
+  pipelineRef:
+    name: tutorial-service
+  params:
+    - name: "context"
+      value: "/workspace/examples/microservices/leeroy-web"

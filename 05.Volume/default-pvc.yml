@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: test
+  name: test-pvc
   namespace: default
 spec:
   accessModes:
@@ -10,4 +10,4 @@ spec:
     requests:
       # storage: 10Gi
       storage: 10Gi  # 노드 Disk 용량을 넘으면 할당이 안 됨
-  storageClassName: "default-storageclass"  ## SC 지정
+  storageClassName: "high"  ## SC 지정

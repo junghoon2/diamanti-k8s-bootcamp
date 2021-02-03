@@ -1,30 +1,30 @@
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: build-image
-  # namespace: tekton
+  name: build-push
+  namespace: tekton
 spec:
-  inputs:
-    resources:
-      - name: hello1
+  params:
+    - name: pathToDockerFile
+      type: string
+      description: The path to the dockerfile to build
+      # default: $(resources.inputs.git-source.path)/Dockerfile
+    - name: pathToContext
+      type: string
+      description: |
+        The build context used by Kaniko
+        (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
+      # default: $(resources.inputs.git-source.path)
+  resources:
+    inputs:
+      - name: git-source
         type: git
-    params:
-      - name: pathToDockerFile
-        type: string
-        description: The path to the dockerfile to build        
-      - name: pathToContext
-        type: string
-        description:
-          The build context used by Kaniko
-          (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
-        
-  outputs:
-    resources:
-      - name: builtImage
+    outputs:
+      - name: image-repo
         type: image
   steps:
     - name: build-and-push
-      image: gcr.io/kaniko-project/executor:v0.14.0
+      image: gcr.io/kaniko-project/executor:v0.16.0
       # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
       env:
         - name: "DOCKER_CONFIG"
@@ -32,6 +32,9 @@ spec:
       command:
         - /kaniko/executor
       args:
-        - --dockerfile=$(inputs.params.pathToDockerFile)
-        - --destination=$(outputs.resources.builtImage.url)
-        - --context=$(inputs.params.pathToContext
+        - --dockerfile=$(params.pathToDockerFile)
+        - --destination=$(resources.outputs.image-repo.url)
+        - --context=$(params.pathToContext)
+        - --skip-tls-verify  # https 가 아닌 http 보내는 에러 해결
+
+
