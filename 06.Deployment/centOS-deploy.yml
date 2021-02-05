@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: centos
-        image: centos:7.7.12
+        image: centos
         command:
         - "/bin/sh"
         - "-c"

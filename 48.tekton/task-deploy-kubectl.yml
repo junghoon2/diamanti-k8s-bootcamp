@@ -7,9 +7,9 @@ spec:
     - name: path
       type: string
       description: Path to the manifest to apply
-    # - name: imageTag
-    #   type: string
-    #   description: image Tag name
+    - name: imageTag
+      type: string
+      description: image Tag name
     - name: yamlPathToImage
       type: string
       description: |
@@ -18,19 +18,19 @@ spec:
     inputs:
       - name: git-source
         type: git
-      - name: image-repo
-        type: image
+    outputs:
+    - name: image-repo
+      type: image
   steps:
     - name: replace-image
       image: mikefarah/yq
       command: ["yq"]
       args:
         # - "w"
-        - "eval"
+        - "e"
+        - '.spec.template.spec.containers.image="$(params.yamlPathToImage):$(params.imageTag)"'
         - "-i"
         - "$(params.path)"
-        - "$(params.yamlPathToImage)"
-        - "$(resources.inputs.image-repo.url)"
     - name: run-kubectl
       image: lachlanevenson/k8s-kubectl
       command: ["kubectl"]

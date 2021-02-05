@@ -20,6 +20,8 @@ spec:
           value: tomcat-board.dockerfile
         - name: pathToContext
           value: $(resources.inputs.git-source.path)/src
+        - name: imageTag
+          value: "1.0.1"
       resources:
         inputs:
           - name: git-source
@@ -44,3 +46,5 @@ spec:
           value: $(resources.inputs.git-source.path)/deploy/tomcat-board.yml #configure: may change according to your source
         - name: yamlPathToImage
           value: "$(resources.inputs.image-repo.url)" 
+        - name: imageTag
+          value: "1.0.1"

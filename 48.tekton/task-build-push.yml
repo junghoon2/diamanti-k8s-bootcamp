@@ -15,6 +15,10 @@ spec:
         The build context used by Kaniko
         (https://github.com/GoogleContainerTools/kaniko#kaniko-build-contexts)
       # default: $(resources.inputs.git-source.path)
+    - name: imageTag
+      type: string
+      description: image tag name
+      default: latest
   resources:
     inputs:
       - name: git-source
@@ -33,7 +37,7 @@ spec:
         - /kaniko/executor
       args:
         - --dockerfile=$(params.pathToDockerFile)
-        - --destination=$(resources.outputs.image-repo.url)
+        - --destination=$(resources.outputs.image-repo.url):$(params.imageTag)
         - --context=$(params.pathToContext)
         - --skip-tls-verify  # https 가 아닌 http 보내는 에러 해결
 

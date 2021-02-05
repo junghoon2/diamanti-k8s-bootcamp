@@ -13,6 +13,8 @@ spec:
     # value: Dockerfile
   - name: pathToContext
     value: $(resources.inputs.git-source.path)/src
+  - name: imageTag
+    value: "1.0.1"
   resources:
     inputs:
       - name: git-source
