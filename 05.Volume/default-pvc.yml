@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: test-pvc
+  name: default-pvc
   namespace: default
 spec:
   accessModes:
@@ -9,5 +9,5 @@ spec:
   resources:
     requests:
       # storage: 10Gi
-      storage: 10Gi  # 노드 Disk 용량을 넘으면 할당이 안 됨
-  storageClassName: "high"  ## SC 지정
+      storage: 100Gi  # 노드 Disk 용량을 넘으면 할당이 안 됨
+  storageClassName: "openebs-hostpath"  ## SC 지정, default 자동 할당 안됨
