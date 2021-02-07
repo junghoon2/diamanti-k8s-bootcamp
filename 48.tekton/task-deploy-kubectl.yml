@@ -10,25 +10,24 @@ spec:
     - name: imageTag
       type: string
       description: image Tag name
-    - name: yamlPathToImage
-      type: string
-      description: |
-        The path to the image to replace in the yaml manifest (arg to yq)
+    # - name: yamlPathToImage
+    #   type: string
+    #   description: |
+    #     The path to the image to replace in the yaml manifest (arg to yq)
   resources:
     inputs:
       - name: git-source
         type: git
-    outputs:
-    - name: image-repo
-      type: image
+      - name: image-repo
+        type: image
   steps:
-    - name: replace-image
+    - name: update-yaml
       image: mikefarah/yq
       command: ["yq"]
       args:
         # - "w"
         - "e"
-        - '.spec.template.spec.containers.image="$(params.yamlPathToImage):$(params.imageTag)"'
+        - '.spec.template.spec.containers.[].image="$(resources.inputs.image-repo.url):$(params.imageTag)"'
         - "-i"
         - "$(params.path)"
     - name: run-kubectl

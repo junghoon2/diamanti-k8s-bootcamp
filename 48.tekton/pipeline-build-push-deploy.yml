@@ -21,7 +21,7 @@ spec:
         - name: pathToContext
           value: $(resources.inputs.git-source.path)/src
         - name: imageTag
-          value: "1.0.1"
+          value: "1.0.5"
       resources:
         inputs:
           - name: git-source
@@ -33,18 +33,18 @@ spec:
     - name: deploy-using-kubectl
       taskRef:
         name: deploy-using-kubectl
+      runAfter:
+        - build-push
+      params:
+        - name: path
+          value: $(resources.inputs.git-source.path)/deploy/tomcat-board.yml #configure: may change according to your source
+        # - name: yamlPathToImage
+        #   value: "$(resources.inputs.image-repo.url)" 
+        - name: imageTag
+          value: "1.0.5"
       resources:
         inputs:
           - name: git-source
             resource: git-source  # 위에서 선언하고 다시 선언하는 이유는?
           - name: image-repo
             resource: image-repo
-            from:
-              - build-push
-      params:
-        - name: path
-          value: $(resources.inputs.git-source.path)/deploy/tomcat-board.yml #configure: may change according to your source
-        - name: yamlPathToImage
-          value: "$(resources.inputs.image-repo.url)" 
-        - name: imageTag
-          value: "1.0.1"
