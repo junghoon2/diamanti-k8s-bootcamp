@@ -4,16 +4,16 @@ metadata:
   name: date-pod
   namespace: default
   labels:
-    app: date-mirror
+    app: date
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: date-mirror
+      app: date
   template:    
     metadata:
       labels:
-        app: date-mirror
+        app: date
     spec:
       containers:
       - name: date-pod

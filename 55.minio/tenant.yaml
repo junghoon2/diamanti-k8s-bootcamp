@@ -1,0 +1,74 @@
+apiVersion: minio.min.io/v1
+kind: Tenant
+metadata:
+  creationTimestamp: null
+  name: tenant1
+  namespace: minio
+scheduler:
+  name: ""
+spec:
+  certConfig: {}
+  console:
+    consoleSecret:
+      name: tenant1-console-secret
+    image: minio/console:v0.3.14
+    metadata:
+      creationTimestamp: null
+      name: tenant1
+    replicas: 2
+    resources: {}
+  externalCertSecret:
+  - name: tls-minio
+    type: cert-manager.io/v1alpha2
+  credsSecret:
+    name: tenant1-creds-secret
+  image: minio/minio:RELEASE.2020-11-19T23-48-16Z
+  imagePullSecret: {}
+  mountPath: /export
+  serviceName: tenant1-internal-service
+  zones:
+  - resources: {}
+    servers: 3
+    volumeClaimTemplate:
+      apiVersion: v1
+      kind: persistentvolumeclaims
+      metadata:
+        creationTimestamp: null
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        storageClassName: openebs-hostpath
+      status: {}
+    volumesPerServer: 3
+status:
+  availableReplicas: 0
+  currentState: ""
+
+---
+apiVersion: v1
+data:
+  accesskey: MTI2NmFhZjAtZTU4MS00NDI0LWFiZTAtZDlhMDhiM2U5ZGY5
+  secretkey: MGI2ODE2ZWItMjY3YS00YmUxLWI5YWEtNTdkODEyYjI3YmNh
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: tenant1-creds-secret
+  namespace: minio
+
+---
+apiVersion: v1
+data:
+  CONSOLE_ACCESS_KEY: MTE5ZGZiNzgtMGRhNy00MjNiLWI1NmItNDM3MTgwODRjZDJj
+  CONSOLE_HMAC_JWT_SECRET: YjIyZTRiMDUtNGQxNC00YmIxLTk4YTYtZjlmYmQxZTFhNjE2
+  CONSOLE_PBKDF_PASSPHRASE: MGIxMDBiNDYtYTIwZS00Mzk5LTk5M2EtMjlhZmFiODQ5OWZh
+  CONSOLE_PBKDF_SALT: ZjkzZTdjNmQtZWQ5Zi00NGVhLTkwMjYtNjNmODZhODk3YTEz
+  CONSOLE_SECRET_KEY: YTgwYmY5OTgtNmZjNy00Yzk0LTllNWQtYTI2MTBiYzBmYWQ1
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: tenant1-console-secret
+  namespace: minio
+
