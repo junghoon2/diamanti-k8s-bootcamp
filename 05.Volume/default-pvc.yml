@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: default-pvc
   namespace: default
+  labels:
+    app: busybox
 spec:
   accessModes:
   - ReadWriteOnce  ## block accessmode 지정 

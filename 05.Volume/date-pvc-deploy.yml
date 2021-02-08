@@ -25,11 +25,11 @@ spec:
         command:
         - "/bin/sh"
         - "-c"
-        - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
+        - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 30; done"
         volumeMounts:  # Volume을 POD에 어디에 마운트 할 것인지
         - name: date-vol  # Volume 이름
           mountPath: /data  # Mount 이름 
       volumes:  # 어떤 Volume을 사용할 것인지
       - name: date-vol
         persistentVolumeClaim:
-          claimName: test-pvc   ## PVC 이름 지정
+          claimName: default-pvc   ## PVC 이름 지정

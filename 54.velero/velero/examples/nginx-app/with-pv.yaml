@@ -63,7 +63,7 @@ spec:
           persistentVolumeClaim:
            claimName: nginx-logs
       containers:
-      - image: nginx:1.17.6
+      - image: nginx
         name: nginx
         ports:
         - containerPort: 80
