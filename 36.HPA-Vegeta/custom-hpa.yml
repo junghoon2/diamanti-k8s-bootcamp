@@ -1,0 +1,27 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-custom-hpa
+  namespace: nginx
+spec:
+  maxReplicas: 5
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx
+  metrics:
+  - type: Pods
+    pods:
+      metricName: nginx_connections_active
+      targetAverageValue: "2"
+
+
+  # metrics:
+  # - type: Pods
+  #   pods:
+  #     metric:
+  #       name: nginx_connections_active
+  #     target:
+  #       type: AverageValue
+  #       averageValue: "2"
