@@ -1,6 +1,6 @@
-   kubectl minio tenant create minio-tenant-1 \
+   kubectl minio tenant create --name tenant-1 \
       --servers 3                             \
-      --volumes 3                            \
-      --capacity 100Ti                         \
-      --namespace minio-tenant-1              \
-      --storage-class local-storage        \
+      --volumes 6                            \
+      --capacity 60Gi                         \
+      --namespace minio              \
+      --storage-class openebs-hostpath        \
