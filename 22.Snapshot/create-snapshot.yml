@@ -5,5 +5,5 @@ metadata:
 spec:
  snapshotClassName: csi-snapshotclass
  source:
-   name: snap-pvc
+   name: default-pvc
    kind: PersistentVolumeClaim

@@ -1,0 +1,51 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backupcronjob
+spec:
+  schedule: "*/6 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          serviceAccountName: default
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                  - key: diamanti.com/app
+                    operator: In
+                    values: ["backupcontroller"]  # Ensures only 1 backcontroller runs in the cluster
+                topologyKey: beta.kubernetes.io/os
+          containers:
+          - args:
+            - -virtualIP=172.16.52.50                   # Virtual IP address of the cluster
+            - -sourcePVC=test-pvc                  # PVC to take a backup of associated volume
+            - -pvcNamespace=default                # Namespace
+            - -backupPlugin=tar                    # Backup plugin type
+            - -pluginArgs={"server":"172.16.66.138","path":"\/exports","mountOptions":"nfsvers=3"}   # Backup plugin args
+            - -pluginOptions=["-cvp","--selinux","--acls","--xattrs"] # Backup plugin options
+            - -compressed=true                     # Flag to enable/disable compression
+            - -maxNumSnapshots=5                   # Maximum number of snapshots that can exist for the PVC
+            - -numDaysToKeep=5                     # Maximum number of backups that can exist on NFS server
+            - -activeVolumesOnly=true              # Flag to backup attached volumes only
+            - -cpuResource=100m                    # CPU resource for backup agent
+            - -memoryResource=100Mi                # Memory resource for backup agent
+            - -maxConcurrentJobs=10                # Max concurrent backup agents
+            - -snapshotPromoter={"ext3":"backup-ext3-sc","ext4":"backup-ext4-sc","xfs":"backup-xfs-sc"} #Storage class for creating volume from a snapshot
+            name: backupjob-test-pvc
+            image: diamanti/backupcontroller:v3.1.0
+            volumeMounts:
+            - name: cluster-config
+              mountPath: /etc/diamanti
+              readOnly: true
+          volumes:
+          - name: cluster-config
+            hostPath:
+              path: /etc/diamanti
+              type: Directory
+          restartPolicy: Never
