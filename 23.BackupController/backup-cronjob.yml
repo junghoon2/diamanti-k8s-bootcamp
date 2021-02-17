@@ -1,9 +1,12 @@
+# backup-ext3, ext4, xfs-sc 먼저 생성할 것
+
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: backupcronjob
+  name: backupcronjob-daily
 spec:
-  schedule: "3 4 * * *"
+  schedule: "0 4 * * *"
+  # schedule: "* */5 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   jobTemplate:
@@ -32,7 +35,7 @@ spec:
             - -pluginOptions=["-cvp","--selinux","--acls","--xattrs"] # Backup plugin options
             - -compressed=true                     # Flag to enable/disable compression
             - -maxNumSnapshots=5                   # Maximum number of snapshots that can exist for the PVC
-            - -numDaysToKeep=5                     # Maximum number of backups that can exist on NFS server
+            - -numDaysToKeep=1                     # Maximum number of backups that can exist on NFS server
             - -activeVolumesOnly=true              # Flag to backup attached volumes only
             - -cpuResource=100m                    # CPU resource for backup agent
             - -memoryResource=100Mi                # Memory resource for backup agent

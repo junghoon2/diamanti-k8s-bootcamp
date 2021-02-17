@@ -24,6 +24,7 @@ WARNING: Thumbprint : b1 13 09 07 38 34 0d 9f 5e 11 44 08 8b 1f bd 97 74 e2 22 c
 [CN:diamanti-signer@1590112299, OU:[], O=[] issued by CN:diamanti-signer@1590112299, OU:[], O=[]]
 Configuration written successfully
 
+
 (각 개인 별 USER/PASSWORD 정보 입력)
 
 Username: 
