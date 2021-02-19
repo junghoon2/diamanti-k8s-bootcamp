@@ -17,5 +17,5 @@ spec:
     spec:
       containers:
       - name: nginx
-        # image: nginxdemos/hello
-        image: nginx:1.19.2
+        image: nginxdemos/hello
+        # image: nginx:1.19.2

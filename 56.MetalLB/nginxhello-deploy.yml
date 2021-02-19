@@ -4,18 +4,18 @@ metadata:
   name: nginx
   namespace: default
   labels:
-    app: web  # Service 등에서 참조할 Lable 이름 
+    app: nginx  # Service 등에서 참조할 Lable 이름 
 spec:
-  replicas: 2
+  replicas: 8
   selector:
     matchLabels:
-      app: web
+      app: nginx
   template:
     metadata:
       labels:
-        app: web
+        app: nginx
     spec:
       containers:
       - name: nginx
-        # image: nginxdemos/hello
-        image: nginx
+        image: nginxdemos/hello
+        # image: nginx

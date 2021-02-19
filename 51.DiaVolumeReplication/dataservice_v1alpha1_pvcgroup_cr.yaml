@@ -1,0 +1,11 @@
+apiVersion: dataservice.diamanti.com/v1alpha1
+kind: PVCGroup
+metadata:
+  name: example-pvcgroup
+  namespace: diamanti-system
+spec:
+  # Add fields here
+  vgRetainPolicy: deletemembers
+  pvcList:
+    - pvcName: pvc1
+    - pvcName: pvc2

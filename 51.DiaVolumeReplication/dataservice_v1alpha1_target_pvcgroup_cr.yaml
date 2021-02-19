@@ -1,0 +1,9 @@
+apiVersion: dataservice.diamanti.com/v1alpha1
+kind: PVCGroup
+metadata:
+  name: target-pvcgroup
+  namespace: default
+spec:
+  # Add fields here
+  pvcList:
+    - pvcName: target-pvc1

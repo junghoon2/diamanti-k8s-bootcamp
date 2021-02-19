@@ -1,0 +1,34 @@
+apiVersion: dataservice.diamanti.com/v1alpha1
+kind: Replication
+metadata:
+  name: target-rep1
+  namespace: default
+  annotations:
+    replicationDriver: diamanti/replication-driver:v0.1.22
+    imagePullPolicy: IfNotPresent
+    # Add the follwing annotation in case of openshift cluster
+    # k8s.v1.cni.cncf.io/networks: ADDITIONAL_NETWORK_NAME
+spec:
+  # Add fields here
+    role: target
+    pvcGroupName: target-pvcgroup
+    pvcGroupNameSpace: default
+    snapshotPromotor: diamanti 
+    failoverPolicy: Automatic
+    failbackPolicy: Manual
+    rlinks:
+      - rlinkName: target
+        remoteClusterId: XYZ
+        schedule: "*/5 * * * *"
+        mode: periodic
+        bandwidth: 2 Gbps
+        transportType: tcp/ip
+        datagramType: block
+        compressionOn: yes
+        encryptionOn: no
+        overflowplicy: skipToNext
+        localEndpoint: target-endpoint:9002
+        remoteIpAddress: 10.10.100.40:9001
+        retainSnapshotsOnDeletion: true
+        pvcMap:
+           target-pvc1: 'target-pvc1'

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: default-pvc
+  name: target-pvc1
   namespace: default
 spec:
   accessModes:

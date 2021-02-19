@@ -1,0 +1,7 @@
+apiVersion: dataservice.diamanti.com/v1alpha1
+kind: Backup
+metadata:
+  name: example-backup
+spec:
+  # Add fields here
+  size: 3

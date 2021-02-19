@@ -1,39 +1,11 @@
 apiVersion: v1
-items:
-- apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    creationTimestamp: "2021-02-17T04:06:08Z"
-    name: default
-    namespace: spektra-spk-tenant-project-test-pjt
-    resourceVersion: "144451"
-    selfLink: /api/v1/namespaces/spektra-spk-tenant-project-test-pjt/serviceaccounts/default
-    uid: 480eb43c-6c9a-4876-b179-f70cc485b869
-  secrets:
-  - name: default-token-m9xv8
-- apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    creationTimestamp: "2021-02-17T04:06:08Z"
-    name: spektra-spk-tenant-project-test-pjt-admin
-    namespace: spektra-spk-tenant-project-test-pjt
-    resourceVersion: "144487"
-    selfLink: /api/v1/namespaces/spektra-spk-tenant-project-test-pjt/serviceaccounts/spektra-spk-tenant-project-test-pjt-admin
-    uid: 6195a7ed-b0b0-4ef7-9e47-848d0a4d9d2e
-  secrets:
-  - name: spektra-spk-tenant-project-test-pjt-admin-token-drp75
-- apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    creationTimestamp: "2021-02-17T04:06:08Z"
-    name: testpjtprojectmember
-    namespace: spektra-spk-tenant-project-test-pjt
-    resourceVersion: "144489"
-    selfLink: /api/v1/namespaces/spektra-spk-tenant-project-test-pjt/serviceaccounts/testpjtprojectmember
-    uid: ea50e4ab-9fd0-417a-99c1-b3570fc37746
-  secrets:
-  - name: testpjtprojectmember-token-zvww7
-kind: List
+kind: ServiceAccount
 metadata:
-  resourceVersion: ""
-  selfLink: ""
+  creationTimestamp: "2021-02-17T04:06:08Z"
+  name: default
+  namespace: spektra-spk-tenant-project-test-pjt
+  resourceVersion: "144451"
+  selfLink: /api/v1/namespaces/spektra-spk-tenant-project-test-pjt/serviceaccounts/default
+  uid: 480eb43c-6c9a-4876-b179-f70cc485b869
+secrets:
+- name: default-token-m9xv8
