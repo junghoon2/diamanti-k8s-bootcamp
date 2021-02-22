@@ -2,7 +2,7 @@ expose:
   # Set the way how to expose the service. Set the type as "ingress",
   # "clusterIP", "nodePort" or "loadBalancer" and fill the information
   # in the corresponding section
-  type: clusterIP
+  type: loadBalancer
   tls:
     # Enable the tls or not. Note: if the type is "ingress" and the tls
     # is disabled, the port must be included in the command when pull/push
@@ -20,7 +20,7 @@ expose:
     auto:
       # The common name used to generate the certificate, it's necessary
       # when the type isn't "ingress"
-      commonName: "spk.io"
+      commonName: "harbor.spk.io"
     secret:
       # The name of secret which contains keys named:
       # "tls.crt" - the certificate
@@ -198,10 +198,10 @@ persistence:
       # Specify the "storageClass" used to provision the volume. Or the default
       # StorageClass will be used(the default).
       # Set it to "-" to disable dynamic provisioning
-      storageClass: ""
+      storageClass: "high"
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 5Gi
+      size: 100Gi
     chartmuseum:
       existingClaim: ""
       storageClass: ""
@@ -338,7 +338,7 @@ updateStrategy:
 logLevel: info
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
-harborAdminPassword: "Harbor12345"
+harborAdminPassword: "Diamanti1!"
 
 # The name of the secret which contains key named "ca.crt". Setting this enables the
 # download link on portal to download the certificate of CA when the certificate isn't
@@ -396,10 +396,13 @@ portal:
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+   requests:
+     memory: 256Mi
+     cpu: 100m
+   limits:
+     memory: 4Gi
+     cpu: 2000m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -417,10 +420,13 @@ core:
   startupProbe:
     enabled: true
     initialDelaySeconds: 10
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+   requests:
+     memory: 256Mi
+     cpu: 100m
+   limits:
+     memory: 4Gi
+     cpu: 2000m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -450,10 +456,13 @@ jobservice:
   maxJobWorkers: 10
   # The logger for jobs: "file", "database" or "stdout"
   jobLogger: file
-  # resources:
-  #   requests:
-  #     memory: 256Mi
-  #     cpu: 100m
+  resources:
+   requests:
+     memory: 256Mi
+     cpu: 100m
+   limits:
+     memory: 4Gi
+     cpu: 2000m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -471,19 +480,25 @@ registry:
     image:
       repository: goharbor/registry-photon
       tag: v2.1.3
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+  resources:
+   requests:
+     memory: 256Mi
+     cpu: 100m
+   limits:
+     memory: 4Gi
+     cpu: 2000m
   controller:
     image:
       repository: goharbor/harbor-registryctl
       tag: v2.1.3
 
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 4Gi
+      cpu: 2000m
   replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -527,10 +542,13 @@ chartmuseum:
     repository: goharbor/chartmuseum-photon
     tag: v2.1.3
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+   requests:
+     memory: 256Mi
+     cpu: 100m
+   limits:
+     memory: 4Gi
+     cpu: 2000m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -545,10 +563,13 @@ clair:
     image:
       repository: goharbor/clair-photon
       tag: v2.1.3
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 4Gi
+      cpu: 2000m
   adapter:
     image:
       repository: goharbor/clair-adapter-photon
@@ -644,10 +665,10 @@ notary:
       repository: goharbor/notary-signer-photon
       tag: v2.1.3
     replicas: 1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:
+     requests:
+       memory: 256Mi
+       cpu: 100m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -673,10 +694,10 @@ database:
       tag: v2.1.3
     # The initial superuser password for internal database
     password: "changeit"
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:
+     requests:
+       memory: 256Mi
+       cpu: 100m
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -717,10 +738,10 @@ redis:
     image:
       repository: goharbor/redis-photon
       tag: v2.1.3
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:
+     requests:
+       memory: 256Mi
+       cpu: 100m
     nodeSelector: {}
     tolerations: []
     affinity: {}

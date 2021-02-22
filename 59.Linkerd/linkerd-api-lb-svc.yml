@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    linkerd.io/created-by: linkerd/cli stable-2.9.3
+  labels:
+    linkerd.io/control-plane-component: controller
+    linkerd.io/control-plane-ns: linkerd
+  name: linkerd-controller-api-lb
+  namespace: linkerd
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 8085
+  selector:
+    linkerd.io/control-plane-component: controller

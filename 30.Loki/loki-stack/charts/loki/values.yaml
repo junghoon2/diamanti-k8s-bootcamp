@@ -129,7 +129,7 @@ persistence:
   accessModes:
   - ReadWriteOnce
   size: 100Gi
-  storageClassName: "openebs-hostpath"
+  storageClassName: ""
   annotations: {}
   # selector:
   #   matchLabels:

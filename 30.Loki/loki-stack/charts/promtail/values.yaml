@@ -68,6 +68,7 @@ rbac:
   pspEnabled: true
 
 podSecurityPolicy:
+  # privileged: true # for diamanti readiness probe fail
   privileged: false
   allowPrivilegeEscalation: false
   volumes:
