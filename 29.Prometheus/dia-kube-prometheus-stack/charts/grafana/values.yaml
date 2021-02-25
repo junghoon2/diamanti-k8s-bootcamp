@@ -102,7 +102,8 @@ downloadDashboards:
   resources: {}
 
 ## Pod Annotations
-# podAnnotations: {}
+podAnnotations:
+  diamanti.com/endpoint0: '{"endpointId":"grafana","perfTier":"high"}'
 
 ## Pod Labels
 # podLabels: {}
@@ -225,11 +226,11 @@ extraContainerVolumes: []
 ##
 persistence:
   type: pvc
-  enabled: false
+  enabled: true
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
-  size: 10Gi
+  size: 100Gi
   # annotations: {}
   finalizers:
     - kubernetes.io/pvc-protection
@@ -264,7 +265,7 @@ initChownData:
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
-# adminPassword: strongpassword
+adminPassword: Diamanti1!
 
 # Use an existing secret for the admin user.
 admin:

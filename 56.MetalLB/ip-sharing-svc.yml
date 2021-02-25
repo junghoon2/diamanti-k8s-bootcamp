@@ -1,0 +1,11 @@
+
+
+IP Address Sharing
+By default, Services do not share IP addresses. If you have a need to colocate services on a single IP, you can enable selective IP sharing by adding the metallb.universe.tf/allow-shared-ip annotation to services.
+
+The value of the annotation is a “sharing key.” Services can share an IP address under the following conditions:
+
+They both have the same sharing key.
+They request the use of different ports (e.g. tcp/80 for one and tcp/443 for the other).
+They both use the Cluster external traffic policy, or they both point to the exact same set of pods (i.e. the pod selectors are identical).
+

@@ -13,3 +13,4 @@ spec:
     app: nginx
   # sessionAffinity: None
   type: LoadBalancer
+  loadBalancerIP: 172.17.19.240
