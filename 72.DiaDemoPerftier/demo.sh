@@ -40,7 +40,7 @@ kubectl get pods -o wide
 sleep 3
 dctl cluster status
 
-# echo "dctl cluster status"
+echo "See the Diamanti Admin Pages"
 
 
 # run "echo 'dctl network list' & dctl network list"

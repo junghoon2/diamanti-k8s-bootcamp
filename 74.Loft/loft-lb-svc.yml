@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: loft
+    meta.helm.sh/release-namespace: loft
+  labels:
+    app: loft
+    app.kubernetes.io/managed-by: Helm
+    chart: loft-1.7.2
+    heritage: Helm
+    loft.sh/service: loft
+    release: loft
+  name: loft-lb
+  namespace: loft
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+  - name: https
+    port: 443
+  selector:
+    app: loft
+    release: loft
