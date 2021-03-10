@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restore-date-deploy
+  labels:
+    app: date
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: date
+  template:    
+    metadata:
+      labels:
+        app: date
+    spec:
+      containers:
+      - name: date-pod
+        image: busybox
+        command:
+        - "/bin/sh"
+        - "-c"
+        # - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 10; done"
+        - "sleep inf"
+        volumeMounts:
+        - name: date
+          mountPath: /data
+      volumes:
+      - name: date
+        persistentVolumeClaim:
+          claimName: restore-date-pvc  ## PVC 이름 지정

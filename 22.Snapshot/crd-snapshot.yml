@@ -5,4 +5,4 @@ metadata:
 spec:
   volumeSnapshotClassName: default-snapclass
   source:
-    persistentVolumeClaimName: test-pvc
+    persistentVolumeClaimName: date-pvc

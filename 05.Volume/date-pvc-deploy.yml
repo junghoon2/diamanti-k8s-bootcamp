@@ -32,4 +32,5 @@ spec:
       volumes:  # 어떤 Volume을 사용할 것인지
       - name: date-vol
         persistentVolumeClaim:
-          claimName: high-pvc   ## PVC 이름 지정
+          # claimName: high-pvc   ## PVC 이름 지정
+          claimName: high2m-pvc   

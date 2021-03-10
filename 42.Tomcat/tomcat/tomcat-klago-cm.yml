@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tomcat-klago-cm
+  namespace: tomcat
+data:
+  klago.propertires: |
+    # Scheduler, Task 등 주 실행 모드 설정 (live 정상 처리 , dev/stop 미처리)
+    Klago.mode =live
+    # 스크래핑 서버 도메인 고정임 차후 도메인으로 설정 필요
+    Klago.scraping.domain=http://211.34.151.7
+
+    # 그룹웨어 도메인 설정 부분 (구축시 도메인 셋팅)
+    Klago.groupware.domin = http://dev.bizcubex.co.kr
+
+    # OS 구분 (UNIX,WINDOWS) 현재 UNIX 고정
+    Klago.OsType =UNIX
+
+    # DB 구분 (mariadb, oracle)
+    Klago.DbType =mariadb
+
+    # DB 접속 정보 예시
+    # oracle 예시
+    #Klago.DriverClassName=oracle.jdbc.driver.OracleDriver
+    #Klago.Url=jdbc:oracle:thin:@127.0.0.1:15253:orcl
+    #Klago.UserName =neos2
+    #Klago.Password =neos2
+    # mysql 예시
+    #Klago.DriverClassName=com.mysql.jdbc.Driver
+    #Klago.Url=jdbc:mysql://127.0.0.1:13306/neos?useUnicode=true&characterEncoding=utf-8
+    #Klago.UserName=neos
+    #Klago.Password=neos
+
+    # neos DB 접속정보
+    Klago.DriverClassName=org.mariadb.jdbc.Driver
+    Klago.Url=jdbc:mariadb://127.0.0.1:13306/neos
+    Klago.UserName=neos
+    Klago.Password=neos
+
+    # erp DB 접속정보
+    Klago.Erp.DriverClassName=org.mariadb.jdbc.Driver
+    Klago.Erp.Url=jdbc:mariadb://127.0.0.1:13307/erp
+    Klago.Erp.UserName=erp
+    Klago.Erp.Password=erp12#$
+
+    # ecm DB 접속정보
+    Klago.Ecm.DriverClassName=org.mariadb.jdbc.Driver
+    Klago.Ecm.url=jdbc:mysql://14.41.2.189:13306/ecm
+    Klago.Ecm.username=ecm
+    Klago.Ecm.password=ecm
+
+    # MQTT 접속 정보
+    Klago.Mqtt.ip =14.41.2.189
+    Klago.Mqtt.id=event
+    Klago.Mqtt.port =11887
+    Klago.Mqtt.node =bizboxA@127.0.0.1
+    Klago.Mqtt.password=7c02fcc9-33dd-4d9d-a9ab-3779c362eb86_klagoDev
+    Klago.Mqtt.authYn=Y
+    Klago.Mqtt.encryptionYn=Y
+    Klago.Mqtt.encryptionVer=1
+
+    # 조직도 파일 저장 경로
+    Klago.orgchart.sqlite=/home/upload/orgchart/
+
+    # 이벤트 URL 정보
+    Klago.event.url=http://14.41.2.189:80
+
+    # 검색엔진 설정 정보
+    Klago.ElasticSearch.ip =127.0.0.1
+    Klago.ElasticSearch.port =19204
+    Klago.ElasticSearch.http.port =19204
+
+    # 문서 변환 SDK 쉘스크립트 경로
+    Klago.DocConvert.path =/home/neos/hermes-sdk/convert.sh
+    #삭제 되어야함
+
+    # Scheduler Timer
+    Klago.ReserveMessageTimer=0
+
+    # Redis 접속 정보
+    Klago.redis.ip=14.41.2.189
+    Klago.redis.port=16384
+    Klago.redis.password=1234
+    Klago.redis.gofilter.routing=wasmodule
+
+    # 모바일 프로토콜 구분 처리 duzon 고정값
+    Klago.Mobile.protocol.division.code=duzon
+
+    # 서버 내부 인증 Sign Key 값(구축시 생성함)
+    Klago.Sign.Value = 4edec53cebbe603e34458532505c45
+
+    # 메일 서버 설정 정보
+    Klago.Mail.smtpIp=127.0.0.1 # SMTP 서버 IP
+    Klago.Mail.smtpPort=25 # SMTP 서버 port
+    Klago.Mail.mailBox=http://127.0.0.1:8080/mailBox # MailBox was URL
+    Klago.Mail.mailClient=http://dev.bizcubex.co.kr/mail # WebMail was URL
+    Klago.Mail.mailApproval=http://dev.bizcubex.co.kr/mail # 승인 메일 was URL
+    Klago.Mail.fileUrl=http://dev.bizcubex.co.kr/mail # File Upload URL
+    Klago.Mail.imgUrl=http://dev.bizcubex.co.kr/mail # Image URL
+    Klago.Mail.fwCnt=10 # 자동 전달 설정 개수
+    Klago.Mail.drm=
+    Klago.Mail.isCloud=false
+    Klago.Mail.dataPath=/home/neos/MailBox
+    Klago.Mail.ElasticSearch.ip =127.0.0.1 # 검색엔진 IP
+    Klago.Mail.ElasticSearch.port =19204 # 검색엔진 PORT
+    Klago.Mail.elasticSize=5368709120 # 검색엔진 IP
+    Klago.Mail.eventDay=30
+    Klago.Mail.delTime=02:00
+    Klago.Mail.autoDelTime=
+    Klago.Mail.spamUse=ewal
+    Klago.Mail.spamUrl=
+    Klago.Mail.representCnt=5
+    Klago.Mail.noSearchUser=
+    Klago.Mail.redis.sentinel.name=
+    Klago.Mail.replication=
+    Klago.Mail.queue.ip=127.0.0.1 # 카프카 IP
+    Klago.Mail.queue.port=15676 # 카프카 port
+    Klago.Mail.queue.user=admin # 카프카 id
+    Klago.Mail.queue.pw=duzon@1234 # 카프카 pw
+    Klago.Mail.queue.path=/home/neos/MailBox/queueData
+    Klago.Mail.jdbc.driverClass=org.mariadb.jdbc.Driver
+    Klago.Mail.write.jdbc.url=jdbc:mariadb://127.0.0.1:13306/mysql?allowMultiQueries=true&characterEncoding=utf-8&socketTimeout=300000
+    Klago.Mail.write.jdbc.username=root
+    Klago.Mail.write.jdbc.password=mysql@1234
+    Klago.Mail.write.jdbc.min.size=10
+    Klago.Mail.write.jdbc.max.size=100
+    Klago.Mail.read.jdbc.url=jdbc:mariadb://127.0.0.1:13306/mysql?allowMultiQueries=true&characterEncoding=utf-8&socketTimeout=300000
+    Klago.Mail.read.jdbc.username=root
+    Klago.Mail.read.jdbc.password=mysql@1234
+    Klago.Mail.read.jdbc.min.size=10
+    Klago.Mail.read.jdbc.max.size=100
+    Klago.Mail.read.jdbc.validationQuery=select 1
+    Klago.Mail.group.jdbc.driverClass=org.mariadb.jdbc.Driver
+    Klago.Mail.group.jdbc.url=jdbc:mysql://127.0.0.1:13306/neos?socketTimeout=300000&characterEncoding=utf-8&usePipelineAuth=false
+    Klago.Mail.group.jdbc.username=neos
+    Klago.Mail.group.jdbc.password=neos
+    Klago.Mail.group.jdbc.min.size=10
+    Klago.Mail.group.jdbc.max.size=100
+    Klago.Mail.group.jdbc.validationQuery=select 1
+
+    # Kafka 설정 정보
+    Klago.kafka.useYn=Y
+    Klago.kafka.ip=10.82.6.182
+    Klago.kafka.port=9092
