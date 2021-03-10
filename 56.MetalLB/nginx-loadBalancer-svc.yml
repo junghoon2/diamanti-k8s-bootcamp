@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nginx-svc
-  namespace: default
+  namespace: nginx
 spec:
   ports:
   - name: http
@@ -13,4 +13,4 @@ spec:
     app: nginx
   # sessionAffinity: None
   type: LoadBalancer
-  loadBalancerIP: 172.17.19.240
+  # loadBalancerIP: 172.17.19.240

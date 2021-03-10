@@ -1,3 +1,4 @@
+# 최신 버전으로 설치 할 것
 # kube-proxy CM 변경, ipvs to strictARP: true 변경 
 # Diamanti 해당 없음
 
