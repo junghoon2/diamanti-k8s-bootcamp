@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+    deprecated.daemonset.template.generation: "1"
+    meta.helm.sh/release-name: fluentd
+    meta.helm.sh/release-namespace: fluentd
+  labels:
+    app.kubernetes.io/instance: fluentd
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: fluentd
+    app.kubernetes.io/version: v1.12.0
+    helm.sh/chart: fluentd-0.2.2
+  name: fluentd
+  namespace: fluentd
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: fluentd
+      app.kubernetes.io/name: fluentd
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: fluentd
+        app.kubernetes.io/name: fluentd
+    spec:
+      containers:
+      - env:
+        - name: FLUENTD_CONF
+          value: ../../etc/fluent/fluent.conf
+        image: fluent/fluentd-kubernetes-daemonset:v1.12.0-debian-elasticsearch7-1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: metrics
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: fluentd
+        ports:
+        - containerPort: 24231
+          name: metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: metrics
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 10m
+            memory: 128Mi
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/log
+          name: varlog
+        - mountPath: /var/lib/docker/containers
+          name: varlibdockercontainers
+          readOnly: true
+        - mountPath: /etc/fluent
+          name: etcfluentd-main
+        - mountPath: /etc/fluent/config.d/
+          name: etcfluentd-config
+        - mountPath: /etc/fluent/fluentd-prometheus-conf.d
+          name: fluentd-custom-cm-fluentd-prometheus-conf
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      serviceAccount: fluentd
+      serviceAccountName: fluentd
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /var/log
+          type: ""
+        name: varlog
+      - hostPath:
+          path: /var/lib/docker/containers
+          type: ""
+        name: varlibdockercontainers
+      - configMap:
+          defaultMode: 511
+          name: fluentd-main
+        name: etcfluentd-main
+      - configMap:
+          defaultMode: 511
+          name: fluentd-config
+        name: etcfluentd-config
+      - configMap:
+          defaultMode: 511
+          name: fluentd-prometheus-conf
+        name: fluentd-custom-cm-fluentd-prometheus-conf
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate

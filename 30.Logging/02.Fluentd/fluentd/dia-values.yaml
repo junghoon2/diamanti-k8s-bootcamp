@@ -27,7 +27,7 @@ rbac:
 # Configure podsecuritypolicy
 # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
 podSecurityPolicy:
-  enabled: true
+  enabled: false
   annotations: {}
 
 ## Security Context policies for controller pods
@@ -38,13 +38,15 @@ podSecurityContext: {}
   # seLinuxOptions:
   #   type: "spc_t"
 
-securityContext: {}
+securityContext:
   # capabilities:
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  runAsNonRoot: false
+  runAsUser: 0
+  privileged: true
+
 
 resources:
   requests:
@@ -87,6 +89,9 @@ env:
   #   value: "elasticsearch-master"
   # - name: FLUENT_ELASTICSEARCH_PORT
   #   value: "9200"
+# - name: "FLUENT_UID"
+#   value: 0 
+
 
 envFrom: []
 
@@ -249,10 +254,22 @@ fileConfigs:
     <label @OUTPUT>
       <match **>
         @type elasticsearch
-        host "elasticsearch-master"
-        port 9200
+        host "douzone-master-headless.elastic"
+        port 19204
         path ""
-        user elastic
-        password changeme
+        index_name ${tag}-%Y%m
+        <buffer tag, time>
+          timekey 1h # chunks per hours ("3600" also available)
+        </buffer>
+        type_name _doc
+        flush_interval 1s # chunk가 queue로 이동하도록 flush 하는 간격 (아래 chunk limit 값이 다 되거나 이 interval 간격에 의해 데이터가 queue로 이동된다.)
       </match>
     </label>
+
+# host "elasticsearch-master"
+# user elastic
+# password changeme
+# buffer_chunk_limit 256m # 각 청크의 최대 크기를 나타냄. limit 값이 될 때까지 이벤트가 청크에 기록되고 limit 값이 되면 queue로 데이터가 이동된다. (ddefault : mem-8M / file-256M)
+# buffer_queue_limit 256 # chunk는 output으로 이동하기 전에 queue에서 대기하는데 이 큐에 쌓일 수 있는 청크의 개수를 의미한다. (default : 256)
+# retry_wait 5
+# buffer_queue_full_action drop_oldest_chunk # queue가 가득 차버렸을 때 처리에 대한 정책인데, 이 정책은 가장 오래된 청크를 삭제한다.

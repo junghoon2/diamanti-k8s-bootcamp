@@ -10,8 +10,10 @@ metadata:
 {{ toYaml .Values.podSecurityPolicy.annotations | indent 4 }}
 {{- end }}
 spec:
-  privileged: false
-  allowPrivilegeEscalation: false
+  # privileged: false
+  # allowPrivilegeEscalation: false
+  privileged: true
+  allowPrivilegeEscalation: true
   requiredDropCapabilities:
     - ALL
   hostNetwork: false
