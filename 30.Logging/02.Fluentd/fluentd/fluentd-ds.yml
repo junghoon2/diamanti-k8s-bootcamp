@@ -78,7 +78,9 @@ spec:
         - mountPath: /etc/fluent/config.d/
           name: etcfluentd-config
         - mountPath: /etc/fluent/fluentd-prometheus-conf.d
-          name: fluentd-custom-cm-fluentd-prometheus-conf
+          name: fluentd-custom-cm-fluentd-prometheus-conf        
+        - mountPath: /home/upload
+          name: nfs-vol
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -106,6 +108,9 @@ spec:
           defaultMode: 511
           name: fluentd-prometheus-conf
         name: fluentd-custom-cm-fluentd-prometheus-conf
+      - name: nfs-vol
+        persistentVolumeClaim:
+          claimName: fluentd-nfs-pvc
   updateStrategy:
     rollingUpdate:
       maxUnavailable: 1

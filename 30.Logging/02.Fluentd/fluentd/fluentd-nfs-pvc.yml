@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: fluentd-nfs-pvc
+ namespace: fluentd  # 사용할 POD의 ns 지정 
+spec:
+ volumeName: fluentd-nfs-pv
+ storageClassName: ""
+ accessModes:
+ - ReadWriteMany
+ resources:
+   requests:
+     storage: 100Gi

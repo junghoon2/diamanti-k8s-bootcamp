@@ -2,14 +2,14 @@ expose:
   # Set the way how to expose the service. Set the type as "ingress",
   # "clusterIP", "nodePort" or "loadBalancer" and fill the information
   # in the corresponding section
-  type: ingress
+  type: loadBalancer
   tls:
     # Enable the tls or not. Note: if the type is "ingress" and the tls
     # is disabled, the port must be included in the command when pull/push
     # images. Refer to https://github.com/goharbor/harbor/issues/5291
     # for the detail.
     enabled: true
-    # The source of the tls certificate. Set it as "auto", "secret"
+    # The source of the tls certificate. Set it as "auto", "secret" 
     # or "none" and fill the information in the corresponding section
     # 1) auto: generate the tls certificate automatically
     # 2) secret: read the tls certificate from the specified secret.
@@ -20,7 +20,7 @@ expose:
     auto:
       # The common name used to generate the certificate, it's necessary
       # when the type isn't "ingress"
-      commonName: ""
+      commonName: "harbor.spk.io"
     secret:
       # The name of secret which contains keys named:
       # "tls.crt" - the certificate
@@ -105,7 +105,7 @@ expose:
 # the IP address of k8s node
 #
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
-externalURL: https://core.harbor.domain
+externalURL: https://harbor.spk.io
 
 # The internal TLS used for harbor components secure communicating. In order to enable https
 # in each components tls cert files need to provided in advance.
@@ -201,7 +201,7 @@ persistence:
       storageClass: ""
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 5Gi
+      size: 500Gi
     chartmuseum:
       existingClaim: ""
       storageClass: ""
@@ -247,7 +247,7 @@ persistence:
     # Refer to
     # https://github.com/docker/distribution/blob/master/docs/configuration.md#redirect
     # for the detail.
-    disableredirect: false
+    disableredirect: true
     # Specify the "caBundleSecretName" if the storage service uses a self-signed certificate.
     # The secret must contain keys named "ca.crt" which will be injected into the trust store
     # of registry's and chartmuseum's containers.
@@ -338,7 +338,7 @@ updateStrategy:
 logLevel: info
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
-harborAdminPassword: "Harbor12345"
+harborAdminPassword: "Diamanti1!"
 
 # The name of the secret which contains key named "ca.crt". Setting this enables the
 # download link on portal to download the certificate of CA when the certificate isn't
@@ -375,7 +375,7 @@ proxy:
 nginx:
   image:
     repository: goharbor/nginx-photon
-    tag: v2.1.3
+    tag: v2.1.1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
@@ -392,7 +392,7 @@ nginx:
 portal:
   image:
     repository: goharbor/harbor-portal
-    tag: v2.1.3
+    tag: v2.1.1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
@@ -409,13 +409,12 @@ portal:
 core:
   image:
     repository: goharbor/harbor-core
-    tag: v2.1.3
+    tag: v2.1.1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   replicas: 1
   ## Startup probe values
   startupProbe:
-    enabled: true
     initialDelaySeconds: 10
   # resources:
   #  requests:
@@ -443,7 +442,7 @@ core:
 jobservice:
   image:
     repository: goharbor/harbor-jobservice
-    tag: v2.1.3
+    tag: v2.1.1
   replicas: 1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
@@ -470,7 +469,7 @@ registry:
   registry:
     image:
       repository: goharbor/registry-photon
-      tag: v2.1.3
+      tag: v2.1.1
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -478,7 +477,7 @@ registry:
   controller:
     image:
       repository: goharbor/harbor-registryctl
-      tag: v2.1.3
+      tag: v2.1.1
 
     # resources:
     #  requests:
@@ -525,7 +524,7 @@ chartmuseum:
   absoluteUrl: false
   image:
     repository: goharbor/chartmuseum-photon
-    tag: v2.1.3
+    tag: v2.1.1
   replicas: 1
   # resources:
   #  requests:
@@ -544,7 +543,7 @@ clair:
   clair:
     image:
       repository: goharbor/clair-photon
-      tag: v2.1.3
+      tag: v2.1.1
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -552,7 +551,7 @@ clair:
   adapter:
     image:
       repository: goharbor/clair-adapter-photon
-      tag: v2.1.3
+      tag: v2.1.1
     # resources:
     #  requests:
     #    memory: 256Mi
@@ -574,7 +573,7 @@ trivy:
     # repository the repository for Trivy adapter image
     repository: goharbor/trivy-adapter-photon
     # tag the tag for Trivy adapter image
-    tag: v2.1.3
+    tag: v2.1.1
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   # replicas the number of Pod replicas
@@ -631,7 +630,7 @@ notary:
     serviceAccountName: ""
     image:
       repository: goharbor/notary-server-photon
-      tag: v2.1.3
+      tag: v2.1.1
     replicas: 1
     # resources:
     #  requests:
@@ -642,7 +641,7 @@ notary:
     serviceAccountName: ""
     image:
       repository: goharbor/notary-signer-photon
-      tag: v2.1.3
+      tag: v2.1.1
     replicas: 1
     # resources:
     #  requests:
@@ -670,7 +669,7 @@ database:
     serviceAccountName: ""
     image:
       repository: goharbor/harbor-db
-      tag: v2.1.3
+      tag: v2.1.1
     # The initial superuser password for internal database
     password: "changeit"
     # resources:
@@ -716,7 +715,7 @@ redis:
     serviceAccountName: ""
     image:
       repository: goharbor/redis-photon
-      tag: v2.1.3
+      tag: v2.1.1
     # resources:
     #  requests:
     #    memory: 256Mi
