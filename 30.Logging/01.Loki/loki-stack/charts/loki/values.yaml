@@ -127,15 +127,15 @@ nodeSelector: {}
 persistence:
   enabled: true
   accessModes:
-  - ReadWriteOnce
-  size: 100Gi
-  storageClassName: ""
+  - ReadWriteMany
+  size: 30Ti
+  storageClassName: "nfs-client-loki"
   annotations: {}
   # selector:
   #   matchLabels:
   #     app.kubernetes.io/name: loki
   # subPath: ""
-  # existingClaim:
+  # existingClaim: nfs-loki-pvc
 
 ## Pod Labels
 podLabels: {}
@@ -144,7 +144,7 @@ podLabels: {}
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "http-metrics"
-  # diamanti.com/endpoint0: '{"network":"green","perfTier":"high"}'
+  diamanti.com/endpoint0: '{"network":"loki","perfTier":"high"}'
 
 podManagementPolicy: OrderedReady
 

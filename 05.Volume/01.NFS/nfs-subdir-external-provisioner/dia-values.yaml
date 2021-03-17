@@ -1,0 +1,82 @@
+replicaCount: 1
+strategyType: Recreate
+
+image:
+  repository: gcr.io/k8s-staging-sig-storage/nfs-subdir-external-provisioner
+  tag: v4.0.0
+  pullPolicy: IfNotPresent
+
+nfs:
+  server: 10.60.18.16
+  path: /loki
+  mountOptions:
+
+# For creating the StorageClass automatically:
+storageClass:
+  create: true
+
+  # Set a provisioner name. If unset, a name will be generated.
+  # provisionerName:
+
+  # Set StorageClass as the default StorageClass
+  # Ignored if storageClass.create is false
+  defaultClass: false
+
+  # Set a StorageClass name
+  # Ignored if storageClass.create is false
+  name: nfs-client
+
+  # Allow volume to be expanded dynamically
+  allowVolumeExpansion: true
+
+  # Method used to reclaim an obsoleted volume
+  reclaimPolicy: Delete
+
+  # When set to false your PVs will not be archived by the provisioner upon deletion of the PVC.
+  archiveOnDelete: true
+
+  # Specifies a template for creating a directory path via PVC metadata's such as labels, annotations, name or namespace.
+  # Ignored if value not set.
+  pathPattern:
+
+  # Set access mode - ReadWriteOnce, ReadOnlyMany or ReadWriteMany
+  accessModes: ReadWriteMany
+
+leaderElection:
+  # When set to false leader election will be disabled
+  enabled: true
+
+## For RBAC support:
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+# If true, create & use Pod Security Policy resources
+# https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  enabled: false
+
+## Set pod priorityClassName
+# priorityClassName: ""
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+resources:
+  limits:
+   cpu: 2000m
+   memory: 4Gi
+  requests:
+   cpu: 100m
+   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

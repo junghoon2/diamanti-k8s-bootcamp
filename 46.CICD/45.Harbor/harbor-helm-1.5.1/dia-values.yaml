@@ -537,7 +537,7 @@ chartmuseum:
   podAnnotations: {}
 
 clair:
-  enabled: true
+  enabled: false
   # set the service account to be used, default if left empty
   serviceAccountName: ""
   clair:
@@ -679,15 +679,15 @@ database:
     nodeSelector: {}
     tolerations: []
     affinity: {}
-  external:
-    host: "192.168.0.1"
-    port: "5432"
-    username: "user"
-    password: "password"
-    coreDatabase: "registry"
-    clairDatabase: "clair"
-    notaryServerDatabase: "notary_server"
-    notarySignerDatabase: "notary_signer"
+  # external:
+  #   host: "192.168.0.1"
+  #   port: "5432"
+  #   username: "user"
+  #   password: "password"
+  #   coreDatabase: "registry"
+  #   clairDatabase: "clair"
+  #   notaryServerDatabase: "notary_server"
+  #   notarySignerDatabase: "notary_signer"
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
