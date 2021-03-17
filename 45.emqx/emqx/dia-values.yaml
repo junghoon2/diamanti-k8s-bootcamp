@@ -1,0 +1,87 @@
+# namespace mqtt-cloud01
+# helm install emqx  -f native-values.yaml .
+
+
+affinity: 
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - podAffinityTerm:
+        labelSelector:
+          matchLabels:
+            app: tomcat
+        topologyKey: kubernetes.io/hostname
+      weight: 1
+
+# emqxAclConfig: |
+#   {allow, {user, "dashboard"}, subscribe, ["$SYS/#"]}. {allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}. {deny, all, subscribe, ["$SYS/#", {eq, "#"}]}. {allow, all}.
+
+emqxAclConfig: >
+  {allow, all, subscribe, ["$SYS/#"]}.
+  {allow, all, pubsub, ["$SYS/#", "#"]}.
+  {deny, all, subscribe, ["$SYS/#", {eq, "#"}]}.
+  {allow, all}
+
+emqxConfig:
+  EMQX_CLUSTER__K8S__APISERVER: "http://10.61.0.29:8080"
+  ## The address type is used to extract host from k8s service.
+  ## Value: ip | dns | hostname
+  ## Note：Hostname is only supported after v4.0-rc.2
+  EMQX_CLUSTER__K8S__ADDRESS_TYPE: "hostname"
+  EMQX_CLUSTER__K8S__SUFFIX: "svc.cluster.local"
+  EMQX_LISTENER__TCP__EXTERNAL: "11887"
+  EMQX_ALLOW_ANONYMOUS: "false"
+  ## if EMQX_CLUSTER__K8S__ADDRESS_TYPE eq dns
+  # EMQX_CLUSTER__K8S__SUFFIX: "pod.cluster.local"
+  EMQX_LOADED_PLUGINS: "emqx_mangement,emqx_auth_username,emqx_recon,emqx_retainer,emqx_dashboard"
+
+emqxLicneseSecretName: null
+image:
+  pullPolicy: IfNotPresent
+  repository: emqx/emqx
+ingress:
+  dashboard:
+    annotations: {}
+    enabled: false
+    hosts:
+    - dashboard.emqx.local
+    path: /
+    tls: []
+  mgmt:
+    annotations: {}
+    enabled: false
+    hosts:
+    - api.emqx.local
+    path: /
+    tls: []
+initContainers: {}
+nodeSelector: {}
+persistence:
+  accessMode: ReadWriteOnce
+  enabled: false
+  size: 20Mi
+replicaCount: 3
+resources:
+  limits:
+    cpu: 2000m
+    memory: 8Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+service:
+  annotations: {}
+  dashboard: 18083
+  loadBalancerSourceRanges: []
+  mgmt: 8081
+  mqtt: 11887
+  mqttssl: 8883
+  nodePorts:
+    dashboard: null
+    mgmt: null
+    mqtt: null
+    mqttssl: null
+    ws: null
+    wss: null
+  type: ClusterIP
+  ws: 8083
+  wss: 8084
+tolerations: []

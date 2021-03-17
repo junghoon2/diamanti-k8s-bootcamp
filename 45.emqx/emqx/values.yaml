@@ -1,0 +1,52 @@
+affinity: {}
+emqxAclConfig: |
+  {allow, {user, "dashboard"}, subscribe, ["$SYS/#"]}. {allow, {ipaddr, "127.0.0.1"}, pubsub, ["$SYS/#", "#"]}. {deny, all, subscribe, ["$SYS/#", {eq, "#"}]}. {allow, all}.
+emqxConfig:
+  EMQX_CLUSTER__K8S__ADDRESS_TYPE: hostname
+  EMQX_CLUSTER__K8S__APISERVER: https://kubernetes.default.svc:443
+  EMQX_CLUSTER__K8S__SUFFIX: svc.cluster.local
+emqxLicneseSecretName: null
+image:
+  pullPolicy: IfNotPresent
+  repository: emqx/emqx
+ingress:
+  dashboard:
+    annotations: {}
+    enabled: false
+    hosts:
+    - dashboard.emqx.local
+    path: /
+    tls: []
+  mgmt:
+    annotations: {}
+    enabled: false
+    hosts:
+    - api.emqx.local
+    path: /
+    tls: []
+initContainers: {}
+nodeSelector: {}
+persistence:
+  accessMode: ReadWriteOnce
+  enabled: false
+  size: 20Mi
+replicaCount: 3
+resources: {}
+service:
+  annotations: {}
+  dashboard: 18083
+  loadBalancerSourceRanges: []
+  mgmt: 8081
+  mqtt: 1883
+  mqttssl: 8883
+  nodePorts:
+    dashboard: null
+    mgmt: null
+    mqtt: null
+    mqttssl: null
+    ws: null
+    wss: null
+  type: ClusterIP
+  ws: 8083
+  wss: 8084
+tolerations: []

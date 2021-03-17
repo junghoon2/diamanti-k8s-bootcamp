@@ -358,10 +358,10 @@ master:
   resources:
     requests:
       memory: 1Gi
-      cpu: "0.5"
+      cpu: 500m
     limits:
       memory: 4Gi
-      cpu: "2"
+      cpu: 2000m
 
   ## Use an alternate scheduler, e.g. "stork".
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -500,7 +500,7 @@ master:
   statefulset:
     labels: {}
     annotations: {}
-    updateStrategy: OnDelete
+    updateStrategy: RollingUpdate
     ## Partition update strategy
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
