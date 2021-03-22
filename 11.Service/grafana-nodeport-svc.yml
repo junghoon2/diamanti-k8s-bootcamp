@@ -9,6 +9,7 @@ spec:
     port: 3000
     protocol: TCP
     targetPort: 3000
+    nodePort: 30030
   selector:
     app.kubernetes.io/name: grafana
   sessionAffinity: None

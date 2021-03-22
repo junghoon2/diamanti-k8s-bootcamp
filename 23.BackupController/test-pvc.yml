@@ -8,4 +8,4 @@ spec:
   resources:
     requests:
       storage: 1G
-
+  storageClassName: "high"  ## SC 지정, default 자동 할당 안됨

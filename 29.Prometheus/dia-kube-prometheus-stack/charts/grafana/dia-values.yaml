@@ -103,7 +103,7 @@ downloadDashboards:
 
 ## Pod Annotations
 podAnnotations:
-  diamanti.com/endpoint0: '{"network":"default","perfTier":"high"}'
+  diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
 
 ## Pod Labels
 # podLabels: {}
