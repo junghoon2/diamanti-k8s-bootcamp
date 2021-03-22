@@ -68,8 +68,8 @@ rbac:
   pspEnabled: true
 
 podSecurityPolicy:
-  # privileged: true # for diamanti readiness probe fail
-  privileged: false
+  privileged: true # for diamanti readiness probe fail
+  # privileged: false
   allowPrivilegeEscalation: false
   volumes:
     - 'secret'
@@ -104,12 +104,12 @@ readinessProbe:
   timeoutSeconds: 1
 
 resources:
- limits:
-   cpu: 1000m
-   memory: 2Gi
- requests:
-   cpu: 100m
-   memory: 128Mi
+  limits:
+    cpu: "4"
+    memory: 32Gi
+  requests:
+    cpu: "1"
+    memory: 4Gi
 
 # Custom scrape_configs to override the default ones in the configmap
 scrapeConfigs: []
@@ -195,7 +195,7 @@ config:
     sync_period: 10s
 
 serviceMonitor:
-  enabled: false
+  enabled: true
   interval: ""
   additionalLabels: {}
   annotations: {}
@@ -206,7 +206,7 @@ env: []
 
 # enable and configure if using the syslog scrape config
 syslogService:
-  enabled: false
+  enabled: true
   type: ClusterIP
   port: 1514
   # externalIPs: []

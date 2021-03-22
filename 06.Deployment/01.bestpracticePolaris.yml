@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
@@ -16,9 +16,6 @@ metadata:
     helm.sh/chart: polaris-3.0.0
   name: polaris-dashboard
   namespace: polaris
-  resourceVersion: "25222229"
-  selfLink: /apis/extensions/v1beta1/namespaces/polaris/deployments/polaris-dashboard
-  uid: 989c403f-144f-4020-8df4-7095e3cb428a
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
@@ -41,7 +38,22 @@ spec:
         app.kubernetes.io/instance: polaris
         app.kubernetes.io/name: polaris
         component: dashboard
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue", "perfTier":"high"}'
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - nginx
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+
       containers:
       - command:
         - polaris
