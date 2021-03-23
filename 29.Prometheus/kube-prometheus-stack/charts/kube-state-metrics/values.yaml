@@ -1,8 +1,8 @@
 # Default values for kube-state-metrics.
 prometheusScrape: true
 image:
-  repository: quay.io/coreos/kube-state-metrics
-  tag: v1.9.7
+  repository: k8s.gcr.io/kube-state-metrics/kube-state-metrics
+  tag: v1.9.8
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -16,6 +16,11 @@ autosharding:
   enabled: false
 
 replicas: 1
+
+# List of additional cli arguments to configure kube-state-metrics
+# for example: --enable-gzip-encoding, --log-file, etc.
+# all the possible args can be found here: https://github.com/kubernetes/kube-state-metrics/blob/master/docs/cli-arguments.md
+extraArgs: []
 
 service:
   port: 8080
@@ -32,6 +37,12 @@ hostNetwork: false
 rbac:
   # If true, create & use RBAC resources
   create: true
+
+  # Set to a rolename to use existing role - skipping role creating - but still doing serviceaccount and rolebinding to it, rolename set here.
+  # useExistingRole: your-existing-role
+
+  # If set to false - Run without Cluteradmin privs needed - ONLY works if namespace is also set (if useExistingRole is set this name is used as ClusterRole or Role to bind to)
+  useClusterRole: true
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created, require rbac true
@@ -143,19 +154,26 @@ kubeconfig:
 ##
 namespaceOverride: ""
 
-resources:
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  limits:
-   cpu: "1"
-   memory: 1Gi
-  requests:
-   cpu: 10m
-   memory: 32Mi
+  # limits:
+  #  cpu: 100m
+  #  memory: 64Mi
+  # requests:
+  #  cpu: 10m
+  #  memory: 32Mi
 
 ## Provide a k8s version to define apiGroups for podSecurityPolicy Cluster Role.
 ## For example: kubeTargetVersionOverride: 1.14.9
 ##
 kubeTargetVersionOverride: ""
+
+# Enable self metrics configuration for service and Service Monitor
+# Default values for telemetry configuration can be overriden
+selfMonitor:
+  enabled: false
+  # telemetryHost: 0.0.0.0
+  # telemetryPort: 8081
