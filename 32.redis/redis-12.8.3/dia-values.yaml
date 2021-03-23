@@ -71,7 +71,7 @@ sentinel:
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
     ##
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -251,6 +251,13 @@ securityContext:
 containerSecurityContext:
   enabled: true
   runAsUser: 1001
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
 
 ## Use password authentication
 ##
@@ -351,7 +358,7 @@ master:
   ##
   podLabels: {}
   podAnnotations: 
-    diamanti.com/endpoint0: '{"network":"redis-cloud01","perfTier":"db-30k-500m"}'  # network 이름 지정
+    diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
 
   ## Redis(TM) Master resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -688,7 +695,7 @@ slave:
   ##
   podLabels: {}
   podAnnotations:
-    diamanti.com/endpoint0: '{"network":"redis-cloud01","perfTier":"db-30k-500m"}'  # network 이름 지정
+    diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
   ## Redis(TM) slave pod priorityClassName
   priorityClassName: {}
 
