@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kxs
+  namespace: kxdb
+spec:
+  serviceName: kxs
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kxdb
+  template:
+    metadata:
+      labels:
+        app: kxdb
+      annotations:
+        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'  # network 이름 지정
+    spec:
+      containers:
+      - name: kxs
+        # image: k8s.gcr.io/kxdb-slim:0.8
+        image: gitlab.spk.io:5050/jerry/admin/kxdb:0.1.4
+        command:
+        - /bin/sh
+        - -c
+        - sleep inf
+        ports:
+        - containerPort: 3010
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 8000m
+            memory: 64Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+        - mountPath: /root/kx
+          name: db-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /etc/localtime
+          type: File
+        name: localtime
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: kdb-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "high"
+      resources:
+        requests:
+          storage: 500Gi   

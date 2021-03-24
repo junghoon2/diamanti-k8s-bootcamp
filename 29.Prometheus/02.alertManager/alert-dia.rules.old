@@ -1,4 +1,24 @@
 groups:
+- name: volume_space
+  rules:
+  - alert: VolumeOutOfSpace
+    expr: collectd_df_df_complex{df="mapper_centos_diamanti-data",exported_instance="dia01",instance="dia01:9103",job="collectd-exporter",source="dia01",type="free"} / 1024 /1024 /1024 < 300
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: Volume {{ $labels.df }} {{ $labels.source }} is out of space  # 정보 입력 가능
+      description: Check the dctl volume list for finding pod name
+- name: NodeDown
+  rules:
+  - alert: nodedown
+    expr: up{job="node-exporter"} == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 30 s"
 - name: VolumeOutOfSpace
   rules:
   - alert: VolumeOutOfSpace
@@ -19,13 +39,5 @@ groups:
     annotations:
       summary: "MariaDB {{ $labels.source }} of {{ $labels.group }} down"
       description: "{{ $labels.source }} of {{ $labels.group }} Down, MariaDB Instance가 Down 되었습니다. 컨테이너 접속 후 재기동 바랍니다."
-- name: NodeDown
-  rules:
-  - alert: nodedown
-    expr: up{job="node-exporter"} == 0
-    for: 30s
-    labels:
-      severity: critical
-    annotations:
-      summary: "Instance {{ $labels.instance }} down"
-      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 30 s"
+
+# labels.instance 변수 지정은? 

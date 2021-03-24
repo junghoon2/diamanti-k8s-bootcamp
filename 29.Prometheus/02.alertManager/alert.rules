@@ -1,0 +1,13 @@
+groups:
+- name: PodDown
+  rules:
+  - alert: poddown
+    expr: kube_pod_container_status_running{namespace !="nexclipper"} == 0
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} has been down for more than 1m"
+
+ 

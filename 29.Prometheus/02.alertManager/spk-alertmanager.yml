@@ -1,0 +1,82 @@
+global:
+  # The smarthost and SMTP sender used for mail notifications.
+  smtp_smarthost: 'smtp.gmail.com:587'
+  #smtp_smarthost: 'localhost:25'
+  # smtp 발신 용 계정 생성
+  smtp_from: 'erdia22@gmail.com'
+  #smtp_from: 'alertmanager@example.org'
+  smtp_auth_username: 'erdia22@gmail.com'
+  smtp_auth_password: 'oilyrxxoubvifeqe'
+
+# The root route on which each incoming alert enters.
+route:
+  # The root route must not have any matchers as it is the entry point for
+  # all alerts. It needs to have a receiver configured so alerts that do not
+  # match any of the sub-routes are sent to someone.
+  #receiver: 'slack_notifications'
+  receiver: 'email_receiver'
+
+  # The labels by which incoming alerts are grouped together. For example,
+  # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
+  # be batched into a single group.
+  group_by: ['node', 'namespace', 'pod_name']
+
+  # When a new group of alerts is created by an incoming alert, wait at
+  # least 'group_wait' to send the initial notification.
+  # This way ensures that you get multiple alerts for the same group that start
+  # firing shortly after another are batched together on the first
+  # notification.
+  group_wait: 30s
+
+  # When the first notification was sent, wait 'group_interval' to send a batch
+  # of new alerts that started firing for that group.
+  group_interval: 5m
+
+  # If an alert has successfully been sent, wait 'repeat_interval' to
+  # resend them.
+  repeat_interval: 1h
+
+  # All the above attributes are inherited by all child routes and can
+  # overwritten on each.
+
+  # routes:
+  # # This routes performs a regular expression match on alert labels to
+  # # catch alerts that are related to a list of services.
+  # - match:
+  #     service: frontend
+  #   receiver: slack_notifications
+  #   group_wait: 30s
+  #   continue: true
+  #   match_re:
+  #     alertname: 'Server.*Down'
+
+# Inhibition rules allow to mute a set of alerts given that another alert is
+# firing.
+# We use this to mute any warning-level notifications if the same alert is
+# already critical.
+inhibit_rules:
+- source_match:
+    severity: 'critical'
+  target_match:
+    severity: 'warning'
+  # Apply inhibition if the alertname is the same.
+  equal: ['pod_name']
+# - source_match_re:
+#     alertname: 'Server.*Down'
+
+receivers:
+# - name: 'slack_notifications'
+#   slack_configs:
+#   - send_resolved: true
+#     api_url: 'https://hooks.slack.com/services/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'
+#     channel: '#system-monitoring'
+#     title: '{{ template "slack.default.titlelink" . }}'
+#     text: >-
+#           Summary: On node {{ .GroupLabels.node }} pod {{ .GroupLabels.pod_name }} in namespace {{ .GroupLabels.namespace }} run out of space.
+
+- name: 'email_receiver'
+  email_configs:
+  - to: 'leejunghoon@spkr.co.kr, nkkim@spkr.co.kr'  # 다중 사용자는 ', ' 괄호 안 쉼표 사용
+#    smarthost: 'smtp.worksmobile.com:587"
+#    from: 'nkkim@edentns.com'
+#    auth_username: 'nkkim@edentns.com'

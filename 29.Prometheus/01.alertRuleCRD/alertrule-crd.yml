@@ -1,0 +1,61 @@
+# 원하는 Rule 추가 
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    meta.helm.sh/release-name: prometheus
+    meta.helm.sh/release-namespace: prometheus
+    prometheus-operator-validated: "true"
+  labels:
+    app: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    chart: kube-prometheus-stack-14.3.0
+    heritage: Helm
+    release: prometheus
+  name: prometheus-kube-prometheus-alertmanager.rules
+  namespace: prometheus
+spec:
+  groups:
+  - name: alertmanager.rules
+    rules:
+    - alert: poddown
+      expr: kube_pod_container_status_running{namespace !="nexclipper"} == 0
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Instance {{ $labels.instance }} down"
+        description: "{{ $labels.instance }} has been down for more than 1m"
+    - alert: AlertmanagerConfigInconsistent
+      annotations:
+        message: |
+          The configuration of the instances of the Alertmanager cluster `{{ $labels.namespace }}/{{ $labels.service }}` are out of sync.
+          {{ range printf "alertmanager_config_hash{namespace=\"%s\",service=\"%s\"}" $labels.namespace $labels.service | query }}
+          Configuration hash for pod {{ .Labels.pod }} is "{{ printf "%.f" .Value }}"
+          {{ end }}
+      expr: count by(namespace,service) (count_values by(namespace,service) ("config_hash",
+        alertmanager_config_hash{job="prometheus-kube-prometheus-alertmanager",namespace="prometheus"}))
+        != 1
+      for: 5m
+      labels:
+        severity: critical
+    - alert: AlertmanagerFailedReload
+      annotations:
+        message: Reloading Alertmanager's configuration has failed for {{ $labels.namespace
+          }}/{{ $labels.pod}}.
+      expr: alertmanager_config_last_reload_successful{job="prometheus-kube-prometheus-alertmanager",namespace="prometheus"}
+        == 0
+      for: 10m
+      labels:
+        severity: warning
+    - alert: AlertmanagerMembersInconsistent
+      annotations:
+        message: Alertmanager has not found all other members of the cluster.
+      expr: |-
+        alertmanager_cluster_members{job="prometheus-kube-prometheus-alertmanager",namespace="prometheus"}
+          != on (service) GROUP_LEFT()
+        count by (service) (alertmanager_cluster_members{job="prometheus-kube-prometheus-alertmanager",namespace="prometheus"})
+      for: 5m
+      labels:
+        severity: critical

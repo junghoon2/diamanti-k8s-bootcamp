@@ -1,0 +1,35 @@
+groups:
+- name: volume_space
+  rules:
+  - record: "job:diamanti_available_space:myjob"
+    expr: min_over_time(diamanti_available_space{}[5m])
+  - alert: VolumeOutOfSpace
+    expr: job:diamanti_available_space:myjob < 1
+    for: 1m
+    labels:
+      severity: info
+    annotations:
+      summary: Volume {{ $labels.instance }} is out of space
+- name: NodeDown
+  rules:
+  - alert: nodedown
+    expr: up{job="node-exporter"} == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} has been down for more than 30s"
+
+- name: PodDown
+  rules:
+  - alert: poddown
+    expr: kube_pod_container_status_running{namespace !="nexclipper"} == 0
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} has been down for more than 1m"
+
+ 

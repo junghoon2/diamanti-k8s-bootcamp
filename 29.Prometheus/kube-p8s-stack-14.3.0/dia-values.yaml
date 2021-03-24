@@ -1,3 +1,5 @@
+# 설치 할 때 마다 config yaml 보면서 변경 필요
+
 # Default values for kube-prometheus-stack.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -1998,7 +2000,7 @@ prometheus:
 
     ## Maximum size of metrics
     ##
-    retentionSize: "200Gi"
+    retentionSize: "200GB"
 
     ## Enable compression of the write-ahead log using Snappy.
     ##

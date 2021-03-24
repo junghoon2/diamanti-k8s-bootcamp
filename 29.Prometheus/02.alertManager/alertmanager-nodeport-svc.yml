@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+  labels:
+    diamanti.com/cluster-service: "true"
+    kubernetes.io/name: alertmanager
+    name: alertmanager-svc
+  name: alertmanager-nodeport-svc
+  namespace: diamanti-system
+spec:
+  type: NodePort
+  ports:
+  - name: alerts
+    port: 9093
+    targetPort: 9093
+    nodePort: 30027
+  selector:
+    diamanti.com/app: alertmanager
