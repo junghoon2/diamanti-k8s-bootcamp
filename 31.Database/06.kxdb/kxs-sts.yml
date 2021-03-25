@@ -40,7 +40,7 @@ spec:
         - mountPath: /etc/localtime
           name: localtime
         - mountPath: /root/kx
-          name: db-data
+          name: kdb-data
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
