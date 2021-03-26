@@ -125,7 +125,7 @@ podPortName: grafana
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
   targetPort: 3000
     # targetPort: 4181 To be used with a proxy extraContainer
@@ -197,13 +197,13 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources:
- limits:
-   cpu: 1000m
-   memory: 2Gi
- requests:
-   cpu: 100m
-   memory: 128Mi
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -252,11 +252,11 @@ extraContainerVolumes: []
 ##
 persistence:
   type: pvc
-  enabled: true
-  storageClassName: openebs-hostpath
+  enabled: false
+  # storageClassName: default
   accessModes:
     - ReadWriteOnce
-  size: 100Gi
+  size: 10Gi
   # annotations: {}
   finalizers:
     - kubernetes.io/pvc-protection
@@ -279,7 +279,7 @@ initChownData:
   ## If false, data ownership will not be reset at startup
   ## This allows the prometheus-server to be run with an arbitrary user
   ##
-  enabled: false
+  enabled: true
 
   ## initChownData container image
   ##
