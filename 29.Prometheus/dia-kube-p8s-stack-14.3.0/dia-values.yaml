@@ -1,4 +1,8 @@
-# 설치 할 때 마다 config yaml 보면서 변경 필요
+# 버전 차이로 수정이 필요
+
+# Change SC name, retention period, capacity
+# change grafana service type to nodeport, sc type
+
 
 # Default values for kube-prometheus-stack.
 # This is a YAML-formatted file.
@@ -32,28 +36,28 @@ defaultRules:
   create: true
   rules:
     alertmanager: true
-    etcd: false
+    etcd: true
     general: true
     k8s: true
-    kubeApiserver: false
-    kubeApiserverAvailability: false
-    kubeApiserverError: false
-    kubeApiserverSlos: false
-    kubelet: false
-    kubePrometheusGeneral: false
-    kubePrometheusNodeAlerting: false
-    kubePrometheusNodeRecording: false
-    kubernetesAbsent: false
-    kubernetesApps: false
-    kubernetesResources: false
-    kubernetesStorage: false
-    kubernetesSystem: false
-    kubeScheduler: false
-    kubeStateMetrics: false
+    kubeApiserver: true
+    kubeApiserverAvailability: true
+    kubeApiserverError: true
+    kubeApiserverSlos: true
+    kubelet: true
+    kubePrometheusGeneral: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    kubeScheduler: true
+    kubeStateMetrics: true
     network: true
     node: true
-    prometheus: false
-    prometheusOperator: false
+    prometheus: true
+    prometheusOperator: true
     time: true
 
   ## Runbook url prefix for default rules
@@ -299,7 +303,7 @@ alertmanager:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 30903
+    nodePort: 30022
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
@@ -312,7 +316,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: ClusterIP
+    type: NodePort
 
   ## Configuration for creating a separate Service for each statefulset Alertmanager replica
   ##
@@ -728,7 +732,7 @@ grafana:
 ## Component scraping the kube api server
 ##
 kubeApiServer:
-  enabled: true
+  enabled: false
   tlsConfig:
     serverName: kubernetes
     insecureSkipVerify: false
@@ -789,9 +793,9 @@ kubelet:
     ## Enable scraping /metrics/resource from kubelet's service
     ## This is disabled by default because container metrics are already exposed by cAdvisor
     ##
-    resource: false
+    resource: true
     # From kubernetes 1.18, /metrics/resource/v1alpha1 renamed to /metrics/resource
-    resourcePath: "/metrics/resource/v1alpha1"
+    resourcePath: "/metrics/resource"
     ## Metric relabellings to apply to samples before ingestion
     ##
     cAdvisorMetricRelabelings: []
@@ -881,7 +885,7 @@ kubelet:
 ## Component scraping the kube controller manager
 ##
 kubeControllerManager:
-  enabled: false
+  enabled: true
 
   ## If your kube controller manager is not deployed as a pod, specify IPs it can be found on
   ##
@@ -934,7 +938,7 @@ kubeControllerManager:
 ## Component scraping coreDns. Use either this or kubeDns
 ##
 coreDns:
-  enabled: false
+  enabled: true
   service:
     port: 9153
     targetPort: 9153
@@ -1127,7 +1131,7 @@ kubeScheduler:
 ## Component scraping kube proxy
 ##
 kubeProxy:
-  enabled: false
+  enabled: true
 
   ## If your kube proxy is not deployed as a pod, specify IPs it can be found on
   ##
@@ -1208,7 +1212,7 @@ kube-state-metrics:
 ## Deploy node exporter as a daemonset to all nodes
 ##
 nodeExporter:
-  enabled: false
+  enabled: true
 
   ## Use the value configured in prometheus-node-exporter.podLabels
   ##
@@ -1422,13 +1426,13 @@ prometheusOperator:
 
   ## Resource limits & requests
   ##
-  resources:
-  limits:
-    cpu: 1000m
-    memory: 2Gi
-  requests:
-    cpu: 100m
-    memory: 100Mi
+  resources: {}
+  # limits:
+  #   cpu: 200m
+  #   memory: 200Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 100Mi
 
   # Required for use in managed kubernetes clusters (such as AWS EKS) with custom CNI (such as calico),
   # because control-plane managed by AWS cannot communicate with pods' IP CIDR and admission webhooks are not working
@@ -1484,7 +1488,7 @@ prometheusOperator:
     repository: quay.io/prometheus-operator/prometheus-operator
     tag: v0.46.0
     sha: ""
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
   ## Prometheus image to use for prometheuses managed by the operator
   ##
@@ -1545,7 +1549,7 @@ prometheus:
 
     ## Service type
     ##
-    type: ClusterIP
+    type: NodePort
 
     ## Port to expose on each node
     ##
@@ -1573,7 +1577,7 @@ prometheus:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 30090
+    nodePort: 30024
 
     ## Loadbalancer IP
     ## Only use if service.type is "LoadBalancer"
@@ -1581,7 +1585,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: ClusterIP
+    type: NodePort
 
     sessionAffinity: ""
 
@@ -1996,11 +2000,11 @@ prometheus:
 
     ## How long to retain metrics
     ##
-    retention: 28d
+    retention: 90d
 
     ## Maximum size of metrics
     ##
-    retentionSize: "200GB"
+    retentionSize: "450GB"
 
     ## Enable compression of the write-ahead log using Snappy.
     ##
@@ -2101,7 +2105,7 @@ prometheus:
          accessModes: ["ReadWriteOnce"]
          resources:
            requests:
-             storage: 250Gi
+             storage: 500Gi
     #    selector: {}
 
     ## Using tmpfs volume
@@ -2126,7 +2130,24 @@ prometheus:
     ## The scrape configuration example below will find master nodes, provided they have the name .*mst.*, relabel the
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
-    additionalScrapeConfigs: []
+    additionalScrapeConfigs:
+    - job_name: nginx-monitoring
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      kubernetes_sd_configs:
+      - role: endpoints
+        namespaces:
+          names:
+          - nginx-cloud01
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_endpoint_port_name]
+        separator: ;
+        regex: metrics
+        replacement: $1
+        action: keep
     # - job_name: kube-etcd
     #   kubernetes_sd_configs:
     #     - role: node

@@ -1,3 +1,5 @@
+# chagne service type, sc
+
 rbac:
   create: true
   ## Use an existing ClusterRole/Role (depending on rbac.namespaced false/true)
@@ -125,9 +127,10 @@ podPortName: grafana
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
-  type: LoadBalancer
-  port: 80
+  type: NodePort
+  port: 3000
   targetPort: 3000
+  nodePort: 30023
     # targetPort: 4181 To be used with a proxy extraContainer
   annotations: {}
   labels: {}
@@ -253,10 +256,10 @@ extraContainerVolumes: []
 persistence:
   type: pvc
   enabled: true
-  storageClassName: openebs-hostpath
+  storageClassName: high
   accessModes:
     - ReadWriteOnce
-  size: 100Gi
+  size: 50Gi
   # annotations: {}
   finalizers:
     - kubernetes.io/pvc-protection
