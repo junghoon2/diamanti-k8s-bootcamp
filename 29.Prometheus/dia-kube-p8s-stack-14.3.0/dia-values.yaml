@@ -1,5 +1,6 @@
 # 버전 차이로 수정이 필요
 
+# scrape config 추가, diamanti prometheus 추가
 # Change SC name, retention period, capacity
 # change grafana service type to nodeport, sc type
 
@@ -349,7 +350,7 @@ alertmanager:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
-    selfMonitor: true
+    selfMonitor: false
 
     ## scheme: HTTP scheme to use for scraping. Can be used with `tlsConfig` for example if using istio mTLS.
     scheme: ""
@@ -367,7 +368,7 @@ alertmanager:
     #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
     #   sourceLabels: [__name__]
 
-    # 	relabel configs to apply to samples before ingestion.
+    ## 	relabel configs to apply to samples before ingestion.
     ##
     relabelings: []
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
@@ -706,7 +707,7 @@ grafana:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
-    selfMonitor: true
+    selfMonitor: false
 
     # Path to use for scraping metrics. Might be different if server.root_url is set
     # in grafana.ini
@@ -732,7 +733,7 @@ grafana:
 ## Component scraping the kube api server
 ##
 kubeApiServer:
-  enabled: false
+  enabled: true
   tlsConfig:
     serverName: kubernetes
     insecureSkipVerify: false
@@ -885,7 +886,7 @@ kubelet:
 ## Component scraping the kube controller manager
 ##
 kubeControllerManager:
-  enabled: true
+  enabled: false
 
   ## If your kube controller manager is not deployed as a pod, specify IPs it can be found on
   ##
@@ -1131,7 +1132,7 @@ kubeScheduler:
 ## Component scraping kube proxy
 ##
 kubeProxy:
-  enabled: true
+  enabled: false
 
   ## If your kube proxy is not deployed as a pod, specify IPs it can be found on
   ##
@@ -2130,24 +2131,87 @@ prometheus:
     ## The scrape configuration example below will find master nodes, provided they have the name .*mst.*, relabel the
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
-    additionalScrapeConfigs:
-    - job_name: nginx-monitoring
-      honor_timestamps: true
-      scrape_interval: 30s
-      scrape_timeout: 10s
-      metrics_path: /metrics
-      scheme: http
-      kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-          - nginx-cloud01
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_endpoint_port_name]
-        separator: ;
-        regex: metrics
-        replacement: $1
-        action: keep
+    additionalScrapeConfigs: []
+    # - job_name: collectd-exporter
+    #   honor_timestamps: true
+    #   scrape_interval: 10s
+    #   scrape_timeout: 10s
+    #   metrics_path: /metrics
+    #   scheme: http
+    #   kubernetes_sd_configs:
+    #   - role: endpoints
+    #     namespaces:
+    #       names:
+    #       - diamanti-system
+    #   # selector:
+    #   #   matchLabels:
+    #   #     name: collectd-svc  # label for service
+    #   relabel_configs:
+    #   - source_labels: [__address__]
+    #     separator: ;
+    #     regex: (.*):.*
+    #     target_label: source
+    #     replacement: ${1}
+    #     action: replace
+    #   metric_relabel_configs:
+    #   - source_labels: [__name__]
+    #     separator: ;
+    #     regex: scrape_(.*)
+    #     replacement: $1
+    #     action: drop
+    #   - source_labels: [__name__]
+    #     separator: ;
+    #     regex: collectd_interface_(.*)
+    #     replacement: $1
+    #     action: drop
+    #   - source_labels: [__name__]
+    #     separator: ;
+    #     regex: collectd_load(.*)
+    #     replacement: $1
+    #     action: drop
+    #   - source_labels: [__name__]
+    #     separator: ;
+    #     regex: collectd_disk_(.*)
+    #     replacement: $1
+    #     action: drop
+    #   - source_labels: [__name__]
+    #     separator: ;
+    #     regex: collectd_ipmi(.*)
+    #     replacement: $1
+    #     action: drop
+    #   - source_labels: [__name__]
+    #     separator: ;
+    #     regex: process_(.*)
+    #     replacement: $1
+    #     action: drop
+    #   - source_labels: [__name__]
+    #     separator: ;
+    #     regex: http_(.*)
+    #     replacement: $1
+    #     action: drop
+    #   - source_labels: [__name__]
+    #     separator: ;
+    #     regex: go_(.*)
+    #     replacement: $1
+    #     action: drop
+
+    # - job_name: nginx-monitoring
+    #   honor_timestamps: true
+    #   scrape_interval: 30s
+    #   scrape_timeout: 10s
+    #   metrics_path: /metrics
+    #   scheme: http
+    #   kubernetes_sd_configs:
+    #   - role: endpoints
+    #     namespaces:
+    #       names:
+    #       - nginx-cloud01
+    #   relabel_configs:
+    #   - source_labels: [__meta_kubernetes_endpoint_port_name]
+    #     separator: ;
+    #     regex: metrics
+    #     replacement: $1
+    #     action: keep
     # - job_name: kube-etcd
     #   kubernetes_sd_configs:
     #     - role: node

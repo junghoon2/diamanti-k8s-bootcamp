@@ -5,20 +5,19 @@ metadata:
     meta.helm.sh/release-name: prometheus
     meta.helm.sh/release-namespace: prometheus
   labels:
-    app: kube-prometheus-stack-node-exporter
+    app: kube-prometheus-stack-kube-state-metrics
     app.kubernetes.io/managed-by: Helm
     chart: kube-prometheus-stack-14.3.0
     heritage: Helm
     release: prometheus
-  name: diamanti-prometheus-collectd
+  name: prometheus-kube-prometheus-kube-state-metrics
   namespace: prometheus
 spec:
   endpoints:
-  - interval: 30s
-    port: cadvisor
-  namespaceSelector:
-    matchNames:
-    - diamanti-system
+  - honorLabels: true
+    port: http
+  jobLabel: app.kubernetes.io/name
   selector:
     matchLabels:
-      name: collectd  # Same for service yaml of target pod
+      app.kubernetes.io/instance: prometheus
+      app.kubernetes.io/name: kube-state-metrics
