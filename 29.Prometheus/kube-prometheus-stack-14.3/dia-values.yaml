@@ -1,10 +1,3 @@
-# 버전 차이로 수정이 필요
-
-# scrape config 추가, diamanti prometheus 추가
-# Change SC name, retention period, capacity
-# change grafana service type to nodeport, sc type
-
-
 # Default values for kube-prometheus-stack.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -304,7 +297,7 @@ alertmanager:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 30022
+    nodePort: 30903
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
@@ -317,7 +310,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
   ## Configuration for creating a separate Service for each statefulset Alertmanager replica
   ##
@@ -350,7 +343,7 @@ alertmanager:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
-    selfMonitor: false
+    selfMonitor: true
 
     ## scheme: HTTP scheme to use for scraping. Can be used with `tlsConfig` for example if using istio mTLS.
     scheme: ""
@@ -368,7 +361,7 @@ alertmanager:
     #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
     #   sourceLabels: [__name__]
 
-    ## 	relabel configs to apply to samples before ingestion.
+    # 	relabel configs to apply to samples before ingestion.
     ##
     relabelings: []
     # - sourceLabels: [__meta_kubernetes_pod_node_name]
@@ -612,6 +605,7 @@ grafana:
   ##
   defaultDashboardsEnabled: true
 
+  # adminPassword: prom-operator
   adminPassword: Diamanti1!
 
   ingress:
@@ -707,7 +701,7 @@ grafana:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
     interval: ""
-    selfMonitor: false
+    selfMonitor: true
 
     # Path to use for scraping metrics. Might be different if server.root_url is set
     # in grafana.ini
@@ -733,7 +727,7 @@ grafana:
 ## Component scraping the kube api server
 ##
 kubeApiServer:
-  enabled: true
+  enabled: false
   tlsConfig:
     serverName: kubernetes
     insecureSkipVerify: false
@@ -794,9 +788,9 @@ kubelet:
     ## Enable scraping /metrics/resource from kubelet's service
     ## This is disabled by default because container metrics are already exposed by cAdvisor
     ##
-    resource: true
+    resource: false
     # From kubernetes 1.18, /metrics/resource/v1alpha1 renamed to /metrics/resource
-    resourcePath: "/metrics/resource"
+    resourcePath: "/metrics/resource/v1alpha1"
     ## Metric relabellings to apply to samples before ingestion
     ##
     cAdvisorMetricRelabelings: []
@@ -1550,7 +1544,7 @@ prometheus:
 
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
     ## Port to expose on each node
     ##
@@ -1578,7 +1572,7 @@ prometheus:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 30024
+    nodePort: 30090
 
     ## Loadbalancer IP
     ## Only use if service.type is "LoadBalancer"
@@ -1586,7 +1580,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
     sessionAffinity: ""
 
@@ -2001,11 +1995,11 @@ prometheus:
 
     ## How long to retain metrics
     ##
-    retention: 90d
+    retention: 10d
 
     ## Maximum size of metrics
     ##
-    retentionSize: "450GB"
+    retentionSize: ""
 
     ## Enable compression of the write-ahead log using Snappy.
     ##
@@ -2097,16 +2091,16 @@ prometheus:
     ## Prometheus StorageSpec for persistent data
     ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/storage.md
     ##
-    storageSpec:
+    storageSpec: {}
     ## Using PersistentVolumeClaim
     ##
-     volumeClaimTemplate:
-       spec:
-         storageClassName: high
-         accessModes: ["ReadWriteOnce"]
-         resources:
-           requests:
-             storage: 500Gi
+    #  volumeClaimTemplate:
+    #    spec:
+    #      storageClassName: gluster
+    #      accessModes: ["ReadWriteOnce"]
+    #      resources:
+    #        requests:
+    #          storage: 50Gi
     #    selector: {}
 
     ## Using tmpfs volume
@@ -2132,112 +2126,18 @@ prometheus:
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
     additionalScrapeConfigs:
-    # - job_name: cadvisor-exporter
-    #   honor_timestamps: true
-    #   scrape_interval: 10s
-    #   scrape_timeout: 10s
-    #   metrics_path: /metrics
-    #   scheme: http
-    #   kubernetes_sd_configs:
-      # - role: endpoints
-      #   namespaces:
-      #     names:
-      #     - cadvisor
-      #   # selector:
-      #   #   matchLabels:
-      #   #     name: cadvisor-svc  # label for service
-      #   # honorLabels: true
-      #   # port: cadvisor
-      # relabel_configs:
-      # - source_labels: [__meta_kubernetes_endpoint_port_name]
-      #   separator: ;
-      #   regex: cadvisor
-      #   replacement: $1
-      #   action: keep
-
-    - job_name: nginx-monitoring
+    - job_name: cadvisor-exporter
       honor_timestamps: true
-      scrape_interval: 30s
+      scrape_interval: 10s
       scrape_timeout: 10s
       metrics_path: /metrics
       scheme: http
-      kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-          - nginx-cloud01
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_endpoint_port_name]
-        separator: ;
-        regex: metrics
-        replacement: $1
-        action: keep
-    #   relabel_configs:
-    #   - source_labels: [__address__]
-    #     separator: ;
-    #     regex: (.*):.*
-    #     target_label: source
-    #     replacement: ${1}
-    #     action: replace
-    #   metric_relabel_configs:
-    #   - source_labels: [__name__]
-    #     separator: ;
-    #     regex: scrape_(.*)
-    #     replacement: $1
-    #     action: drop
-    #   - source_labels: [__name__]
-    #     separator: ;
-    #     regex: collectd_interface_(.*)
-    #     replacement: $1
-    #     action: drop
-    #   - source_labels: [__name__]
-    #     separator: ;
-    #     regex: collectd_load(.*)
-    #     replacement: $1
-    #     action: drop
-    #   - source_labels: [__name__]
-    #     separator: ;
-    #     regex: collectd_disk_(.*)
-    #     replacement: $1
-    #     action: drop
-    #   - source_labels: [__name__]
-    #     separator: ;
-    #     regex: collectd_ipmi(.*)
-    #     replacement: $1
-    #     action: drop
-    #   - source_labels: [__name__]
-    #     separator: ;
-    #     regex: process_(.*)
-    #     replacement: $1
-    #     action: drop
-    #   - source_labels: [__name__]
-    #     separator: ;
-    #     regex: http_(.*)
-    #     replacement: $1
-    #     action: drop
-    #   - source_labels: [__name__]
-    #     separator: ;
-    #     regex: go_(.*)
-    #     replacement: $1
-    #     action: drop
+      static_configs:
+      - targets:
+        - 172.17.16.161:4194
+        - 172.17.16.162:4194
+        - 172.17.16.163:4194
 
-    # - job_name: nginx-monitoring
-    #   honor_timestamps: true
-    #   scrape_interval: 30s
-    #   scrape_timeout: 10s
-    #   metrics_path: /metrics
-    #   scheme: http
-    #   kubernetes_sd_configs:
-    #   - role: endpoints
-    #     namespaces:
-    #       names:
-    #       - nginx-cloud01
-    #   relabel_configs:
-    #   - source_labels: [__meta_kubernetes_endpoint_port_name]
-    #     separator: ;
-    #     regex: metrics
-    #     replacement: $1
-    #     action: keep
     # - job_name: kube-etcd
     #   kubernetes_sd_configs:
     #     - role: node

@@ -1,6 +1,8 @@
 초 당 2000번 실행하면 cpu 부하 증가
 . 2000번 밑으로는 부하 증가하지 않음 
 
+echo "GET https://vip.bizcubex.co.kr/gw/gw050A999?loginId=admin&password=111111&groupSeq=vip" | vegeta attack -name=1000qps -rate=1000 -duration=5m | tee results.1000qps.bin |vegeta report
+
 spkr@erdia22:~$ echo "GET http://cafe.example.com/coffee" | vegeta attack -name=250qps -rate=250 -duration=360s | tee results.250qps.bin |vegeta report
 ^CRequests      [total, rate, throughput]         43336, 250.01, 250.00
 Duration      [total, attack, wait]             2m53s, 2m53s, 2.987ms

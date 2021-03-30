@@ -2131,23 +2131,28 @@ prometheus:
     ## The scrape configuration example below will find master nodes, provided they have the name .*mst.*, relabel the
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
-    additionalScrapeConfigs:
+    additionalScrapeConfigs: []
     # - job_name: cadvisor-exporter
     #   honor_timestamps: true
-    #   scrape_interval: 10s
+    #   scrape_interval: 30s
     #   scrape_timeout: 10s
     #   metrics_path: /metrics
     #   scheme: http
-    #   kubernetes_sd_configs:
+    #   static_configs:
+    #   - targets:
+    #     - 172.17.16.161:4194
+    #     - 172.17.16.162:4194
+    #     - 172.17.16.163:4194
+      # kubernetes_sd_configs:
       # - role: endpoints
       #   namespaces:
       #     names:
-      #     - cadvisor
-      #   # selector:
-      #   #   matchLabels:
-      #   #     name: cadvisor-svc  # label for service
-      #   # honorLabels: true
-      #   # port: cadvisor
+      #     - diamanti-system
+        # selector:
+        #   matchLabels:
+        #     name: collectd-svc  # label for service
+        # honorLabels: true
+        # port: cadvisor
       # relabel_configs:
       # - source_labels: [__meta_kubernetes_endpoint_port_name]
       #   separator: ;
@@ -2155,23 +2160,23 @@ prometheus:
       #   replacement: $1
       #   action: keep
 
-    - job_name: nginx-monitoring
-      honor_timestamps: true
-      scrape_interval: 30s
-      scrape_timeout: 10s
-      metrics_path: /metrics
-      scheme: http
-      kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-          - nginx-cloud01
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_endpoint_port_name]
-        separator: ;
-        regex: metrics
-        replacement: $1
-        action: keep
+    # - job_name: nginx-monitoring
+    #   honor_timestamps: true
+    #   scrape_interval: 30s
+    #   scrape_timeout: 10s
+    #   metrics_path: /metrics
+    #   scheme: http
+    #   kubernetes_sd_configs:
+    #   - role: endpoints
+    #     namespaces:
+    #       names:
+    #       - nginx-cloud01
+    #   relabel_configs:
+    #   - source_labels: [__meta_kubernetes_endpoint_port_name]
+    #     separator: ;
+    #     regex: metrics
+    #     replacement: $1
+    #     action: keep
     #   relabel_configs:
     #   - source_labels: [__address__]
     #     separator: ;
