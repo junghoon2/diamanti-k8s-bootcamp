@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    meta.helm.sh/release-name: prometheus
+    meta.helm.sh/release-namespace: prometheus
+  labels:
+    app: kube-prometheus-stack-apiserver
+    app.kubernetes.io/managed-by: Helm
+    chart: kube-prometheus-stack-14.3.0
+    heritage: Helm
+    release: prometheus
+  name: prometheus-kube-prometheus-apiserver
+  namespace: prometheus
+spec:
+  endpoints:
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    port: https
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: false
+      serverName: kubernetes
+  jobLabel: component
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      component: apiserver
+      provider: kubernetes

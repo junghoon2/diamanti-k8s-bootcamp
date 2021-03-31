@@ -10,7 +10,7 @@ metadata:
     chart: kube-prometheus-stack-14.3.0
     heritage: Helm
     release: prometheus
-  name: diamanti-prometheus-collectd
+  name: diamanti-prometheus-cadvisor
   namespace: prometheus
 spec:
   endpoints:
@@ -21,4 +21,4 @@ spec:
     - diamanti-system
   selector:
     matchLabels:
-      name: collectd  # Same for service yaml of target pod
+      name: collectd-svc  # Same for service yaml of target pod

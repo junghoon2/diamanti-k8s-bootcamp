@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: busybox
+  name: nfs-client
   namespace: default
   labels:
-    app: busybox
+    app: nfs-client
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: busybox  # POD label과 일치
+      app: nfs-client  # POD label과 일치
   template:    
     metadata:
       labels:
-        app: busybox # Selector label과 일치
+        app: nfs-client # Selector label과 일치
     spec:
       containers:
-      - name: busybox
-        image: busybox
+      - name: nfs-client
+        image: d3fk/nfs-client
         command:
         - "/bin/sh"
         - "-c"

@@ -4,9 +4,10 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: backupcronjob-daily
+  namespace: default
 spec:
-  # schedule: "0/3 * * * *"
-  schedule: "0 4 * * *"
+  schedule: "0/3 * * * *"
+  # schedule: "0 4 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   jobTemplate:
@@ -14,7 +15,8 @@ spec:
       backoffLimit: 0
       template:
         spec:
-          serviceAccountName: default
+          # serviceAccountName: default
+          serviceAccountName: spk-admin-user
           affinity:
             podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -26,20 +28,21 @@ spec:
                 topologyKey: beta.kubernetes.io/os
           containers:
           - args:
-            - -virtualIP=172.17.16.160                   # Virtual IP address of the cluster
-            - -sourcePVC=high2m-pvc                  # PVC to take a backup of associated volume
+            # - -virtualIP=172.17.16.160                   # Virtual IP address of the cluster
+            - -virtualIP=10.61.0.29                   # Virtual IP address of the cluster
+            - -sourcePVC=douzone-master-douzone-master-0                  # PVC to take a backup of associated volume
             # - -sourcePVC=test-pvc                  # PVC to take a backup of associated volume
-            - -pvcNamespace=default                # Namespace
+            - -pvcNamespace=elastic-cloud01                # Namespace
             - -backupPlugin=tar                    # Backup plugin type
-            # - -pluginArgs={"server":"10.10.100.84","path":"\/exports","mountOptions":"nfsvers=3"}   # Backup plugin args
-            - -pluginArgs={"server":"172.17.28.101","path":"\/exports","mountOptions":"nfsvers=3"}   # Backup plugin args
+            - -pluginArgs={"server":"10.60.18.11","path":"\/data_cloud01","mountOptions":"nfsvers=3"}   # Backup plugin args
+            # - -pluginArgs={"server":"172.17.28.101","path":"\/exports","mountOptions":"nfsvers=3"}   # Backup plugin args
             - -pluginOptions=["-cvp","--selinux","--acls","--xattrs"] # Backup plugin options
             - -compressed=true                     # Flag to enable/disable compression
             - -maxNumSnapshots=5                   # Maximum number of snapshots that can exist for the PVC
             - -numDaysToKeep=3                     # Maximum number of backups that can exist on NFS server
             - -activeVolumesOnly=true              # Flag to backup attached volumes only
-            - -cpuResource=100m                    # CPU resource for backup agent
-            - -memoryResource=100Mi                # Memory resource for backup agent
+            - -cpuResource=1000m                    # CPU resource for backup agent
+            - -memoryResource=1000Mi                # Memory resource for backup agent
             - -maxConcurrentJobs=10                # Max concurrent backup agents
             - -snapshotPromoter={"ext3":"backup-ext3-sc","ext4":"backup-ext4-sc","xfs":"backup-xfs-sc"} #Storage class for creating volume from a snapshot
             name: backupjob-test-pvc

@@ -1,0 +1,115 @@
+{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Deployment
+metadata:
+  name: jaeger-collector
+  namespace: imxc
+  labels:
+    app: jaeger
+    jaeger-infra: collector-deployment
+spec:
+{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
+  selector:
+    matchLabels:
+      app: jaeger
+{{- end }}
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: jaeger
+        jaeger-infra: collector-pod
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      containers:
+      - image: {{ .Values.global.HARBOR_URL }}/{{ .Values.global.HARBOR_PROJECT }}/jaeger/jaeger-collector:{{ .Values.global.IMXC_RELEASE_VERSION }}
+        name: jaeger-collector
+
+        args:
+          - --sampling.strategies-file=/etc/jaeger-collector/strategies.json
+          - --sampling.strategies-reload-interval=60s
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 200m
+            memory: 100Mi
+        ports:
+        - containerPort: 14267
+          protocol: TCP
+        - containerPort: 14268
+          protocol: TCP
+        - containerPort: 9411
+          protocol: TCP
+        - containerPort: 14250
+          protocol: TCP
+        - containerPort: 14269
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: "/"
+            port: 14269
+        env:
+        - name: COLLECTOR_ZIPKIN_HTTP_PORT
+          value: "9411"
+        - name: SPAN_STORAGE_TYPE
+          value: kafka
+        - name: KAFKA_PRODUCER_BROKERS
+          value: {{ .Values.global.IMXC_MASTER_IP }}:9095
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: LOG_MAXAGE
+          value: "1"
+        - name: LOG_MAXBACKUPS
+          value: "3"
+        - name: LOG_MAXSIZE
+          value: "100"
+        - name: LOG_STDOUT
+          value: "TRUE"
+        - name: LOG_FILENAME
+          value: "jaeger-collector"
+
+        volumeMounts:
+        - mountPath: /etc/jaeger-collector
+          name: config-volume
+
+      volumes:
+      - name: config-volume
+        configMap:
+          name: jaeger-collector-configuration
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-collector
+  namespace: imxc
+  labels:
+    app: jaeger
+    jaeger-infra: collector-service
+spec:
+  ports:
+  - name: jaeger-collector-tchannel
+    port: 14267
+    protocol: TCP
+    targetPort: 14267
+  - name: jaeger-collector-metrics
+    port: 14269
+    targetPort: 14269
+  - name: jaeger-collector-grpc
+    port: 14250
+    protocol: TCP
+    targetPort: 14250
+  - name: jaeger-collector-zipkin
+    port: 9411
+    targetPort: 9411
+  selector:
+    jaeger-infra: collector-pod
+  type: NodePort

@@ -1,0 +1,157 @@
+{{- if semverCompare ">=1.17-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: rbac.authorization.k8s.io/v1
+{{- else }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- end }}
+kind: ClusterRole
+metadata:
+  name: imxc-cluster-role
+rules:
+  - nonResourceURLs:
+      - "*"
+    verbs:
+      - get
+  - apiGroups:
+      - metrics.k8s.io
+    resources:
+      - pods
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - nodes/stats
+      - endpoints
+      #- persistentvolumeclaims
+      #- persistentvolumes
+      - namespaces
+      - events
+      #- resourcequotas
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+      - deployments/scale
+      - replicasets
+      - replicasets/scale
+      - statefulsets
+      - statefulsets/scale
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - get
+      - list
+      - watch
+      - update
+  - apiGroups:
+      - batch
+    resources:
+      - cronjobs
+    verbs:
+      - get
+      - list
+      - update
+  - apiGroups:
+      - storage.j8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - policy
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
+    resourceNames:
+      - imxc-ps
+  - apiGroups:
+      - certificates.k8s.io
+    resourceNames:
+      - kubernetes.io/kube-apiserver-client-kubelet
+    resources:
+      - signers
+    verbs:
+      - approve
+  - apiGroups:
+      - certificates.k8s.io
+    resourceNames:
+      - kubernetes.io/kubelet-serving
+    resources:
+      - signers
+    verbs:
+      - approve
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+      - proxy
+  - apiGroups:
+      - ""
+    resources:
+      - nodes/log
+      - nodes/metrics
+      - nodes/proxy
+      - nodes/spec
+      - nodes/stats
+    verbs:
+      - '*'
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch

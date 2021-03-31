@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    diamanti.com/app: prometheus-scraper
+    release: prometheus
+  name: diamanti-prometheus-cadvisor
+  namespace: prometheus
+spec:
+  endpoints:
+  - interval: 30s
+    port: cadvisor
+  namespaceSelector:
+    matchNames:
+    - diamanti-system
+  selector:
+    matchLabels:
+      name: collectd-svc

@@ -1,0 +1,34 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: imxc-ps
+  namespace: imxc
+spec:
+  privileged: true
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  #runAsUser:
+  #  rule: RunAsAny
+  hostPorts:
+    - max: 65535
+      min: 0
+  hostNetwork: true
+  hostPID: true
+  #allowedCapabilities:
+  #- IPC_LOCK
+  #- SYS_RESOURCE
+  #- "*"
+  volumes:
+    - configMap
+    - secret
+    - emptyDir
+    - hostPath
+    - projected
+    - downwardAPI
+    - persistentVolumeClaim

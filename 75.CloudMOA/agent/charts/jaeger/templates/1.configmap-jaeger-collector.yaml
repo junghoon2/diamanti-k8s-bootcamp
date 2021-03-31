@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jaeger-collector-configuration
+  namespace: imxc
+data:
+  strategies.json: |
+    {
+      "default_strategy": {
+        "type": "ratelimiting",
+        "param": 1
+      }
+    }
+

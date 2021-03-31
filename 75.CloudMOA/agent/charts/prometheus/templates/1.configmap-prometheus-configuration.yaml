@@ -1,0 +1,176 @@
+# VERSION : 20190227142300
+#
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-configuration
+  namespace: imxc
+data:
+  scaling.rules: |
+      groups:
+      - name: scaleup
+        rules :
+        - alert : ScaleUpRule
+          expr: job:webapp_config_open_sessions_current_count:sum > 15
+          annotations:
+            summary: "Scale up when current sessions is greater than 15"
+            description: "Firing when total sessions active greater than 15"
+  prometheus.yml: |
+    global:
+      scrape_interval:     5s
+      # Attach these labels to any time series or alerts when communicating with
+      # external systems.
+      external_labels:
+        monitor: '5s-monitor'
+
+      #kafka writer only
+      no_local_disk_write: true
+
+    # A scrape configuration for running Prometheus on a Kubernetes cluster.
+    # This uses separate scrape configs for cluster components (i.e. API server, node)
+    # and services to allow each to use different authentication configs.
+    #
+    # Kubernetes labels will be added as Prometheus labels on metrics via the
+    # `labelmap` relabeling action.
+    #
+
+    #
+    # rule_files:
+    # - "scaling.rules"
+     
+    # i suppose my code in the remote kafka write is something wrong ... should append a double quote character at the end of the url
+    remote_write:
+    - url: kafka://{{ .Values.global.IMXC_MASTER_IP }}:9095/remote_prom?encoding=proto3&compression=snappy
+
+    scrape_configs:
+
+      # Scrape config for nodes (kubelet).
+      #
+      # Rather than connecting directly to the node, the scrape is proxied though the
+      # Kubernetes apiserver.  This means it will work if Prometheus is running out of
+      # cluster, or can't connect to nodes for some other reason (e.g. because of
+      # firewalling).
+      - job_name: 'kubernetes-kubelet'
+
+        # Default to scraping over https. If required, just disable this or change to
+        # `http`.
+        scheme: https
+        # This TLS & bearer token file config is used to connect to the actual scrape
+        # endpoints for cluster components. This is separate to discovery auth
+        # configuration because discovery & scraping are two separate concerns in
+        # Prometheus. The discovery auth config is automatic if Prometheus runs inside
+        # the cluster. Otherwise, more config options have to be provided within the
+        # <kubernetes_sd_config>.
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc:443
+        - source_labels: [__meta_kubernetes_node_name]
+          regex: (.+)
+          target_label: __metrics_path__
+          replacement: /api/v1/nodes/${1}/proxy/metrics
+        - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+          target_label: xm_node_id
+        - target_label: xm_clst_id
+          replacement: '{{ .Values.global.AGENT_CLUSTER_NAME }}'
+        - target_label: xm_entity_type
+          replacement: 'Node'
+
+      # copied from https://github.com/kayrus/prometheus-kubernetes/blob/master/prometheus-configmap.yaml
+      - job_name: 'kubernetes-node-exporter'
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+        - role: node
+            
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - source_labels: [__meta_kubernetes_role]
+          action: replace
+          target_label: kubernetes_role
+        - source_labels: [__address__]
+          regex: '(.*):10250'
+          replacement: '${1}:9100'
+          target_label: __address__
+        - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+          target_label: __instance__
+          # set "name" value to "job"
+        - source_labels: [job]
+          regex: 'kubernetes-(.*)'
+          replacement: '${1}'
+          target_label: name
+        - target_label: xm_clst_id
+          replacement: '{{ .Values.global.AGENT_CLUSTER_NAME }}'
+        - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+          target_label: xm_node_id
+        - target_label: xm_entity_type
+          replacement: 'Node'
+        - source_labels: [__meta_kubernetes_namespace]
+          separator: ;
+          regex: (.*)
+          target_label: xm_namespace
+          replacement: $1
+          action: replace
+       
+
+      - job_name: 'kubernetes-cadvisor'
+ 
+        # Default to scraping over https. If required, just disable this or change to
+        # `http`.
+        scheme: https
+
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        
+        kubernetes_sd_configs:
+        - role: node
+        metrics_path: /metrics/cadvisor
+ 
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: xm_clst_id
+          replacement: '{{ .Values.global.AGENT_CLUSTER_NAME }}'
+        - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+          target_label: xm_node_id
+        - target_label: xm_entity_type
+          replacement: 'Container'
+
+{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
+        metric_relabel_configs:
+        - source_labels: [namespace]
+          target_label: xm_namespace
+        - source_labels: [pod]
+          target_label: xm_pod_id
+        - source_labels: [container]
+          target_label: xm_cont_name
+        - source_labels: [id]
+          target_label: xm_cont_id
+        - source_labels: [container]
+          regex: (.+)
+          action: keep
+{{- else }}
+        metric_relabel_configs:
+        - source_labels: [namespace]
+          target_label: xm_namespace
+        - source_labels: [pod_name]
+          target_label: xm_pod_id
+        - source_labels: [container_name]
+          target_label: xm_cont_name
+        - source_labels: [id]
+          target_label: xm_cont_id
+        - source_labels: [container_name]
+          regex: (.+)
+          action: keep
+{{- end }} 

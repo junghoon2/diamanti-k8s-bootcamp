@@ -1,0 +1,79 @@
+{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: apps/v1
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: imxc
+  labels:
+    app: prometheus
+spec:
+{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
+  selector:
+    matchLabels:
+      app: prometheus
+{{- end }}
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: {{ .Values.global.HARBOR_URL }}/{{ .Values.global.HARBOR_PROJECT }}/imxc/imxc-prometheus:{{ .Values.global.IMXC_RELEASE_VERSION  }}
+        ports:
+        - containerPort: 9090
+        args:
+        - --config.file=/etc/prometheus/prometheus.yml
+        #- --log.level=debug
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 300m
+            memory: 1000Mi
+        volumeMounts:
+        - mountPath: "/prometheus"
+          name: data
+        - mountPath: /etc/prometheus/
+          name: config-volume
+        env:
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: LOG_MAXAGE
+          value: "1"
+        - name: LOG_MAXBACKUPS
+          value: "3"
+        - name: LOG_MAXSIZE
+          value: "100"
+        - name: LOG_STDOUT
+          value: "TRUE"
+        - name: LOG_FILENAME
+          value: "prometheus"
+        #- mountPath: /etc/systemd/system/multi-user.target.wants/
+        #  name: config-docker-service
+        #env:
+        #- name: GODEBUG
+        #  value: "netdns=cgo"
+      #imagePullSecrets:
+      #  - name: my-secret
+      restartPolicy: Always
+      volumes:
+      - emptyDir: {}
+        name: data
+      - name: config-volume
+        configMap:
+          name: prometheus-configuration
+      #- name: config-docker-service
+      #  configMap:
+      #    name: docker-service-file
+      #- name: config-ca-cert
+      #  configMap:
+      #    name: registry-cacrt-file
+

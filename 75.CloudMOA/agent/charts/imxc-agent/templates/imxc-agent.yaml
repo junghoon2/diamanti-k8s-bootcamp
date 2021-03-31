@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: imxc-agent
+  namespace: imxc
+  labels:
+    app: imxc-agent
+spec:
+  selector:
+    matchLabels:
+      app: imxc-agent
+  template:
+    metadata:
+      labels:
+        app: imxc-agent
+    spec:
+      hostNetwork: true
+# below appended
+      hostPID: true
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: imxc-agent
+        image: {{ .Values.global.HARBOR_URL }}/{{ .Values.global.HARBOR_PROJECT }}/imxc/imxc-agent:{{ .Values.global.IMXC_RELEASE_VERSION }}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 600Mi
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: bin-volume
+        - mountPath: /var/run/docker.sock
+          name: docker-volume
+        - mountPath: /host/proc
+          name: proc-volume
+        - mountPath: /root
+          name: root-volume
+#         added by mskim
+#        - mountPath: /log
+#          name: log-volume
+        env:
+          - name: KAFKA_SERVER
+            value: {{ .Values.global.IMXC_MASTER_IP }}:9095
+          - name: CLUSTER_ID
+            value: {{ .Values.global.AGENT_CLUSTER_NAME }}
+          - name: API_SERVER
+            value: {{ .Values.global.IMXC_MASTER_IP }}:10100
+          - name: ROOT_DIRECTORY
+            value: /root
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: CLOUDMOA_SETTING_PATH
+            value: /home/cloudmoa/setting/
+#           added by mskim
+#          - name: LOG_LEVEL
+#            value: "INFO"
+#          - name: LOG_MAXAGE
+#            value: "1"
+#          - name: LOG_MAXBACKUPS
+#            value: "3"
+#          - name: LOG_MAXSIZE
+#            value: "100"
+#          - name: LOG_STDOUT
+#            value: "TRUE"
+#          - name: LOG_FILENAME
+#            value: "imxc-agent"
+
+      volumes:
+      - name: bin-volume
+        hostPath:
+          path: /usr/bin
+          type: Directory
+      - name: docker-volume
+        hostPath:
+          path: /var/run/docker.sock
+      - name: proc-volume
+        hostPath:
+          path: /proc
+      - name: root-volume
+        hostPath:
+          path: /
+#      added by mskim
+#      - name: log-volume
+#        hostPath:
+#          path: /home
