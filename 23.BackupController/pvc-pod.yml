@@ -12,8 +12,7 @@ spec:
     command:
     - "/bin/sh"
     - "-c"
-    - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync;
-sleep 30; done"
+    - "while true; do date >> /data/pod-out.txt; cd /data; sync; sync; sleep 30; done"
     volumeMounts:
     - name: test-pvc
       mountPath: /data

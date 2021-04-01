@@ -15,8 +15,7 @@ spec:
       backoffLimit: 0
       template:
         spec:
-          # serviceAccountName: default
-          serviceAccountName: spk-admin-user
+          serviceAccountName: default
           affinity:
             podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:

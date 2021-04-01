@@ -2,7 +2,7 @@
 
 # 5분 정도 소요 
 
-dctl login -u admin -p Diamanti1!
+dctl -s 172.17.16.160 login -u admin -p Diamanti1!
 read enter
 
 echo "dctl cluster status"
