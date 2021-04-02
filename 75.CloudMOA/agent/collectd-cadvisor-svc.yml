@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kubernetes.io/name: CollectD
+    name: collectd-svc
+  name: collectd-svc
+  namespace: diamanti-system
+spec:
+  clusterIP: 10.0.0.155
+  ports:
+  - name: cadvisor
+    port: 4194
+  - name: collectd-exporter-tcp
+    port: 9103
+  - name: node-exporter-tcp
+    port: 9111
+  - name: collectd-exporter-udp
+    port: 25826
+    protocol: UDP
+  selector:
+    diamanti.com/app: collectd

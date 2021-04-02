@@ -32,6 +32,7 @@ items:
         annotations:
           prometheus.io/scrape: "true"
           prometheus.io/port: "5778"
+          diamanti.com/endpoint0: '{"network":"imxc","perfTier":"best-effort"}'
       spec:
         securityContext:
           runAsNonRoot: true

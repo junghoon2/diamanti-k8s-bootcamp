@@ -51,46 +51,62 @@ data:
       # Kubernetes apiserver.  This means it will work if Prometheus is running out of
       # cluster, or can't connect to nodes for some other reason (e.g. because of
       # firewalling).
-      - job_name: 'kubernetes-kubelet'
+      # - job_name: 'kubernetes-kubelet'
 
-        # Default to scraping over https. If required, just disable this or change to
-        # `http`.
-        scheme: https
-        # This TLS & bearer token file config is used to connect to the actual scrape
-        # endpoints for cluster components. This is separate to discovery auth
-        # configuration because discovery & scraping are two separate concerns in
-        # Prometheus. The discovery auth config is automatic if Prometheus runs inside
-        # the cluster. Otherwise, more config options have to be provided within the
-        # <kubernetes_sd_config>.
-        tls_config:
-          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-        kubernetes_sd_configs:
-        - role: node
-        relabel_configs:
-        - action: labelmap
-          regex: __meta_kubernetes_node_label_(.+)
-        - target_label: __address__
-          replacement: kubernetes.default.svc:443
-        - source_labels: [__meta_kubernetes_node_name]
-          regex: (.+)
-          target_label: __metrics_path__
-          replacement: /api/v1/nodes/${1}/proxy/metrics
-        - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
-          target_label: xm_node_id
-        - target_label: xm_clst_id
-          replacement: '{{ .Values.global.AGENT_CLUSTER_NAME }}'
-        - target_label: xm_entity_type
-          replacement: 'Node'
+      #   # Default to scraping over https. If required, just disable this or change to
+      #   # `http`.
+      #   scheme: https
+      #   # This TLS & bearer token file config is used to connect to the actual scrape
+      #   # endpoints for cluster components. This is separate to discovery auth
+      #   # configuration because discovery & scraping are two separate concerns in
+      #   # Prometheus. The discovery auth config is automatic if Prometheus runs inside
+      #   # the cluster. Otherwise, more config options have to be provided within the
+      #   # <kubernetes_sd_config>.
+      #   tls_config:
+      #     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      #   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      #   kubernetes_sd_configs:
+      #   - role: node
+      #   relabel_configs:
+      #   - action: labelmap
+      #     regex: __meta_kubernetes_node_label_(.+)
+      #   - target_label: __address__
+      #     replacement: kubernetes.default.svc:443
+      #   - source_labels: [__meta_kubernetes_node_name]
+      #     regex: (.+)
+      #     target_label: __metrics_path__
+      #     replacement: /api/v1/nodes/${1}/proxy/metrics
+      #   - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+      #     target_label: xm_node_id
+      #   - target_label: xm_clst_id
+      #     replacement: '{{ .Values.global.AGENT_CLUSTER_NAME }}'
+      #   - target_label: xm_entity_type
+      #     replacement: 'Node'
 
-      # copied from https://github.com/kayrus/prometheus-kubernetes/blob/master/prometheus-configmap.yaml
+      # # copied from https://github.com/kayrus/prometheus-kubernetes/blob/master/prometheus-configmap.yaml
+      
       - job_name: 'kubernetes-node-exporter'
+{{- if .Values.global.DIAMANTI_ENV }}
+        honor_timestamps: true
+        scrape_interval: 30s
+        scrape_timeout: 10s
+        metrics_path: /metrics
+        scheme: http
+        #kubernetes_sd_configs:
+        #- role: endpoints
+        #  namespaces:
+        #    names:
+        #    - prometheus
+        static_configs:
+        - targets:
+          - 10.61.0.21:31771
+{{- else }}
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
         kubernetes_sd_configs:
         - role: node
-            
+{{- end }}
         relabel_configs:
         - action: labelmap
           regex: __meta_kubernetes_node_label_(.+)
@@ -123,7 +139,22 @@ data:
        
 
       - job_name: 'kubernetes-cadvisor'
- 
+  
+{{- if .Values.global.DIAMANTI_ENV }}
+        honor_timestamps: true
+        scrape_interval: 10s
+        scrape_timeout: 10s
+        metrics_path: /metrics
+        scheme: http
+        #kubernetes_sd_configs:
+        #- role: endpoints
+        #  namespaces:
+        #    names:
+        #    - diamanti-system
+        static_configs:
+        - targets:
+          - 10.61.0.21:32669
+{{- else }}
         # Default to scraping over https. If required, just disable this or change to
         # `http`.
         scheme: https
@@ -136,7 +167,7 @@ data:
         kubernetes_sd_configs:
         - role: node
         metrics_path: /metrics/cadvisor
- 
+ {{- end }}
         relabel_configs:
         - action: labelmap
           regex: __meta_kubernetes_node_label_(.+)
@@ -146,7 +177,18 @@ data:
           target_label: xm_node_id
         - target_label: xm_entity_type
           replacement: 'Container'
-
+{{- if .Values.global.DIAMANTI_ENV }}
+        - source_labels: [__meta_kubernetes_service_label_name]
+          separator: ;
+          regex: collectd-svc
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_endpoint_port_name]
+          separator: ;
+          regex: cadvisor
+          replacement: $1
+          action: keep
+{{- end }}
 {{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
         metric_relabel_configs:
         - source_labels: [namespace]

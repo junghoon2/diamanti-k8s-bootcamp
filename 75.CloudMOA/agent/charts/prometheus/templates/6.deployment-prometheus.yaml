@@ -22,6 +22,8 @@ spec:
     metadata:
       labels:
         app: prometheus
+      annotations:    # You must add these two lines under spec-> template -> metadata
+        diamanti.com/endpoint0: '{"network":"imxc","perfTier":"best-effort"}'
     spec:
       containers:
       - name: prometheus

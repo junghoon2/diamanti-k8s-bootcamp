@@ -11,7 +11,7 @@ metadata:
     app: jaeger
     jaeger-infra: collector-deployment
 spec:
-{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
+rp{{- if semverCompare ">=1.16-0" .Capabilities.KubeVersion.GitVersion }}
   selector:
     matchLabels:
       app: jaeger
@@ -24,6 +24,9 @@ spec:
       labels:
         app: jaeger
         jaeger-infra: collector-pod
+      annotations:    # You must add these two lines under spec-> template -> metadata
+        diamanti.com/endpoint0: '{"network":"imxc","perfTier":"best-effort"}'
+
     spec:
       securityContext:
         runAsNonRoot: true

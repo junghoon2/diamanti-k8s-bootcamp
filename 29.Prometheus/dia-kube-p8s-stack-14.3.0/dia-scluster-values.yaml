@@ -304,7 +304,7 @@ alertmanager:
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
     ##
-    nodePort: 30022
+    nodePort: 31022
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
@@ -2131,23 +2131,41 @@ prometheus:
     ## The scrape configuration example below will find master nodes, provided they have the name .*mst.*, relabel the
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
-    additionalScrapeConfigs: []
-    # - job_name: cadvisor-exporter
-    #   honor_timestamps: true
-    #   scrape_interval: 30s
-    #   scrape_timeout: 10s
-    #   metrics_path: /metrics
-    #   scheme: http
-    #   static_configs:
-    #   - targets:
-    #     - 172.17.16.161:4194
-    #     - 172.17.16.162:4194
-    #     - 172.17.16.163:4194
-      # kubernetes_sd_configs:
-      # - role: endpoints
-      #   namespaces:
-      #     names:
-      #     - diamanti-system
+    additionalScrapeConfigs:
+    - job_name: cadvisor-exporter
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      # static_configs:
+      # - targets:
+      #   - 172.17.16.161:4194
+      #   - 172.17.16.162:4194
+      #   - 172.17.16.163:4194
+      kubernetes_sd_configs:
+      - role: endpoints
+        namespaces:
+          names:
+          - diamanti-system
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_endpoint_port_name]
+        separator: ;
+        regex: cadvisor
+        replacement: $1
+        action: keep
+      - source_labels: [__meta_kubernetes_service_label_name]
+        separator: ;
+        regex: collectd-svc
+        replacement: $1
+        action: keep
+      - source_labels: [container_label_io_kubernetes_pod_namespace]
+        separator: ;
+        regex: (.*)
+        target_label: namespace
+        replacement: $1
+        action: replace
+
         # selector:
         #   matchLabels:
         #     name: collectd-svc  # label for service
