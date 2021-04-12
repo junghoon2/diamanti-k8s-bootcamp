@@ -19,7 +19,7 @@ spec:
       containers:
       - name: kxs
         # image: k8s.gcr.io/kxdb-slim:0.8
-        image: gitlab.spk.io:5050/jerry/admin/kxdb:0.1.4
+        image: gitlab.spk.io:5050/jerry/admin/kxdb:0.16
         command:
         - /bin/sh
         - -c
