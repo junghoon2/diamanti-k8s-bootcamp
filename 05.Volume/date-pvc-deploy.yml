@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: date-pod
-  # namespace: default
+  namespace: default
   labels:
     app: date
 spec:
@@ -33,4 +33,4 @@ spec:
       - name: date-vol
         persistentVolumeClaim:
           # claimName: high-pvc   ## PVC 이름 지정
-          claimName: high2m-pvc   
+          claimName: default-pvc   
