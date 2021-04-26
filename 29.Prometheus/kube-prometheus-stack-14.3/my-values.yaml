@@ -310,7 +310,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: ClusterIP
+    type: NodePort
 
   ## Configuration for creating a separate Service for each statefulset Alertmanager replica
   ##
