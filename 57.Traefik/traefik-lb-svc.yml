@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: traefik
+    meta.helm.sh/release-namespace: traefik
+  labels:
+    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: traefik
+    helm.sh/chart: traefik-9.17.2
+  name: traefik
+  namespace: traefik
+spec:
+  # clusterIP: 10.233.55.104
+  # clusterIPs:
+  # - 10.233.55.104
+  loadBalancerIP: 192.168.1.146
+  ports:
+  - name: traefik
+    nodePort: 32246
+    port: 9000
+    targetPort: traefik
+  - name: web
+    nodePort: 32299
+    port: 80
+    targetPort: web
+  - name: websecure
+    nodePort: 30933
+    port: 443
+    targetPort: websecure
+  - name: ecm
+    port: 54321
+    targetPort: 54321
+  - name: mqtt
+    port: 11887
+    targetPort: 11887
+  selector:
+    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/name: traefik
+  type: LoadBalancer

@@ -1,0 +1,17 @@
+# Before, need to create secret for TLS
+# Change nginx(+ mqtt, jitsi) svc type LoadBalancer or NodePort to ClusterIP
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-ecm
+  namespace: nginx
+spec:
+  entryPoints:
+  - ecm
+  routes:
+  - match: Host(`bm.bizcubex.co.kr`)
+    kind: Rule
+    services:
+    - name: nginx-svc
+      port: 54321

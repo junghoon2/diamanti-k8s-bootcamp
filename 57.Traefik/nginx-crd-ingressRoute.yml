@@ -1,0 +1,40 @@
+# Before, need to create secret for TLS
+# Change nginx(+ mqtt, jitsi) svc type LoadBalancer or NodePort to ClusterIP
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-ingressroute
+  namespace: nginx
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: Host(`bm.bizcubex.co.kr`)
+    kind: Rule
+    services:
+    - name: nginx-svc
+      port: 80
+  tls:
+    secretName: dzbm-tls
+---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: nginx-redirect-ingressroute
+#   namespace: nginx
+# spec:
+#   entryPoints:
+#   - web:
+#       # address: :80
+#       http:
+#         redirections:
+#           entryPoint:
+#             to: websecure
+#             permanent: true
+#   routes:
+#   - match: Host(`bm.bizcubex.co.kr`)
+#     kind: Rule
+#     services:
+#     - name: nginx-svc
+#       port: 80

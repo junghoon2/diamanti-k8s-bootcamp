@@ -9,7 +9,7 @@ data:
     - name: default
       protocol: layer2
       addresses:
-      - 172.17.28.160 - 172.17.28.169
+      - 192.168.1.146 - 192.168.1.151
 
 # - 172.17.29.111 - 172.17.29.150
 # - 172.17.16.172, error, invalid CIDR

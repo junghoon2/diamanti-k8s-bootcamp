@@ -1,11 +1,35 @@
+# IP Address Sharing
+# By default, Services do not share IP addresses. If you have a need to colocate services on a single IP, you can enable selective IP sharing by adding the metallb.universe.tf/allow-shared-ip annotation to services.
 
+# The value of the annotation is a “sharing key.” Services can share an IP address under the following conditions:
 
-IP Address Sharing
-By default, Services do not share IP addresses. If you have a need to colocate services on a single IP, you can enable selective IP sharing by adding the metallb.universe.tf/allow-shared-ip annotation to services.
+# They both have the same sharing key.
+# They request the use of different ports (e.g. tcp/80 for one and tcp/443 for the other).
+# They both use the Cluster external traffic policy, or they both point to the exact same set of pods (i.e. the pod selectors are identical).
 
-The value of the annotation is a “sharing key.” Services can share an IP address under the following conditions:
-
-They both have the same sharing key.
-They request the use of different ports (e.g. tcp/80 for one and tcp/443 for the other).
-They both use the Cluster external traffic policy, or they both point to the exact same set of pods (i.e. the pod selectors are identical).
-
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: mail
+  name: mail-smtp-svc
+  namespace: mail
+  labels:
+    type: smtp
+spec:
+  loadBalancerIP: 192.168.1.148
+  ports:
+  - port: 25
+    #nodePort: 31023
+    name: smtp
+  - port: 587
+    name: mail
+    #nodePort: 31024
+  - port: 465
+    name: smtps
+    #nodePort: 31025
+ #clusterIP: None
+  #type: NodePort
+  selector:
+    type: smtp
+  type: LoadBalancer
