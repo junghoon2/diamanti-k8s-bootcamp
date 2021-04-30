@@ -34,14 +34,14 @@ source <(kubectl completion bash)
 * 교육 슬라이드 (별도 배포)  
 
 ### Youtube Resources
-* [이충섭 님 Kubernetes 소개 동영상(한글, 실습 포함)](https://youtu.be/WxzWXqTNdlw)
+* [김충섭 님 Kubernetes 소개 동영상(한글, 실습 포함)](https://youtu.be/WxzWXqTNdlw)
 
 ### Online Courses
 * [Udemy CKA 자격증 과정, 강추](https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests)
 
 
 ### Tutorials
-* [이충섭(subicura) 님 도커, k8s 실습 GitHub Code](https://github.com/subicura/workshop-k8s-basic)
+* [김충섭(subicura) 님 도커, k8s 실습 GitHub Code](https://github.com/subicura/workshop-k8s-basic)
 
 ### Blog
 * [아리수(Kakao) 님 Kubernetes](https://arisu1000.tistory.com/category/Kubernetes)
