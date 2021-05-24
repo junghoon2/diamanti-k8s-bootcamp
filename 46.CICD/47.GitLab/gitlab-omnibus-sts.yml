@@ -1,16 +1,8 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"name":"gitlab","namespace":"gitlab"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"gitlab"}},"serviceName":"gitlab","template":{"metadata":{"annotations":{"diamanti.com/endpoint0":"{\"network\":\"blue\",\"perfTier\":\"high\"}"},"labels":{"app":"gitlab"}},"spec":{"containers":[{"env":[{"name":"hostname","value":"spkr.gitlab.io"}],"image":"gitlab/gitlab-ce:latest","name":"gitlab","ports":[{"containerPort":80,"name":"web"},{"containerPort":443,"name":"tls"},{"containerPort":22,"name":"ssh"}],"resources":{"limits":{"cpu":"4","memory":"64Gi"},"requests":{"cpu":"1","memory":"16Gi"}},"volumeMounts":[{"mountPath":"/etc/gitlab","name":"gitlab-config"},{"mountPath":"/var/log/gitlab","name":"gitlab-logs"},{"mountPath":"/var/opt/gitlab","name":"gitlab-data"}]}]}},"volumeClaimTemplates":[{"metadata":{"name":"gitlab-config"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"100Gi"}},"storageClassName":"high2m"}},{"metadata":{"name":"gitlab-logs"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"10Gi"}},"storageClassName":"high2m"}},{"metadata":{"name":"gitlab-data"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"1Gi"}},"storageClassName":"high2m"}}]}}
-  creationTimestamp: "2020-11-09T01:21:11Z"
-  generation: 1
   name: gitlab
   namespace: gitlab
-  resourceVersion: "1378992"
-  selfLink: /apis/apps/v1/namespaces/gitlab/statefulsets/gitlab
-  uid: 89c0bc8a-ed4e-4f19-bd6b-c9103316f62e
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -21,19 +13,15 @@ spec:
   serviceName: gitlab
   template:
     metadata:
-      annotations:
-        diamanti.com/endpoint0: '{"network":"blue","perfTier":"high"}'
       labels:
         app: gitlab
     spec:
       containers:
       - image: gitlab/gitlab-ee:latest
-        # imagePullPolicy: Always
-        # env:
-        # - name: external_url
-        #   value: 'https://gitlab.spkr.io'
-        # - name: registry_external_url
-        #   value: 'https://gitlab.spkr.io:5050'
+        imagePullPolicy: Always
+        env:
+        - name: external_url
+          value: 'https://gitlab.spk.io'
         name: gitlab
         ports:
         - containerPort: 80
@@ -103,10 +91,8 @@ spec:
       resources:
         requests:
           storage: 1Gi
-      storageClassName: high2m
+      storageClassName: openebs-hostpath
       volumeMode: Filesystem
-    status:
-      phase: Pending
   - metadata:
       name: gitlab-logs
     spec:
@@ -115,10 +101,8 @@ spec:
       resources:
         requests:
           storage: 10Gi
-      storageClassName: high2m
+      storageClassName: openebs-hostpath
       volumeMode: Filesystem
-    status:
-      phase: Pending
   - metadata:
       name: gitlab-data
     spec:
@@ -127,7 +111,5 @@ spec:
       resources:
         requests:
           storage: 50Gi
-      storageClassName: high2m
+      storageClassName: openebs-hostpath
       volumeMode: Filesystem
-    status:
-      phase: Pending
