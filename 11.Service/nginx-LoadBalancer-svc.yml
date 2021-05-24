@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
-  namespace: default
+  name: nginxhello-svc
+  # namespace: default
 spec:
   ports:
   - name: http
@@ -10,6 +10,6 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: web
+    app: nginx-hello
   sessionAffinity: None
   type: LoadBalancer

@@ -1,3 +1,5 @@
+# Storage class 지정 : openebs-hostpath, default 지정 안 됨
+
 rbac:
   create: true
   ## Use an existing ClusterRole/Role (depending on rbac.namespaced false/true)
@@ -254,7 +256,7 @@ extraContainerVolumes: []
 persistence:
   type: pvc
   enabled: true
-  # storageClassName: default
+  storageClassName: openebs-hostpath
   accessModes:
     - ReadWriteOnce
   size: 100Gi

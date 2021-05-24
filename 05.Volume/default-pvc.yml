@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: default-pvc
-  namespace: default
+  namespace: nginx
 spec:
   accessModes:
   - ReadWriteOnce  ## block accessmode 지정 

@@ -15,9 +15,14 @@ spec:
       labels:
         app: busybox # Selector label과 일치
     spec:
+      hostAliases:
+      - ip: "172.17.28.160"
+        hostnames:
+        - "harbor.spk.io"
       containers:
       - name: busybox
-        image: busybox
+        # image: busybox
+        image: harbor.spk.io/spk/busybox
         command:
         - "/bin/sh"
         - "-c"

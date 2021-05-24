@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
-  namespace: default
+  name: nginx-hello
+  # namespace: default
   labels:
-    app: web  # Service 등에서 참조할 Lable 이름 
+    app: nginx-hello  # Service 등에서 참조할 Lable 이름 
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: web
+      app: nginx-hello
   template:
     metadata:
       labels:
-        app: web
+        app: nginx-hello
     spec:
       containers:
       - name: nginx

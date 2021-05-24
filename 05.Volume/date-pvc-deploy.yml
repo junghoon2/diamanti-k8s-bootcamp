@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: date-pod
-  namespace: default
+  namespace: nginx
   labels:
     app: date
 spec:
