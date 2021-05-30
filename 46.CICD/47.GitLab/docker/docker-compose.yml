@@ -1,13 +1,30 @@
-export GITLAB_HOME=/home/gitlab (사용자 추가) 
+export GITLAB_HOME=/srv/gitlab
 
 web:
   image: 'gitlab/gitlab-ee:latest'
   restart: always
-  hostname: 'gitlab.dz.com'
+  hostname: 'gitlab.spk.io'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'https://gitlab.spk.io'
+      # Add any other gitlab.rb configuration here, each on its own line
+  ports:
+    - '80:80'
+    - '443:443'
+    - '1022:22'
+  volumes:
+    - '$GITLAB_HOME/config:/etc/gitlab'
+    - '$GITLAB_HOME/logs:/var/log/gitlab'
+    - '$GITLAB_HOME/data:/var/opt/gitlab'
+
+web:
+  image: 'gitlab/gitlab-ee:latest'
+  restart: always
+  hostname: 'gitlab.spk.io'
   environment:
     GITLAB_OMNIBUS_CONFIG: |
       external_url 'https://gitlab.dz.io'
-      registry_external_url 'https://gitlab.dz.io:5050'
+      # registry_external_url 'https://gitlab.dz.io:5050'
       nginx['redirect_http_to_https'] = true
       nginx['redirect_http_to_https_port'] = 80
 
