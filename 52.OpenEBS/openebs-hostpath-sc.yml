@@ -22,7 +22,8 @@ metadata:
       # the PV sub-directory will be deleted.
       #Default value is /var/openebs/local
       - name: BasePath
-        value: "/home/openebs/local/"
+        value: "/data"  # change to custom directory 
+        # value: "/home/openebs/local/"  # change to custom directory 
 provisioner: openebs.io/local
 volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Delete
