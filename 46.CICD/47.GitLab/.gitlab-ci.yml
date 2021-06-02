@@ -1,2 +1,0 @@
-test:
-  script: cat file1.txt file2.txt | grep -q 'Hello world'
