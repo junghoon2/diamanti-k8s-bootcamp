@@ -4,7 +4,7 @@ metadata:
   name: nginx-hello
   namespace: nginx
   labels:
-    app: nginx  # Service 등에서 참조할 Label 이름 
+    app: nginx  
 spec:
   replicas: 4
   selector:
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: nginx
+        app: nginx # Service 등에서 참조할 Label 이름 
     spec:
       containers:
       - name: nginx

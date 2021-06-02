@@ -11,6 +11,5 @@ spec:
     targetPort: 80
   selector:
     app: nginx
-  # sessionAffinity: None
-  type: LoadBalancer
-  # loadBalancerIP: 172.17.19.240
+  type: LoadBalancer  # type만 LoadBalancer로 변경하시면 됩니다.
+  loadBalancerIP: 172.17.30.178  # IP 지정이 가능합니다.
