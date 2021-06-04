@@ -1,4 +1,0 @@
-{{ define "content" }}
-  {{ .Scratch.Set "posts" (.Site.GetPage "/posts").Pages }}
-  {{ partial "blog-posts.html" . }}
-{{ end }}

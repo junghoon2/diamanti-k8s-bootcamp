@@ -1,0 +1,15 @@
+[global]
+ioengine=libaio
+rw=randrw
+numjobs=16
+direct=1
+bs=4k
+runtime=120
+time_based=1
+iodepth=16
+size=1g
+group_reporting
+rwmixread=0
+rwmixwrite=100
+directory=/scratch/
+[read]

@@ -1,0 +1,16 @@
+[ran_read]
+filename=/dev/sfdv0n1
+size=1g
+ioengine=libaio
+direct=1
+norandommap
+randrepeat=0
+group_reporting
+numjobs=8
+iodepth=32
+bs=4k
+time_based
+ramp_time=5
+runtime=120
+buffer_compress_percentage=60 # 2:1 on disk
+rw=randwrite
