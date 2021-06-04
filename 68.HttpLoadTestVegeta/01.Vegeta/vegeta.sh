@@ -1,5 +1,6 @@
 vegeta attack -rate=100 -duration=5s -targets=targets.txt | vegeta report
 
+echo "GET http://172.17.30.171/" | vegeta attack -name=250qps -rate=250 -duration=5s | tee results.250qps.bin |vegeta report
 
 spkr@erdia22:~/15.loadTest/vegeta_12.8.4_linux_amd64$ echo "GET http://10.10.120.14/" | vegeta attack -name=250qps -rate=250 -duration=5s | tee results.250qps.bin |vegeta report
 
