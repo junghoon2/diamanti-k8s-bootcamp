@@ -180,7 +180,7 @@ alertmanager:
     receivers:
     - name: email-alert
       email_configs:
-      - to: leejunghoon@spkr.co.kr, nkkim@spkr.co.kr
+      - to: leejunghoon@spkr.co.kr
         from: erdia22@gmail.com
         # Your smtp server address
         smarthost: smtp.gmail.com:587

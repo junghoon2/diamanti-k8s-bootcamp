@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind:  AuthService
+      name:  authentication
+      auth_service: "auth-svc:8000"
+      path_prefix: "/v0/authz"
+      allowed_request_headers:
+      - "x-forwarded-access-token"
+      ---
+      apiVersion: ambassador/v1
+      kind:  Module
+      name:  ambassador
+      config:
+        service_port: 8000
+    meta.helm.sh/release-name: k10
+    meta.helm.sh/release-namespace: kasten-io
+  labels:
+    app: k10
+    app.kubernetes.io/instance: k10
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: k10
+    helm.sh/chart: k10-4.0.3
+    heritage: Helm
+    release: k10
+    service: gateway
+  name: gateway
+  namespace: kasten-io
+spec:
+  type: NodePort
+  clusterIP: 10.233.54.184
+  clusterIPs:
+  - 10.233.54.184
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 8000
+  selector:
+    service: gateway

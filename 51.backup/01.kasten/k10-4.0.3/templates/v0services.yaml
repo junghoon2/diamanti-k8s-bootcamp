@@ -1,0 +1,112 @@
+{{/* Template to generate service spec for v0 rest services */}}
+{{- $container_port := .Values.service.internalPort -}}
+{{- $service_port := .Values.service.externalPort -}}
+{{- $aggregated_api_port := .Values.service.aggregatedApiPort -}}
+{{- $postfix := default .Release.Name .Values.ingress.urlPath -}}
+{{- range append (include "k10.restServices" . | splitList " ") "frontend" }}
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ $.Release.Namespace }}
+  name: {{ . }}-svc
+  labels:
+{{ include "helm.labels" $ | indent 4 }}
+    component: {{ . }}
+    run: {{ . }}-svc
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind:  Mapping
+      name:  {{ . }}-mapping
+      {{- if eq . "frontend" }}
+      prefix: /{{ $postfix }}
+      {{- else }}
+      prefix: /{{ $postfix }}/{{ . }}-svc/
+      {{- end }}
+      rewrite: /
+      service: {{ . }}-svc.{{ $.Release.Namespace }}:{{ $service_port }}
+      timeout_ms: 30000
+spec:
+  ports:
+  - name: http
+    protocol: TCP
+    port: {{ $service_port }}
+    targetPort: {{ $container_port }}
+{{- if eq . "logging" }}
+  - name: logging
+    protocol: TCP
+    port: 24224
+    targetPort: 24224
+  - name: logging-metrics
+    protocol: TCP
+    port: 24225
+    targetPort: 24225
+{{- end }}
+  selector:
+    run: {{ . }}-svc
+---
+{{ end -}}
+{{- range append (include "k10.services" . | splitList " ") "kanister" }}
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ $.Release.Namespace }}
+  name: {{ . }}-svc
+  labels:
+{{ include "helm.labels" $ | indent 4 }}
+    component: {{ . }}
+    run: {{ . }}-svc
+spec:
+  ports:
+  {{- if eq . "aggregatedapis" }}
+  - name: http
+    port: 443
+    protocol: TCP
+    targetPort: {{ $aggregated_api_port }}
+  {{- else }}
+  - name: http
+    protocol: TCP
+    port: {{ $service_port }}
+    targetPort: {{ $container_port }}
+  {{- end }}
+  {{- if and (eq . "config") ($.Values.injectKanisterSidecar.enabled) }}
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: {{ $.Values.injectKanisterSidecar.webhookServer.port }}
+  {{- end }}
+  selector:
+    run: {{ . }}-svc
+---
+{{ end -}}
+{{- if or .Values.auth.dex.enabled (eq (include "check.dexAuth" .) "true") }}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind:  Mapping
+      name:  dex-mapping
+      prefix: /{{ $postfix }}/dex/
+      rewrite: ""
+      service: dex.{{ $.Release.Namespace }}:8000
+      timeout_ms: 30000
+  name: dex
+  namespace: {{ $.Release.Namespace }}
+  labels:
+{{ include "helm.labels" $ | indent 4 }}
+    component: dex
+    run: auth-svc
+spec:
+  ports:
+  - name: http
+    port: {{ $service_port }}
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: auth-svc
+  type: ClusterIP
+{{ end -}}
