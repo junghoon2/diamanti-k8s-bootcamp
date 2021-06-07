@@ -4,7 +4,7 @@ metadata:
   name: busybox
   namespace: default
   labels:
-    app: busybox
+        app: busybox
 spec:
   replicas: 1
   selector:
@@ -15,14 +15,14 @@ spec:
       labels:
         app: busybox # Selector label과 일치
     spec:
-      hostAliases:
-      - ip: "172.17.28.160"
-        hostnames:
-        - "harbor.spk.io"
+      # hostAliases:
+      # - ip: "172.17.28.160"
+      #   hostnames:
+      #   - "harbor.spk.io"
       containers:
       - name: busybox
-        # image: busybox
-        image: harbor.spk.io/spk/busybox
+        image: busybox
+        # image: harbor.spk.io/spk/busybox
         command:
         - "/bin/sh"
         - "-c"

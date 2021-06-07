@@ -1,7 +1,7 @@
 [ran_read]
-filename=/dev/sfdv0n1
-size=1g
+filename=/sfd01
 ioengine=libaio
+size=1g
 direct=1
 norandommap
 randrepeat=0
@@ -13,4 +13,8 @@ time_based
 ramp_time=5
 runtime=120
 buffer_compress_percentage=60 # 2:1 on disk
-rw=randwrite
+rw=randwrite # Random Write
+
+
+# [root@scaleflux01 ~]# fio -f fio-compress.fio --output=fio-compress.out
+# Jobs: 8 (f=8): [w(8)][3.8%][r=0KiB/s,w=324MiB/s][r=0,w=82.9k IOPS][eta 14m:32s]
