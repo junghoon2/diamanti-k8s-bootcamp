@@ -5,7 +5,7 @@ metadata:
   labels:
     app: web  #service가 바라보는 label이 아님. 주의.
 spec:
-  replicas: 10
+  replicas: 2
   selector:
     matchLabels:
       app: web  
