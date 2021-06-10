@@ -1,0 +1,6 @@
+dependencies:
+- name: openebs-ndm
+  repository: https://openebs.github.io/node-disk-manager
+  version: 1.4.1
+digest: sha256:e2b8b05d849dc7e6b811ed27a4b17c6da469f2b87a29a9790703dbce71d216d9
+generated: "2021-05-15T09:53:37.422027676Z"

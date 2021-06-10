@@ -4,7 +4,7 @@ metadata:
   name: busybox
   namespace: default
   labels:
-        app: busybox
+    app: busybox
 spec:
   replicas: 1
   selector:

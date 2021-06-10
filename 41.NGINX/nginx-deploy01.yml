@@ -77,9 +77,6 @@ spec:
         volumeMounts:
         - mountPath: /opt/bitnami/nginx/conf/server_blocks
           name: nginx-server-block-paths
-        - mountPath: /opt/bitnami/nginx/conf/nginx.conf
-          name: nginx-cm
-          subPath: nginx.conf
       - command:
         - /usr/bin/exporter
         - -nginx.scrape-uri
@@ -127,6 +124,3 @@ spec:
             path: server-blocks-paths.conf
           name: nginx-server-block
         name: nginx-server-block-paths
-      - configMap:
-          name: nginx-conf-cm
-        name: nginx-cm

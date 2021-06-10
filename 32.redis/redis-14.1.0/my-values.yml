@@ -163,7 +163,7 @@ master:
   extraEnvVarsSecret:
   ## @param master.containerPort Container port to open on Redis(TM) master nodes
   ##
-  containerPort: 16379
+  containerPort: 6379
   ## Configure extra options for Redis(TM) containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param master.livenessProbe.enabled Enable livenessProbe on Redis(TM) master nodes

@@ -236,7 +236,7 @@ ports:
     # You SHOULD NOT expose the traefik port on production deployments.
     # If you want to access it from outside of your cluster,
     # use `kubectl port-forward` or create a secure ingress
-    expose: false
+    expose: true
     # The exposed port for this service
     exposedPort: 9000
     # The port protocol (TCP/UDP)
@@ -302,7 +302,7 @@ service:
   # type, selector or ports entries.
   spec:
     # externalTrafficPolicy: Cluster
-    loadBalancerIP: "192.168.1.146"
+    # loadBalancerIP: "192.168.1.146"
     # clusterIP: "2.3.4.5"
   loadBalancerSourceRanges: []
     # - 192.168.0.1/32
@@ -381,15 +381,15 @@ affinity:
 # # This example pod anti-affinity forces the scheduler to put traefik pods
 # # on nodes where no other traefik pods are scheduled.
 # # It should be used when hostNetwork: true to prevent port conflicts
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-    - labelSelector:
-        matchExpressions:
-        - key: app
-          operator: In
-          values:
-          - {{ template "traefik.name" . }}
-      topologyKey: failure-domain.beta.kubernetes.io/zone
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #   - labelSelector:
+  #       matchExpressions:
+  #       - key: app
+  #         operator: In
+  #         values:
+  #         - {{ template "traefik.name" . }}
+  #     topologyKey: failure-domain.beta.kubernetes.io/zone
 nodeSelector: {}
 tolerations: []
 

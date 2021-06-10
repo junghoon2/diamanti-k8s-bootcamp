@@ -23,7 +23,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`your.example.com`) && PathPrefix(`/tls`)
+  - match: Host(`my.example.com`) && PathPrefix(`/tls`)
     kind: Rule
     services:
     - name: whoami
