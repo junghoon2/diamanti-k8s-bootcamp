@@ -17,12 +17,6 @@ metadata:
   name: prometheus-kube-prometheus-prometheus
   namespace: monitoring
 spec:
-  clusterIP: 10.233.12.16
-  clusterIPs:
-  - 10.233.12.16
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
   ports:
   - name: web
     nodePort: 30090

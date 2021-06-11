@@ -528,6 +528,7 @@ replica:
   containerSecurityContext:
     enabled: true
     runAsUser: 1001
+
   ## @param replica.schedulerName Alternate scheduler for Redis(TM) replicas pods
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
   ##
