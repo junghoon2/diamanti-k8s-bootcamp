@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-hello
+  name: nginx-hello01
   # namespace: default
   labels:
     app: nginx
@@ -19,3 +19,6 @@ spec:
       - name: nginx
         image: nginxdemos/hello
         # image: nginx:1.19.2
+        volumeMounts:
+        - mountPath: /exports
+          name: nfs-export
