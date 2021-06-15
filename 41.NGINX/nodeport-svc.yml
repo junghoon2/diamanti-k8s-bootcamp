@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+  namespace: nginx
+spec:
+  type: NodePort
+  ports:
+  - name: tcp
+    port: 80
+    protocol: TCP
+    targetPort: 80
+    nodePort: 30080 # 원하는 port 번호로 고정합니다.
+  selector:  # 선택해야 할 POD 선택
+    app: nginx  # POD Label 과 동일

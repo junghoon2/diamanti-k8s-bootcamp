@@ -1,0 +1,192 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: kafka
+    meta.helm.sh/release-namespace: kafka
+  labels:
+    app.kubernetes.io/component: kafka
+    app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-12.18.3
+  name: kafka
+  namespace: kafka
+spec:
+  podManagementPolicy: Parallel
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kafka
+      app.kubernetes.io/instance: kafka
+      app.kubernetes.io/name: kafka
+  serviceName: kafka-headless
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: kafka
+        app.kubernetes.io/instance: kafka
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: kafka
+        helm.sh/chart: kafka-12.18.3
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: kafka
+                  app.kubernetes.io/name: kafka
+              namespaces:
+              - kafka
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      containers:
+      - command:
+        - /scripts/setup.sh
+        env:
+        - name: BITNAMI_DEBUG
+          value: "false"
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+          value: kafka-zookeeper
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: INTERNAL
+        - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+          value: INTERNAL:PLAINTEXT,CLIENT:PLAINTEXT
+        - name: KAFKA_CFG_LISTENERS
+          value: INTERNAL://:9093,CLIENT://:9092
+        - name: KAFKA_CFG_ADVERTISED_LISTENERS
+          value: INTERNAL://$(MY_POD_NAME).kafka-headless.kafka.svc.cluster.local:9093,CLIENT://$(MY_POD_NAME).kafka-headless.kafka.svc.cluster.local:9092
+        - name: ALLOW_PLAINTEXT_LISTENER
+          value: "yes"
+        - name: KAFKA_VOLUME_DIR
+          value: /bitnami/kafka
+        - name: KAFKA_LOG_DIR
+          value: /opt/bitnami/kafka/logs
+        - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
+          value: "false"
+        - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+          value: "true"
+        - name: KAFKA_HEAP_OPTS
+          value: -Xmx1024m -Xms1024m
+        - name: KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES
+          value: "10000"
+        - name: KAFKA_CFG_LOG_FLUSH_INTERVAL_MS
+          value: "1000"
+        - name: KAFKA_CFG_LOG_RETENTION_BYTES
+          value: "1073741824"
+        - name: KAFKA_CFG_LOG_RETENTION_CHECK_INTERVALS_MS
+          value: "300000"
+        - name: KAFKA_CFG_LOG_RETENTION_HOURS
+          value: "168"
+        - name: KAFKA_CFG_MESSAGE_MAX_BYTES
+          value: "1000012"
+        - name: KAFKA_CFG_LOG_SEGMENT_BYTES
+          value: "1073741824"
+        - name: KAFKA_CFG_LOG_DIRS
+          value: /bitnami/kafka/data
+        - name: KAFKA_CFG_DEFAULT_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR
+          value: "1"
+        - name: KAFKA_CFG_NUM_IO_THREADS
+          value: "8"
+        - name: KAFKA_CFG_NUM_NETWORK_THREADS
+          value: "3"
+        - name: KAFKA_CFG_NUM_PARTITIONS
+          value: "1"
+        - name: KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR
+          value: "1"
+        - name: KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES
+          value: "102400"
+        - name: KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES
+          value: "104857600"
+        - name: KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES
+          value: "102400"
+        - name: KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS
+          value: "6000"
+        image: docker.io/bitnami/kafka:2.8.0-debian-10-r27
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: kafka-client
+          timeoutSeconds: 5
+        name: kafka
+        ports:
+        - containerPort: 9092
+          name: kafka-client
+          protocol: TCP
+        - containerPort: 9093
+          name: kafka-internal
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: kafka-client
+          timeoutSeconds: 5
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /bitnami/kafka
+          name: data
+        - mountPath: /opt/bitnami/kafka/logs
+          name: logs
+        - mountPath: /scripts/setup.sh
+          name: scripts
+          subPath: setup.sh
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+      serviceAccount: kafka
+      serviceAccountName: kafka
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 493
+          name: kafka-scripts
+        name: scripts
+      - name: logs
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi
+      volumeMode: Filesystem
+    status:
+      phase: Pending
