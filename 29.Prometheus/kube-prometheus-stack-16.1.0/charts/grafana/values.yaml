@@ -274,7 +274,7 @@ extraContainerVolumes: []
 persistence:
   type: pvc
   enabled: true
-  storageClassName: openebs-hostpath
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   size: 100Gi

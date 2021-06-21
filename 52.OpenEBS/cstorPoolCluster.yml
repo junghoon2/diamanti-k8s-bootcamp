@@ -1,0 +1,30 @@
+apiVersion: cstor.openebs.io/v1
+kind: CStorPoolCluster
+metadata:
+  name: cstor-storage
+  namespace: openebs
+spec:
+  pools:
+    - nodeSelector:
+        kubernetes.io/hostname: "ubun20-1"
+      dataRaidGroups:
+        - blockDevices:
+            - blockDeviceName: "blockdevice-ff495e59537d17838cfeb4cbbe02aebb"
+      poolConfig:
+        dataRaidGroupType: "stripe"
+
+    - nodeSelector:
+        kubernetes.io/hostname: "ubun20-2" 
+      dataRaidGroups:
+        - blockDevices:
+            - blockDeviceName: "blockdevice-c0cd0a67f749a6073503792665d9801a"
+      poolConfig:
+        dataRaidGroupType: "stripe"
+   
+    - nodeSelector:
+        kubernetes.io/hostname: "ubun20-3"
+      dataRaidGroups:
+        - blockDevices:
+            - blockDeviceName: "blockdevice-608b4761c9e7c4b671e5aac02cb1f741"
+      poolConfig:
+        dataRaidGroupType: "stripe"

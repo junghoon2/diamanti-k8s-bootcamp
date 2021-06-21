@@ -1,0 +1,43 @@
+apiVersion: v1
+data:
+  node-disk-manager.config: |
+    probeconfigs:
+      - key: udev-probe
+        name: udev probe
+        state: true
+      - key: seachest-probe
+        name: seachest probe
+        state: false
+      - key: smart-probe
+        name: smart probe
+        state: true
+    filterconfigs:
+      - key: os-disk-exclude-filter
+        name: os disk exclude filter
+        state: true
+        exclude: "/,/etc/hosts,/boot"
+      - key: vendor-filter
+        name: vendor filter
+        state: true
+        include: ""
+        exclude: "CLOUDBYT,OpenEBS"
+      - key: path-filter
+        name: path filter
+        state: true
+        include: "/dev/sdb"
+        exclude: "/dev/loop,/dev/fd0,/dev/sr0,/dev/ram,/dev/dm-,/dev/md,/dev/rbd,/dev/zd"
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: openebs
+    meta.helm.sh/release-namespace: openebs
+  labels:
+    app: openebs
+    app.kubernetes.io/managed-by: Helm
+    chart: openebs-2.9.3
+    component: ndm-config
+    heritage: Helm
+    openebs.io/component-name: ndm-config
+    release: openebs
+  name: openebs-ndm-config
+  namespace: openebs

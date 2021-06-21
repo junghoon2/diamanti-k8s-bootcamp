@@ -161,32 +161,19 @@ alertmanager:
     global:
       resolve_timeout: 5m
     route:
-      receiver: 'email-alert'
-      group_by: ['job', 'node', 'namespace', 'pod_name']    
+      group_by: ['job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
       routes:
-      - receiver: 'email-alert'
-        # When a new group of alerts is created by an incoming alert, wait at
-        # least 'group_wait' to send the initial notification.
-        # This way ensures that you get multiple alerts for the same group that 
-        #start firing shortly after another are batched together on the first 
-        # notification.
-        group_wait: 50s
-        # When the first notification was sent, wait 'group_interval' to send a 
-        # batch of new alerts that started firing for that group.  
-        group_interval: 5m
-        # If an alert has successfully been sent, wait 'repeat_interval' to
-        # resend them.
-        repeat_interval: 12h    
+      - match:
+          alertname: Watchdog
+        receiver: 'null'
     receivers:
-    - name: email-alert
-      email_configs:
-      - to: leejunghoon@spkr.co.kr
-        from: erdia22@gmail.com
-        # Your smtp server address
-        smarthost: smtp.gmail.com:587
-        auth_username: erdia22@gmail.com
-        auth_identity: erdia22@gmail.com
-        auth_password: oilyrxxoubvifeqe
+    - name: 'null'
+    templates:
+    - '/etc/alertmanager/config/*.tmpl'
 
   ## Pass the Alertmanager configuration directives through Helm's templating
   ## engine. If the Alertmanager configuration contains Alertmanager templates,
@@ -337,7 +324,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    # type: NodePort
+    # type: ClusterIP
     type: NodePort
 
   ## Configuration for creating a separate Service for each statefulset Alertmanager replica
@@ -363,7 +350,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
   ## If true, create a serviceMonitor for alertmanager
   ##
@@ -637,7 +624,7 @@ grafana:
   ##
   defaultDashboardsEnabled: true
 
-  adminPassword: Diamanti1!
+  adminPassword: Password
 
   ingress:
     ## If true, Grafana Ingress will be created
@@ -919,7 +906,7 @@ kubelet:
 ## Component scraping the kube controller manager
 ##
 kubeControllerManager:
-  enabled: false
+  enabled: true
 
   ## If your kube controller manager is not deployed as a pod, specify IPs it can be found on
   ##
@@ -1189,7 +1176,7 @@ kubeScheduler:
 ## Component scraping kube proxy
 ##
 kubeProxy:
-  enabled: false
+  enabled: true
 
   ## If your kube proxy is not deployed as a pod, specify IPs it can be found on
   ##
@@ -1439,7 +1426,7 @@ prometheusOperator:
   ## Service type
   ## NodePort, ClusterIP, LoadBalancer
   ##
-    type: NodePort
+    type: ClusterIP
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -1625,7 +1612,7 @@ prometheus:
 
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
     ## Port to expose on each node
     ##
@@ -1679,7 +1666,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    # type: NodePort
+    # type: ClusterIP
     type: NodePort
 
     sessionAffinity: ""
@@ -1707,7 +1694,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
   ## Configure pod disruption budgets for Prometheus
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
@@ -2208,7 +2195,7 @@ prometheus:
     ##
      volumeClaimTemplate:
        spec:
-         storageClassName: openebs-hostpath
+         storageClassName: local-path
          accessModes: ["ReadWriteOnce"]
          resources:
            requests:

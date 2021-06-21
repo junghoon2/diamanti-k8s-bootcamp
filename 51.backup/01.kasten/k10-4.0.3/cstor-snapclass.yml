@@ -1,0 +1,13 @@
+apiVersion: snapshot.storage.k8s.io/v1
+deletionPolicy: Delete
+driver: cstor.csi.openebs.io
+kind: VolumeSnapshotClass
+metadata:
+  annotations:
+    meta.helm.sh/release-name: openebs-cstor
+    meta.helm.sh/release-namespace: openebs
+    snapshot.storage.kubernetes.io/is-default-class: "true"
+    k10.kasten.io/is-snapshot-class: "true"
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: csi-cstor-snapshotclass

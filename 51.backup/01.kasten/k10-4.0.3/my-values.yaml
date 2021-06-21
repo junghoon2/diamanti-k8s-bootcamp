@@ -40,7 +40,7 @@ global:
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
     ##
-    storageClass: "openebs-hostpath"
+    storageClass: "cstor-csi"
     accessMode: ReadWriteOnce
     size: 100Gi
     metering:

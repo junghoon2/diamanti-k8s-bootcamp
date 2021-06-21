@@ -37,7 +37,7 @@ spec:
               topologyKey: kubernetes.io/hostname
             weight: 100
       containers:
-      - image: gitlab.spk.io:5050/jerry/admin/kdb:0.14
+      - image: harbor.spk.io:5050/jerry/admin/kdb:0.14
         # imagePullPolicy: Always
         # livenessProbe:
         #   failureThreshold: 3

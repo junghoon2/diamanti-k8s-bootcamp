@@ -10,5 +10,5 @@ spec:
     requests:
       storage: 10Gi
       # storage: 1Ti  # 노드 Disk 용량을 넘으면 할당이 안 됨
-  storageClassName: "openebs-hostpath"  ## SC 지정, default 자동 할당 안됨
+  storageClassName: "cstor-csi"  ## SC 지정, default 자동 할당 안됨
   # storageClassName: "high"  ## SC 지정, default 자동 할당 안됨

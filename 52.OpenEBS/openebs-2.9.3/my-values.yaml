@@ -160,7 +160,7 @@ ndm:
     enableVendorFilter: true
     excludeVendors: "CLOUDBYT,OpenEBS"
     enablePathFilter: true
-    includePaths: ""
+    includePaths: "/dev/sdb"
     excludePaths: "/dev/loop,/dev/fd0,/dev/sr0,/dev/ram,/dev/dm-,/dev/md,/dev/rbd,/dev/zd"
   probes:
     enableSeachest: false
