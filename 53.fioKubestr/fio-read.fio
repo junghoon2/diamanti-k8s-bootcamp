@@ -11,5 +11,4 @@ group_reporting
 rw=randrw
 rwmixread=100
 rwmixwrite=0
-directory=/scratch/
 [read]
