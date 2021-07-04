@@ -7,7 +7,7 @@ global:
 #   imageRegistry: myRegistryName
 #   imagePullSecrets:
 #     - myRegistryKeySecretName
-  storageClass: openebs-hostpath
+  storageClass: rook-ceph-block
 
 ## Bitnami PostgreSQL image version
 ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
@@ -20,7 +20,7 @@ image:
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -403,10 +403,10 @@ persistence:
   ##
   subPath: ''
 
-  storageClass: "openebs-hostpath"
+  storageClass: "rook-ceph-block"
   accessModes:
     - ReadWriteOnce
-  size: 500Gi
+  size: 50Gi
   annotations: {}
   ## selector can be used to match an existing PersistentVolume
   ## selector:

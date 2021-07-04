@@ -40,9 +40,10 @@ global:
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
     ##
-    storageClass: "cstor-csi"
+    # storageClass: "cstor-csi"
+    storageClass: "default"
     accessMode: ReadWriteOnce
-    size: 100Gi
+    size: 10Gi
     metering:
       size: 2Gi
     catalog:
@@ -134,7 +135,7 @@ ingress:
   urlPath: #url path for k10 gateway
 
 eula:
-  accept: false #true value if EULA accepted
+  accept: false #true value if EULA accepted, true error
 
 license: "" #base64 encoded string provided by Kasten
 

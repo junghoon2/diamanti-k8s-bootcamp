@@ -1,5 +1,6 @@
 # 최신 버전으로 설치 할 것
 # kube-proxy CM 변경, ipvs to strictARP: true 변경 
+# [spkr@erdia22 01.microservices-demo (ubuns:demo)]$ k edit -n kube-system cm kube-proxy
 
 ## kube-proxy CM 변경 후 rollout restart 한다.  
 kubectl rollout restart -n kube-system daemonset kube-proxy
@@ -10,5 +11,5 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.6/manife
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.6/manifests/metallb.yaml
 
 # On first install only
-kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+#kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 

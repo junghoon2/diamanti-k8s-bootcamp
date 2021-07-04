@@ -1,0 +1,205 @@
+artifacts:
+  - meta:
+      spec:
+        version: v1
+        resource: namespaces
+        type: namespace
+        name: postgresql
+        config: '{"metadata":{"name":"postgresql","uid":"cf43996b-89f7-43d9-8665-b324ea93ee11","resourceVersion":"3661384","creationTimestamp":"2021-06-23T01:04:53Z","labels":{"kubernetes.io/metadata.name":"postgresql"},"managedFields":[{"manager":"kubectl-create","operation":"Update","apiVersion":"v1","time":"2021-06-23T01:04:53Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:kubernetes.io/metadata.name":{}}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}'
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: secrets
+        type: secret
+        name: default-token-w25ch
+        namespace: postgresql
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: secrets
+        type: secret
+        name: postgresql
+        namespace: postgresql
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: secrets
+        type: secret
+        name: sh.helm.release.v1.postgresql.v1
+        namespace: postgresql
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: configmaps
+        type: configmap
+        name: kube-root-ca.crt
+        namespace: postgresql
+        config: '{"apiVersion":"v1","data":{"ca.crt":"-----BEGIN
+          CERTIFICATE-----\nMIIC5zCCAc+gAwIBAgIBADANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwprdWJl\ncm5ldGVzMB4XDTIxMDYxMTA0NDEwOVoXDTMxMDYwOTA0NDEwOVowFTETMBEGA1UE\nAxMKa3ViZXJuZXRlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALE6\nnAD9Rdneyrao/5MY2f/iURrqQaJRi4uxheaBxD5KqdXwuHoj7WaPwJiiEbgMyy/x\n89eNFvFTMY1X9UFMP1pa4wRyPsLzleEfpu/DNo6Ui6psAeBmKdwxySgKFq20L43n\n5bXet6j6qFzlMWu9r2oHRr1usrtp6vx0+RESJmEpjE6MMkkLZzv330bgLD+5p1P0\nKBRSo+OQBL1DM4IMioH/eA+5NWCbv9G72Y3MDmenal/IsUSHmByzhFWcWHFMGFg5\nW4cp+vbjvF7bL5NO7A7MJ5xe529KPPeyyTOF83EiX0rOCB5jeawC3nj4A1/MnG8A\nIbY4Lb9ypJgW62gRfgECAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgKkMA8GA1UdEwEB\n/wQFMAMBAf8wHQYDVR0OBBYEFO2TNbpTwYmrpPagRN1ijhR6jyXrMA0GCSqGSIb3\nDQEBCwUAA4IBAQA6trvyEt0ayfNMXsDM+13QH6liBlyaZkV3bcMSUpdhXRwClW/P\nzaP7FbBrcvIL69v3E2qn7x2E+baA6l62OZ4UWwCwtUbuquAhdhYtk1cmbhrjUpMr\n1hw+C9WHxYdB+gvK/m1czLiRjcv0+6RPDEytaeiboOouc/mJeHT354ovGAeoZoh3\nrIwazTRxURTvvhZAT4nUjY6Dsb0ZExu4cJgWK9oy+4x8CG9ZUYNpHMx+3rxX3T8r\nAaEBVHGrxJTKoc3EEIc1dPMppT3YDiw7RvLeTRqns66FsdWxRE6LpjQqcgS91gme\n6BE6Lg0Bc/NYFY7nWgDYwcdPC5GN+iu7HWkg\n-----END
+          CERTIFICATE-----\n"},"kind":"ConfigMap","metadata":{"creationTimestamp":"2021-06-23T01:04:53Z","managedFields":[{"apiVersion":"v1","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:ca.crt":{}}},"manager":"kube-controller-manager","operation":"Update","time":"2021-06-23T01:04:53Z"}],"name":"kube-root-ca.crt","namespace":"postgresql","resourceVersion":"3661385","uid":"45bae1ad-4cd3-42a3-b837-b00a0a5a9968"}}'
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: services
+        type: service
+        name: postgresql
+        namespace: postgresql
+        config: '{"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"meta.helm.sh/release-name":"postgresql","meta.helm.sh/release-namespace":"postgresql"},"creationTimestamp":"2021-06-23T01:05:08Z","labels":{"app.kubernetes.io/instance":"postgresql","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"postgresql","helm.sh/chart":"postgresql-10.4.8"},"managedFields":[{"apiVersion":"v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/managed-by":{},"f:app.kubernetes.io/name":{},"f:helm.sh/chart":{}}},"f:spec":{"f:ports":{".":{},"k:{\"port\":5432,\"protocol\":\"TCP\"}":{".":{},"f:name":{},"f:port":{},"f:protocol":{},"f:targetPort":{}}},"f:selector":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/name":{},"f:role":{}},"f:sessionAffinity":{},"f:type":{}}},"manager":"Go-http-client","operation":"Update","time":"2021-06-23T01:05:08Z"}],"name":"postgresql","namespace":"postgresql","resourceVersion":"3661519","uid":"806ceb23-9891-415d-ab28-9e82cd757256"},"spec":{"clusterIP":"10.233.6.109","clusterIPs":["10.233.6.109"],"ipFamilies":["IPv4"],"ipFamilyPolicy":"SingleStack","ports":[{"name":"tcp-postgresql","port":5432,"protocol":"TCP","targetPort":"tcp-postgresql"}],"selector":{"app.kubernetes.io/instance":"postgresql","app.kubernetes.io/name":"postgresql","role":"primary"},"sessionAffinity":"None","type":"ClusterIP"},"status":{"loadBalancer":{}}}'
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: services
+        type: service
+        name: postgresql-headless
+        namespace: postgresql
+        config: '{"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"meta.helm.sh/release-name":"postgresql","meta.helm.sh/release-namespace":"postgresql"},"creationTimestamp":"2021-06-23T01:05:08Z","labels":{"app.kubernetes.io/instance":"postgresql","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"postgresql","helm.sh/chart":"postgresql-10.4.8","service.alpha.kubernetes.io/tolerate-unready-endpoints":"true"},"managedFields":[{"apiVersion":"v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/managed-by":{},"f:app.kubernetes.io/name":{},"f:helm.sh/chart":{},"f:service.alpha.kubernetes.io/tolerate-unready-endpoints":{}}},"f:spec":{"f:clusterIP":{},"f:ports":{".":{},"k:{\"port\":5432,\"protocol\":\"TCP\"}":{".":{},"f:name":{},"f:port":{},"f:protocol":{},"f:targetPort":{}}},"f:publishNotReadyAddresses":{},"f:selector":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/name":{}},"f:sessionAffinity":{},"f:type":{}}},"manager":"Go-http-client","operation":"Update","time":"2021-06-23T01:05:08Z"}],"name":"postgresql-headless","namespace":"postgresql","resourceVersion":"3661516","uid":"8cb54c4c-f9e4-45e7-ac41-ae5a9846f79e"},"spec":{"clusterIP":"None","clusterIPs":["None"],"ipFamilies":["IPv4"],"ipFamilyPolicy":"SingleStack","ports":[{"name":"tcp-postgresql","port":5432,"protocol":"TCP","targetPort":"tcp-postgresql"}],"publishNotReadyAddresses":true,"selector":{"app.kubernetes.io/instance":"postgresql","app.kubernetes.io/name":"postgresql"},"sessionAffinity":"None","type":"ClusterIP"},"status":{"loadBalancer":{}}}'
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: persistentvolumeclaims
+        type: persistentvolumeclaim
+        name: data-postgresql-postgresql-0
+        namespace: postgresql
+        config: '{"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{"pv.kubernetes.io/bind-completed":"yes","pv.kubernetes.io/bound-by-controller":"yes","volume.beta.kubernetes.io/storage-provisioner":"rook-ceph.rbd.csi.ceph.com"},"creationTimestamp":"2021-06-23T01:16:46Z","finalizers":["kubernetes.io/pvc-protection"],"labels":{"app.kubernetes.io/instance":"postgresql","app.kubernetes.io/name":"postgresql","role":"primary"},"managedFields":[{"apiVersion":"v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/name":{},"f:role":{}}},"f:spec":{"f:accessModes":{},"f:dataSource":{".":{},"f:apiGroup":{},"f:kind":{},"f:name":{}},"f:resources":{"f:requests":{".":{},"f:storage":{}}},"f:storageClassName":{},"f:volumeMode":{}}},"manager":"executor-server","operation":"Update","time":"2021-06-23T01:16:46Z"},{"apiVersion":"v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:pv.kubernetes.io/bind-completed":{},"f:pv.kubernetes.io/bound-by-controller":{},"f:volume.beta.kubernetes.io/storage-provisioner":{}}},"f:spec":{"f:volumeName":{}},"f:status":{"f:accessModes":{},"f:capacity":{".":{},"f:storage":{}},"f:phase":{}}},"manager":"kube-controller-manager","operation":"Update","time":"2021-06-23T01:16:46Z"}],"name":"data-postgresql-postgresql-0","namespace":"postgresql","resourceVersion":"5117589","uid":"18b996fa-41b5-41ec-b70b-a26612e87efb"},"spec":{"accessModes":["ReadWriteOnce"],"dataSource":{"apiGroup":"snapshot.storage.k8s.io","kind":"VolumeSnapshot","name":"k10-csi-snap-9wwgm82xmfpd7qw8"},"resources":{"requests":{"storage":"53687091200"}},"storageClassName":"rook-ceph-block","volumeMode":"Filesystem","volumeName":"pvc-18b996fa-41b5-41ec-b70b-a26612e87efb"},"status":{"accessModes":["ReadWriteOnce"],"capacity":{"storage":"50Gi"},"phase":"Bound"}}'
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: serviceaccounts
+        type: unstructured
+        name: default
+        namespace: postgresql
+        config: '{"apiVersion":"v1","kind":"ServiceAccount","metadata":{"creationTimestamp":"2021-06-23T01:04:53Z","name":"default","namespace":"postgresql","resourceVersion":"3661388","uid":"e6014b91-de25-46d5-8259-8ec1db4b1b6b"},"secrets":[{"name":"default-token-w25ch"}]}'
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        group: storage.k8s.io
+        version: v1
+        resource: storageclasses
+        type: storageclass
+        name: rook-ceph-block
+        config: '{"metadata":{"name":"rook-ceph-block","uid":"bb8b2423-d51c-4ebb-a636-ed932e578a88","resourceVersion":"2957078","creationTimestamp":"2021-06-22T02:21:35Z","annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"allowVolumeExpansion\":true,\"apiVersion\":\"storage.k8s.io/v1\",\"kind\":\"StorageClass\",\"metadata\":{\"annotations\":{},\"name\":\"rook-ceph-block\"},\"parameters\":{\"clusterID\":\"rook-ceph\",\"csi.storage.k8s.io/controller-expand-secret-name\":\"rook-csi-rbd-provisioner\",\"csi.storage.k8s.io/controller-expand-secret-namespace\":\"rook-ceph\",\"csi.storage.k8s.io/fstype\":\"ext4\",\"csi.storage.k8s.io/node-stage-secret-name\":\"rook-csi-rbd-node\",\"csi.storage.k8s.io/node-stage-secret-namespace\":\"rook-ceph\",\"csi.storage.k8s.io/provisioner-secret-name\":\"rook-csi-rbd-provisioner\",\"csi.storage.k8s.io/provisioner-secret-namespace\":\"rook-ceph\",\"imageFeatures\":\"layering\",\"imageFormat\":\"2\",\"pool\":\"replicapool\"},\"provisioner\":\"rook-ceph.rbd.csi.ceph.com\",\"reclaimPolicy\":\"Delete\"}\n"},"managedFields":[{"manager":"kubectl-client-side-apply","operation":"Update","apiVersion":"storage.k8s.io/v1","time":"2021-06-22T02:21:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:allowVolumeExpansion":{},"f:metadata":{"f:annotations":{".":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}}},"f:parameters":{".":{},"f:clusterID":{},"f:csi.storage.k8s.io/controller-expand-secret-name":{},"f:csi.storage.k8s.io/controller-expand-secret-namespace":{},"f:csi.storage.k8s.io/fstype":{},"f:csi.storage.k8s.io/node-stage-secret-name":{},"f:csi.storage.k8s.io/node-stage-secret-namespace":{},"f:csi.storage.k8s.io/provisioner-secret-name":{},"f:csi.storage.k8s.io/provisioner-secret-namespace":{},"f:imageFeatures":{},"f:imageFormat":{},"f:pool":{}},"f:provisioner":{},"f:reclaimPolicy":{},"f:volumeBindingMode":{}}}]},"provisioner":"rook-ceph.rbd.csi.ceph.com","parameters":{"clusterID":"rook-ceph","csi.storage.k8s.io/controller-expand-secret-name":"rook-csi-rbd-provisioner","csi.storage.k8s.io/controller-expand-secret-namespace":"rook-ceph","csi.storage.k8s.io/fstype":"ext4","csi.storage.k8s.io/node-stage-secret-name":"rook-csi-rbd-node","csi.storage.k8s.io/node-stage-secret-namespace":"rook-ceph","csi.storage.k8s.io/provisioner-secret-name":"rook-csi-rbd-provisioner","csi.storage.k8s.io/provisioner-secret-namespace":"rook-ceph","imageFeatures":"layering","imageFormat":"2","pool":"replicapool"},"reclaimPolicy":"Delete","allowVolumeExpansion":true,"volumeBindingMode":"Immediate"}'
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        group: apps
+        version: v1
+        resource: statefulsets
+        type: statefulset
+        name: postgresql-postgresql
+        namespace: postgresql
+        config: '{"metadata":{"name":"postgresql-postgresql","namespace":"postgresql","uid":"03d6df9e-584f-4378-b0cb-8aea19db0152","resourceVersion":"3667980","generation":3,"creationTimestamp":"2021-06-23T01:05:08Z","labels":{"app.kubernetes.io/component":"primary","app.kubernetes.io/instance":"postgresql","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"postgresql","helm.sh/chart":"postgresql-10.4.8"},"annotations":{"meta.helm.sh/release-name":"postgresql","meta.helm.sh/release-namespace":"postgresql"},"managedFields":[{"manager":"Go-http-client","operation":"Update","apiVersion":"apps/v1","time":"2021-06-23T01:05:08Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/component":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/managed-by":{},"f:app.kubernetes.io/name":{},"f:helm.sh/chart":{}}},"f:spec":{"f:podManagementPolicy":{},"f:revisionHistoryLimit":{},"f:selector":{},"f:serviceName":{},"f:template":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/component":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/managed-by":{},"f:app.kubernetes.io/name":{},"f:helm.sh/chart":{},"f:role":{}},"f:name":{}},"f:spec":{"f:affinity":{".":{},"f:podAntiAffinity":{".":{},"f:preferredDuringSchedulingIgnoredDuringExecution":{}}},"f:containers":{"k:{\"name\":\"postgresql\"}":{".":{},"f:env":{".":{},"k:{\"name\":\"BITNAMI_DEBUG\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"PGDATA\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_CLIENT_MIN_MESSAGES\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_ENABLE_LDAP\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_ENABLE_TLS\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_LOG_CONNECTIONS\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_LOG_DISCONNECTIONS\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_LOG_HOSTNAME\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_PGAUDIT_LOG_CATALOG\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_PORT_NUMBER\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_SHARED_PRELOAD_LIBRARIES\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRESQL_VOLUME_DIR\"}":{".":{},"f:name":{},"f:value":{}},"k:{\"name\":\"POSTGRES_PASSWORD\"}":{".":{},"f:name":{},"f:valueFrom":{".":{},"f:secretKeyRef":{".":{},"f:key":{},"f:name":{}}}},"k:{\"name\":\"POSTGRES_USER\"}":{".":{},"f:name":{},"f:value":{}}},"f:image":{},"f:imagePullPolicy":{},"f:livenessProbe":{".":{},"f:exec":{".":{},"f:command":{}},"f:failureThreshold":{},"f:initialDelaySeconds":{},"f:periodSeconds":{},"f:successThreshold":{},"f:timeoutSeconds":{}},"f:name":{},"f:ports":{".":{},"k:{\"containerPort\":5432,\"protocol\":\"TCP\"}":{".":{},"f:containerPort":{},"f:name":{},"f:protocol":{}}},"f:readinessProbe":{".":{},"f:exec":{".":{},"f:command":{}},"f:failureThreshold":{},"f:initialDelaySeconds":{},"f:periodSeconds":{},"f:successThreshold":{},"f:timeoutSeconds":{}},"f:resources":{".":{},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:securityContext":{".":{},"f:runAsUser":{}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{},"f:volumeMounts":{".":{},"k:{\"mountPath\":\"/bitnami/postgresql\"}":{".":{},"f:mountPath":{},"f:name":{}},"k:{\"mountPath\":\"/dev/shm\"}":{".":{},"f:mountPath":{},"f:name":{}}}}},"f:dnsPolicy":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{".":{},"f:fsGroup":{}},"f:terminationGracePeriodSeconds":{},"f:volumes":{".":{},"k:{\"name\":\"dshm\"}":{".":{},"f:emptyDir":{".":{},"f:medium":{}},"f:name":{}}}}},"f:updateStrategy":{"f:type":{}},"f:volumeClaimTemplates":{}}}},{"manager":"executor-server","operation":"Update","apiVersion":"apps/v1","time":"2021-06-23T01:16:29Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:replicas":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"apps/v1","time":"2021-06-23T01:17:18Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:collisionCount":{},"f:currentReplicas":{},"f:currentRevision":{},"f:observedGeneration":{},"f:readyReplicas":{},"f:replicas":{},"f:updateRevision":{},"f:updatedReplicas":{}}}}]},"spec":{"replicas":1,"selector":{"matchLabels":{"app.kubernetes.io/instance":"postgresql","app.kubernetes.io/name":"postgresql","role":"primary"}},"template":{"metadata":{"name":"postgresql","creationTimestamp":null,"labels":{"app.kubernetes.io/component":"primary","app.kubernetes.io/instance":"postgresql","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"postgresql","helm.sh/chart":"postgresql-10.4.8","role":"primary"}},"spec":{"volumes":[{"name":"dshm","emptyDir":{"medium":"Memory"}}],"containers":[{"name":"postgresql","image":"docker.io/bitnami/postgresql:11.12.0-debian-10-r13","ports":[{"name":"tcp-postgresql","containerPort":5432,"protocol":"TCP"}],"env":[{"name":"BITNAMI_DEBUG","value":"false"},{"name":"POSTGRESQL_PORT_NUMBER","value":"5432"},{"name":"POSTGRESQL_VOLUME_DIR","value":"/bitnami/postgresql"},{"name":"PGDATA","value":"/bitnami/postgresql/data"},{"name":"POSTGRES_USER","value":"postgres"},{"name":"POSTGRES_PASSWORD","valueFrom":{"secretKeyRef":{"name":"postgresql","key":"postgresql-password"}}},{"name":"POSTGRESQL_ENABLE_LDAP","value":"no"},{"name":"POSTGRESQL_ENABLE_TLS","value":"no"},{"name":"POSTGRESQL_LOG_HOSTNAME","value":"false"},{"name":"POSTGRESQL_LOG_CONNECTIONS","value":"false"},{"name":"POSTGRESQL_LOG_DISCONNECTIONS","value":"false"},{"name":"POSTGRESQL_PGAUDIT_LOG_CATALOG","value":"off"},{"name":"POSTGRESQL_CLIENT_MIN_MESSAGES","value":"error"},{"name":"POSTGRESQL_SHARED_PRELOAD_LIBRARIES","value":"pgaudit"}],"resources":{"requests":{"cpu":"250m","memory":"256Mi"}},"volumeMounts":[{"name":"dshm","mountPath":"/dev/shm"},{"name":"data","mountPath":"/bitnami/postgresql"}],"livenessProbe":{"exec":{"command":["/bin/sh","-c","exec
+          pg_isready -U \"postgres\" -h 127.0.0.1 -p
+          5432"]},"initialDelaySeconds":30,"timeoutSeconds":5,"periodSeconds":10,"successThreshold":1,"failureThreshold":6},"readinessProbe":{"exec":{"command":["/bin/sh","-c","-e","exec
+          pg_isready -U \"postgres\" -h 127.0.0.1 -p 5432\n[ -f
+          /opt/bitnami/postgresql/tmp/.initialized ] || [ -f
+          /bitnami/postgresql/.initialized
+          ]\n"]},"initialDelaySeconds":5,"timeoutSeconds":5,"periodSeconds":10,"successThreshold":1,"failureThreshold":6},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always","securityContext":{"runAsUser":1001}}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{"fsGroup":1001},"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"weight":1,"podAffinityTerm":{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"primary","app.kubernetes.io/instance":"postgresql","app.kubernetes.io/name":"postgresql"}},"namespaces":["postgresql"],"topologyKey":"kubernetes.io/hostname"}}]}},"schedulerName":"default-scheduler"}},"volumeClaimTemplates":[{"kind":"PersistentVolumeClaim","apiVersion":"v1","metadata":{"name":"data","creationTimestamp":null},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"50Gi"}},"storageClassName":"rook-ceph-block","volumeMode":"Filesystem"},"status":{"phase":"Pending"}}],"serviceName":"postgresql-headless","podManagementPolicy":"OrderedReady","updateStrategy":{"type":"RollingUpdate"},"revisionHistoryLimit":10},"status":{"observedGeneration":3,"replicas":1,"readyReplicas":1,"currentReplicas":1,"updatedReplicas":1,"currentRevision":"postgresql-postgresql-5dd4664bd7","updateRevision":"postgresql-postgresql-5dd4664bd7","collisionCount":0}}'
+    source:
+      kind: statefulset
+      name: postgresql-postgresql
+      namespace: postgresql
+  - meta:
+      spec:
+        version: v1
+        resource: persistentvolumeclaims
+        type: persistentvolumeclaim
+        name: data-postgresql-postgresql-0
+        namespace: postgresql
+        config: '{"metadata":{"name":"data-postgresql-postgresql-0","namespace":"postgresql","uid":"18b996fa-41b5-41ec-b70b-a26612e87efb","resourceVersion":"5117589","creationTimestamp":"2021-06-23T01:16:46Z","labels":{"app.kubernetes.io/instance":"postgresql","app.kubernetes.io/name":"postgresql","role":"primary"},"annotations":{"pv.kubernetes.io/bind-completed":"yes","pv.kubernetes.io/bound-by-controller":"yes","volume.beta.kubernetes.io/storage-provisioner":"rook-ceph.rbd.csi.ceph.com"},"finalizers":["kubernetes.io/pvc-protection"],"managedFields":[{"manager":"executor-server","operation":"Update","apiVersion":"v1","time":"2021-06-23T01:16:46Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/name":{},"f:role":{}}},"f:spec":{"f:accessModes":{},"f:dataSource":{".":{},"f:apiGroup":{},"f:kind":{},"f:name":{}},"f:resources":{"f:requests":{".":{},"f:storage":{}}},"f:storageClassName":{},"f:volumeMode":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2021-06-23T01:16:46Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:pv.kubernetes.io/bind-completed":{},"f:pv.kubernetes.io/bound-by-controller":{},"f:volume.beta.kubernetes.io/storage-provisioner":{}}},"f:spec":{"f:volumeName":{}},"f:status":{"f:accessModes":{},"f:capacity":{".":{},"f:storage":{}},"f:phase":{}}}}]},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"53687091200"}},"volumeName":"pvc-18b996fa-41b5-41ec-b70b-a26612e87efb","storageClassName":"rook-ceph-block","volumeMode":"Filesystem","dataSource":{"apiGroup":"snapshot.storage.k8s.io","kind":"VolumeSnapshot","name":"k10-csi-snap-9wwgm82xmfpd7qw8"}},"status":{"phase":"Bound","accessModes":["ReadWriteOnce"],"capacity":{"storage":"50Gi"}}}'
+    source:
+      kind: statefulset
+      name: postgresql-postgresql
+      namespace: postgresql
+  - meta:
+      kanister:
+        meta:
+          k8sVolume:
+            pvcName: data-postgresql-postgresql-0
+            storageClassName: rook-ceph-block
+          location:
+            objectStore:
+              name: eastus
+              objectStoreType: Azure
+              path: k10/6cf1928a-9bf2-4a8f-a12e-9819b9e2287c/migration
+              pathType: Directory
+              region: East US
+            type: ObjectStore
+          profileRef:
+            kind: Profile
+            name: az-storage
+            namespace: kasten-io
+          storageUsage:
+            count: 0
+            logical: 49000000
+            physical: 4400000
+            freed: 0
+          type: Snapshot
+          version: v1.0.0-alpha
+        name: snapshot
+        values:
+          - key: objectStorePath
+            value: repo/cf43996b-89f7-43d9-8665-b324ea93ee11/
+          - key: phySize
+            value: 4.4 MB
+          - key: size
+            value: 49 MB
+          - key: backupIdentifier
+            value: 4b9127ddd897a2c6fd1eec8c81bb0266
+          - key: backupPath
+            value: /mnt/vol_data/kanister-pvc-zmmwk
+          - key: funcVersion
+            value: v1.0.0-alpha
+    source:
+      kind: statefulset
+      name: postgresql-postgresql
+      namespace: postgresql
+  - meta: {}
+    source:
+      kind: namespace
+      name: postgresql
+      namespace: postgresql
+phases:
+  - attempt: 1
+    endTime: 2021-06-25T02:02:11Z
+    name: Importing RestorePoint
+    startTime: 2021-06-25T02:02:10Z
+    state: succeeded
+    updatedTime: 2021-06-25T02:02:11Z
