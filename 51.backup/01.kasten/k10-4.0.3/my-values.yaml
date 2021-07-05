@@ -41,9 +41,10 @@ global:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "cstor-csi"
-    storageClass: "default"
+    storageClass: "openebs-hostpath"
+    # storageClass: "default"
     accessMode: ReadWriteOnce
-    size: 10Gi
+    size: 100Gi
     metering:
       size: 2Gi
     catalog:
