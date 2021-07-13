@@ -1,0 +1,20 @@
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+apiServer:
+  extraArgs:
+    cloud-provider: aws
+controllerManager:
+  extraArgs:
+    cloud-provider: aws
+    address: 0.0.0.0
+networking:
+  podSubnet: 52.78.103.244
+scheduler:
+  extraArgs:
+    address: 0.0.0.0
+---
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: InitConfiguration
+nodeRegistration:
+  kubeletExtraArgs:
+    cloud-provider: aws
