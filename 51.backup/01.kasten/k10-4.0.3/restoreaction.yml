@@ -1,0 +1,68 @@
+kind: RestoreAction
+apiVersion: actions.kio.kasten.io/v1alpha1
+metadata:
+  name: wordpress-lb42p
+  namespace: wordpress
+  uid: 6120d2bb-e39b-11eb-9632-ee48752bd3e8
+  creationTimestamp: 2021-07-13T05:30:05Z
+  labels:
+    k10.kasten.io/appName: wordpress
+    k10.kasten.io/appNamespace: wordpress
+status:
+  state: Complete
+  startTime: 2021-07-13T05:30:05Z
+  endTime: 2021-07-13T05:31:07Z
+  restorePoint:
+    name: ""
+spec:
+  subject:
+    apiVersion: apps.kio.kasten.io/v1alpha1
+    kind: RestorePoint
+    name: wordpress-scheduled-fcc7994l4b
+    namespace: wordpress
+  targetNamespace: wordpress
+  filters:
+    includeResources:
+      - name: wordpress
+        version: v1
+        resource: namespaces
+      - name: default-token-498xh
+        version: v1
+        resource: secrets
+      - name: mysql-pass
+        version: v1
+        resource: secrets
+      - name: kube-root-ca.crt
+        version: v1
+        resource: configmaps
+      - name: wordpress
+        version: v1
+        resource: services
+      - name: wordpress-mysql
+        version: v1
+        resource: services
+      - name: mysql-pv-claim
+        version: v1
+        resource: persistentvolumeclaims
+      - name: wp-pv-claim
+        version: v1
+        resource: persistentvolumeclaims
+      - name: default
+        version: v1
+        resource: serviceaccounts
+      - name: wordpress
+        group: apps
+        version: v1
+        resource: deployments
+      - name: wordpress-mysql
+        group: apps
+        version: v1
+        resource: deployments
+  transforms:
+    - subject:
+        resource: persistentvolumeclaims
+      name: changeStorageClass
+      json:
+        - op: replace
+          path: /spec/storageClassName
+          value: ebs-sc

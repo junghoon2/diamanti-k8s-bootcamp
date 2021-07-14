@@ -1,6 +1,3 @@
-# Storage class 지정 : openebs-hostpath, default 지정 안 됨
-# nodeport 변경, resource 수정 
-
 rbac:
   create: true
   ## Use an existing ClusterRole/Role (depending on rbac.namespaced false/true)
@@ -72,7 +69,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 7.5.5
+  tag: 8.0.3
   sha: ""
   pullPolicy: IfNotPresent
 
@@ -145,8 +142,7 @@ podPortName: grafana
 ##
 service:
   enabled: true
-  # type: ClusterIP
-  type: NodePort
+  type: ClusterIP
   port: 80
   targetPort: 3000
     # targetPort: 4181 To be used with a proxy extraContainer
@@ -192,7 +188,7 @@ ingress:
   labels: {}
   path: /
 
-  # pathType is only for k8s > 1.19
+  # pathType is only for k8s >= 1.1=
   pathType: Prefix
 
   hosts:
@@ -218,13 +214,13 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources:
- limits:
-   cpu: 2000m
-   memory: 4Gi
- requests:
-   cpu: 100m
-   memory: 128Mi
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -273,12 +269,11 @@ extraContainerVolumes: []
 ##
 persistence:
   type: pvc
-  enabled: true
-  # storageClassName: local-path
-  storageClassName: rook-ceph-block
+  enabled: false
+  # storageClassName: default
   accessModes:
     - ReadWriteOnce
-  size: 100Gi
+  size: 10Gi
   # annotations: {}
   finalizers:
     - kubernetes.io/pvc-protection
@@ -325,7 +320,7 @@ initChownData:
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
-adminPassword: Diamanti1!
+# adminPassword: strongpassword
 
 # Use an existing secret for the admin user.
 admin:
@@ -386,6 +381,10 @@ envFromSecret: ""
 ## Sensible environment variables that will be rendered as new secret object
 ## This can be useful for auth tokens, etc
 envRenderSecret: {}
+
+# Inject Kubernetes services as environment variables.
+# See https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/#environment-variables
+enableServiceLinks: true
 
 ## Additional grafana server secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
@@ -451,13 +450,13 @@ datasources: {}
 #      access: proxy
 #      isDefault: true
 #    - name: CloudWatch
-#        type: cloudwatch
-#        access: proxy
-#        uid: cloudwatch
-#        editable: false
-#        jsonData:
-#          authType: credentials
-#          defaultRegion: us-east-1
+#      type: cloudwatch
+#      access: proxy
+#      uid: cloudwatch
+#      editable: false
+#      jsonData:
+#        authType: default
+#        defaultRegion: us-east-1
 
 ## Configure notifiers
 ## ref: http://docs.grafana.org/administration/provisioning/#alert-notification-channels
@@ -537,7 +536,7 @@ dashboardsConfigMaps: {}
 ##
 grafana.ini:
   paths:
-    data: /var/lib/grafana/data
+    data: /var/lib/grafana/
     logs: /var/log/grafana
     plugins: /var/lib/grafana/plugins
     provisioning: /etc/grafana/provisioning
@@ -608,7 +607,7 @@ smtp:
 sidecar:
   image:
     repository: quay.io/kiwigrid/k8s-sidecar
-    tag: 1.10.7
+    tag: 1.12.2
     sha: ""
   imagePullPolicy: IfNotPresent
   resources: {}

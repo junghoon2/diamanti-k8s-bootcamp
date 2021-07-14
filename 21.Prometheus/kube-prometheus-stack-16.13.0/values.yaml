@@ -1,9 +1,3 @@
-# Change SC name, alertmanager/prometheus service to nodeport
-# Prometheus retention period, capacity, resource requests/limits
-# Grafana admin password
-# change grafana - charts service type to nodeport, sc name, resource requests/limits
-
-
 # Default values for kube-prometheus-stack.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -161,32 +155,19 @@ alertmanager:
     global:
       resolve_timeout: 5m
     route:
-    #   receiver: 'email-alert'
-    #   group_by: ['job', 'node', 'namespace', 'pod_name']    
-    #   routes:
-    #   - receiver: 'email-alert'
-    #     # When a new group of alerts is created by an incoming alert, wait at
-    #     # least 'group_wait' to send the initial notification.
-    #     # This way ensures that you get multiple alerts for the same group that 
-    #     #start firing shortly after another are batched together on the first 
-    #     # notification.
-    #     group_wait: 50s
-    #     # When the first notification was sent, wait 'group_interval' to send a 
-    #     # batch of new alerts that started firing for that group.  
-    #     group_interval: 5m
-    #     # If an alert has successfully been sent, wait 'repeat_interval' to
-    #     # resend them.
-    #     repeat_interval: 12h    
-    # receivers:
-    # - name: email-alert
-    #   email_configs:
-    #   - to: leejunghoon@spkr.co.kr
-    #     from: erdia22@gmail.com
-    #     # Your smtp server address
-    #     smarthost: smtp.gmail.com:587
-    #     auth_username: erdia22@gmail.com
-    #     auth_identity: erdia22@gmail.com
-    #     auth_password: oilyrxxoubvifeqe
+      group_by: ['job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
+      routes:
+      - match:
+          alertname: Watchdog
+        receiver: 'null'
+    receivers:
+    - name: 'null'
+    templates:
+    - '/etc/alertmanager/config/*.tmpl'
 
   ## Pass the Alertmanager configuration directives through Helm's templating
   ## engine. If the Alertmanager configuration contains Alertmanager templates,
@@ -337,8 +318,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    # type: NodePort
-    type: NodePort
+    type: ClusterIP
 
   ## Configuration for creating a separate Service for each statefulset Alertmanager replica
   ##
@@ -363,7 +343,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
   ## If true, create a serviceMonitor for alertmanager
   ##
@@ -416,7 +396,7 @@ alertmanager:
     ##
     image:
       repository: quay.io/prometheus/alertmanager
-      tag: v0.22.0
+      tag: v0.22.2
       sha: ""
 
     ## If true then the user will be responsible to provide a secret with alertmanager configuration
@@ -495,15 +475,15 @@ alertmanager:
     ## Storage is the definition of how storage will be used by the Alertmanager instances.
     ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/storage.md
     ##
-    storage:
-    volumeClaimTemplate:
-      spec:
-        storageClassName: rook-ceph-block
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 50Gi
-      selector: {}
+    storage: {}
+    # volumeClaimTemplate:
+    #   spec:
+    #     storageClassName: gluster
+    #     accessModes: ["ReadWriteOnce"]
+    #     resources:
+    #       requests:
+    #         storage: 50Gi
+    #   selector: {}
 
 
     ## 	The external URL the Alertmanager instances will be available under. This is necessary to generate correct URLs. This is necessary if Alertmanager is not served from root of a DNS name.	string	false
@@ -633,11 +613,19 @@ grafana:
   enabled: true
   namespaceOverride: ""
 
+  ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
+  ##
+  forceDeployDatasources: false
+
+  ## ForceDeployDashboard Create dashboard configmap even if grafana deployment has been disabled
+  ##
+  forceDeployDashboards: false
+
   ## Deploy default dashboards.
   ##
   defaultDashboardsEnabled: true
 
-  adminPassword: Diamanti1!
+  adminPassword: prom-operator
 
   ingress:
     ## If true, Grafana Ingress will be created
@@ -684,6 +672,10 @@ grafana:
     datasources:
       enabled: true
       defaultDatasourceEnabled: true
+
+      ## URL of prometheus datasource
+      ##
+      # url: http://prometheus-stack-prometheus:9090/
 
       # If not defined, will use prometheus.prometheusSpec.scrapeInterval or its default
       # defaultDatasourceScrapeInterval: 15s
@@ -762,19 +754,6 @@ kubeApiServer:
   tlsConfig:
     serverName: kubernetes
     insecureSkipVerify: false
-
-  ## If your API endpoint address is not reachable (as in AKS) you can replace it with the kubernetes service
-  ##
-  relabelings: []
-  # - sourceLabels:
-  #     - __meta_kubernetes_namespace
-  #     - __meta_kubernetes_service_name
-  #     - __meta_kubernetes_endpoint_port_name
-  #   action: keep
-  #   regex: default;kubernetes;https
-  # - targetLabel: __address__
-  #   replacement: kubernetes.default.svc:443
-
   serviceMonitor:
     ## Scrape interval. If not set, the Prometheus default scrape interval is used.
     ##
@@ -795,6 +774,15 @@ kubeApiServer:
     # - action: keep
     #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
     #   sourceLabels: [__name__]
+    relabelings: []
+    # - sourceLabels:
+    #     - __meta_kubernetes_namespace
+    #     - __meta_kubernetes_service_name
+    #     - __meta_kubernetes_endpoint_port_name
+    #   action: keep
+    #   regex: default;kubernetes;https
+    # - targetLabel: __address__
+    #   replacement: kubernetes.default.svc:443
 
 ## Component scraping the kubelet and kubelet-hosted cAdvisor
 ##
@@ -919,7 +907,7 @@ kubelet:
 ## Component scraping the kube controller manager
 ##
 kubeControllerManager:
-  enabled: false
+  enabled: true
 
   ## If your kube controller manager is not deployed as a pod, specify IPs it can be found on
   ##
@@ -1189,7 +1177,7 @@ kubeScheduler:
 ## Component scraping kube proxy
 ##
 kubeProxy:
-  enabled: false
+  enabled: true
 
   ## If your kube proxy is not deployed as a pod, specify IPs it can be found on
   ##
@@ -1269,6 +1257,10 @@ kubeStateMetrics:
     #   targetLabel: nodename
     #   replacement: $1
     #   action: replace
+
+    # Enable self metrics configuration for Service Monitor
+    selfMonitor:
+      enabled: false
 
 ## Configuration for kube-state-metrics subchart
 ##
@@ -1373,6 +1365,16 @@ prometheusOperator:
       nodeSelector: {}
       affinity: {}
       tolerations: []
+
+      ## SecurityContext holds pod-level security attributes and common container settings.
+      ## This defaults to non root user with uid 2000 and gid 2000.	*v1.PodSecurityContext	false
+      ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+      ##
+      securityContext:
+        runAsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 2000
+
     # Use certmanager to generate webhook certs
     certManager:
       enabled: false
@@ -1439,7 +1441,7 @@ prometheusOperator:
   ## Service type
   ## NodePort, ClusterIP, LoadBalancer
   ##
-    type: NodePort
+    type: ClusterIP
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -1500,13 +1502,13 @@ prometheusOperator:
 
   ## Resource limits & requests
   ##
-  resources:
-  limits:
-    cpu: 2000m
-    memory: 2Gi
-  requests:
-    cpu: 100m
-    memory: 100Mi
+  resources: {}
+  # limits:
+  #   cpu: 200m
+  #   memory: 200Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 100Mi
 
   # Required for use in managed kubernetes clusters (such as AWS EKS) with custom CNI (such as calico),
   # because control-plane managed by AWS cannot communicate with pods' IP CIDR and admission webhooks are not working
@@ -1560,7 +1562,7 @@ prometheusOperator:
   ##
   image:
     repository: quay.io/prometheus-operator/prometheus-operator
-    tag: v0.48.0
+    tag: v0.48.1
     sha: ""
     pullPolicy: IfNotPresent
 
@@ -1576,7 +1578,7 @@ prometheusOperator:
   ##
   prometheusConfigReloaderImage:
     repository: quay.io/prometheus-operator/prometheus-config-reloader
-    tag: v0.48.0
+    tag: v0.48.1
     sha: ""
 
   ## Set the prometheus config reloader side-car CPU limit
@@ -1586,6 +1588,13 @@ prometheusOperator:
   ## Set the prometheus config reloader side-car memory limit
   ##
   configReloaderMemory: 50Mi
+
+  ## Thanos side-car image when configured
+  ##
+  thanosImage:
+    repository: quay.io/thanos/thanos
+    tag: v0.17.2
+    sha: ""
 
   ## Set a Field Selector to filter watched secrets
   ##
@@ -1625,7 +1634,7 @@ prometheus:
 
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
     ## Port to expose on each node
     ##
@@ -1679,8 +1688,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    # type: NodePort
-    type: NodePort
+    type: ClusterIP
 
     sessionAffinity: ""
 
@@ -1707,7 +1715,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: NodePort
+    type: ClusterIP
 
   ## Configure pod disruption budgets for Prometheus
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
@@ -2104,7 +2112,7 @@ prometheus:
 
     ## Maximum size of metrics
     ##
-    retentionSize: "500GB"
+    retentionSize: ""
 
     ## Enable compression of the write-ahead log using Snappy.
     ##
@@ -2193,26 +2201,23 @@ prometheus:
 
     ## Resource limits & requests
     ##
-    resources:
-      limits:
-        cpu: 2000m
-        memory: 2Gi
-      requests:
-        cpu: 100m
-        memory: 100Mi
+    resources: {}
+    # requests:
+    #   memory: 400Mi
+
     ## Prometheus StorageSpec for persistent data
     ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/storage.md
     ##
-    storageSpec:
+    storageSpec: {}
     ## Using PersistentVolumeClaim
     ##
-     volumeClaimTemplate:
-       spec:
-         storageClassName: rook-ceph-block
-         accessModes: ["ReadWriteOnce"]
-         resources:
-           requests:
-             storage: 50Gi
+    #  volumeClaimTemplate:
+    #    spec:
+    #      storageClassName: gluster
+    #      accessModes: ["ReadWriteOnce"]
+    #      resources:
+    #        requests:
+    #          storage: 50Gi
     #    selector: {}
 
     ## Using tmpfs volume
@@ -2293,6 +2298,14 @@ prometheus:
     #     tag_separator: ','
     #     services:
     #       - metrics-prometheus-alertmanager
+
+    ## If additional alertmanager configurations are already deployed in a single secret, or you want to manage
+    ## them separately from the helm deployment, you can use this section.
+    ## Expected values are the secret name and key
+    ## Cannot be used with additionalAlertManagerConfigs
+    additionalAlertManagerConfigsSecret: {}
+      # name:
+      # key:
 
     ## AdditionalAlertRelabelConfigs allows specifying Prometheus alert relabel configurations. Alert relabel configurations specified are appended
     ## to the configurations generated by the Prometheus Operator. Alert relabel configurations specified must have the form as specified in the
