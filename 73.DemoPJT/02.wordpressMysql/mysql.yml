@@ -20,6 +20,7 @@ metadata:
     app: wordpress
 spec:
   storageClassName: "rook-ceph-block"
+  # storageClassName: "ebs-sc"
   accessModes:
     - ReadWriteOnce
   resources:
