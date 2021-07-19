@@ -1,0 +1,40 @@
+---
+# replicaCount is the number of replicas of the snapscheduler operator to run.
+replicaCount: 2
+
+image:
+  repository: quay.io/backube/snapscheduler
+  tagOverride: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use. If not set and create is true, a
+  # name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+
+securityContext: {}
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 100Mi
+
+# nodeSelector specifies the set of nodes where the operator can run. By
+# default, the operator is restricted to amd64/linux nodes. If a value is
+# provided here, it overrides that default. Also, by specifying {} for the
+# value, the default can be cleared entirely. The default isn't shown here since
+# the proper node labels must be determined dynamically due to differences
+# between kube 1.13 and later.
+nodeSelector:
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,12 @@
+Thank you for installing SnapScheduler!
+
+Chart version: {{ .Chart.Version }}
+SnapScheduler version: {{ default .Chart.AppVersion .Values.image.tagOverride }}
+
+The SnapScheduler operator is now installed in the {{ .Release.Namespace }}
+namespace, and snapshotschedules should be enabled cluster-wide.
+
+See https://backube.github.io/snapscheduler/usage.html to get started.
+
+Schedules can be viewed via:
+$ kubectl -n <mynampspace> get snapshotschedules

@@ -1,0 +1,15 @@
+apiVersion: snapscheduler.backube/v1
+kind: SnapshotSchedule
+metadata:
+  name: daily
+  namespace: yelb
+spec:
+  disabled: false  # optional
+  retention:
+    expires: "168h"  # optional
+    maxCount: 3  # optional
+  schedule: "0 5 * * *"
+  snapshotTemplate:
+    labels:  # optional
+      mylabel: myvalue
+    snapshotClassName: csi-rbdplugin-snapclass  # optional

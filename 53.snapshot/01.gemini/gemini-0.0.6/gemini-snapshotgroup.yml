@@ -1,0 +1,31 @@
+apiVersion: gemini.fairwinds.com/v1beta1
+kind: SnapshotGroup
+metadata:
+  name: yelb
+  namespace: yelb
+spec:
+  persistentVolumeClaim:
+    claimName: redis-pvc
+  schedule:
+    - every: "10 minutes"
+      keep: 3
+    - every: hour
+      keep: 1
+  template:
+    spec:
+      volumeSnapshotClassName: csi-rbdplugin-snapclass
+
+# ---
+# apiVersion: gemini.fairwinds.com/v1beta1
+# kind: SnapshotGroup
+# metadata:
+#   name: hackmd-postgresql
+#   namespace: notepad
+# spec:
+#   persistentVolumeClaim:
+#     claimName: data-hackmd-postgresql-0
+#   schedule:
+#     - every: "10 minutes"
+#       keep: 3
+#     - every: hour
+#       keep: 1
