@@ -1,3 +1,5 @@
+# create yelb name space
+
 # Minor modification from http://www.it20.info/2017/07/yelb-yet-another-sample-app/ for demo purposes
 apiVersion: v1
 kind: Service
@@ -174,5 +176,6 @@ spec:
   resources:
     requests:
       # storage: 10Gi
-      storage: 10Gi  # 노드 Disk 용량을 넘으면 할당이 안 됨
-  storageClassName: "rook-ceph-block"  ## SC 지정
+      storage: 200Gi  # 노드 Disk 용량을 넘으면 할당이 안 됨
+  # storageClassName: "rook-ceph-block"  ## SC 지정
+  storageClassName: "high"  ## SC 지정
