@@ -4,13 +4,14 @@ metadata:
   # name: mysql-pv-claim  # 기존 PVC 이름과 동일하게 설정
   name: redis-pvc  # 기존 PVC 이름과 동일하게 설정
 spec:
-  storageClassName: rook-ceph-block  # PVC 복구에 사용할 StorageClass 지정 
+  # storageClassName: rook-ceph-block  # PVC 복구에 사용할 StorageClass 지정 
+  storageClassName: high  # PVC 복구에 사용할 StorageClass 지정 
   dataSource:
-    name: redis-pvc-hourly-202107160458  # 생성한 snapshot 이름 지정
+    name: redis-pvc-test-min-202107190235  # 생성한 snapshot 이름 지정
     kind: VolumeSnapshot
     apiGroup: snapshot.storage.k8s.io
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi  
+      storage: 200Gi  

@@ -169,7 +169,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: redis-pvc
-  # namespace: default
+  namespace: yelb
+  labels:
+    app: yelb-appserver
 spec:
   accessModes:
   - ReadWriteOnce  ## block accessmode 지정 
