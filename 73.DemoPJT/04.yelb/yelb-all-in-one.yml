@@ -179,5 +179,5 @@ spec:
     requests:
       # storage: 10Gi
       storage: 200Gi  # 노드 Disk 용량을 넘으면 할당이 안 됨
-  # storageClassName: "rook-ceph-block"  ## SC 지정
-  storageClassName: "high"  ## SC 지정
+  storageClassName: "rook-ceph-block"  ## SC 지정
+  # storageClassName: "high"  ## SC 지정

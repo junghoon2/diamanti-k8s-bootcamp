@@ -1,3 +1,5 @@
+# namespace snapscheduler 
+
 ---
 # replicaCount is the number of replicas of the snapscheduler operator to run.
 replicaCount: 2

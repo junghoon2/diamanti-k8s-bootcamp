@@ -8,9 +8,9 @@ metadata:
   namespace: yelb
 spec:
   # A LabelSelector to control which PVCs should be snapshotted
-  claimSelector: 
-    matchLabels:
-      "app": "yelb-appserver"
+  # claimSelector: 
+  #   matchLabels:
+  #     "app": "yelb-appserver"
   # Set to true to make the schedule inactive
   disabled: false  # optional
   retention:
@@ -24,16 +24,16 @@ spec:
   # respect to the UTC timezone. The following pre-defined
   # shortcuts are also supported: @hourly, @daily, @weekly,
   # @monthly, and @yearly
-  schedule: "0/1 * * * *"
+  schedule: "0/5 * * * *"
   # schedule: '@hourly'
   snapshotTemplate:
     # A set of labels can be added to each
     # VolumeSnapshot object
     labels:  # optional
-      mylabel: diamanti
+      mylabel: scheduler
     # The SnapshotClassName to use when creating the
     # snapshots. If omitted, the cluster default will
     # be used.
-    # snapshotClassName: csi-rbdplugin-snapclass  # optional
-    snapshotClassName: default-snapclass  # optional
+    snapshotClassName: csi-rbdplugin-snapclass  # optional
+    # snapshotClassName: default-snapclass  # optional
   
