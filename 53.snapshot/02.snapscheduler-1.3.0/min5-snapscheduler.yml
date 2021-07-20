@@ -5,7 +5,7 @@ metadata:
   # of the template for naming the snapshots.
   name: test-min
   # Schedules are namespaced objects
-  namespace: yelb
+  namespace: default
 spec:
   # A LabelSelector to control which PVCs should be snapshotted
   # claimSelector: 

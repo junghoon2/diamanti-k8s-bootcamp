@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: v0.3.4
+description: A Kubernetes-Native Virtual Desktop Infrastructure
+name: kvdi
+type: application
+version: v0.3.4
